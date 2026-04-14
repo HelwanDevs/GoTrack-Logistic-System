@@ -1,0 +1,62 @@
+# --- IDE & System Files ---
+.idea/
+.vscode/
+*.iml
+*.iws
+.project
+.classpath
+.settings/
+.DS_Store
+Thumbs.db
+
+# --- Build & Output ---
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+*.ear
+
+# --- Spring Boot & Logs ---
+*.log
+logs/
+.apt_generated/
+.factorypath
+.spring-beans
+.sts4-cache
+
+# --- Docker & Compose ---
+.docker/
+# Avoid ignoring compose.yaml if you want team members to use it,
+# but ignore private environment overrides.
+.env
+docker-compose.override.yml
+
+# --- Keys & Security (CRITICAL) ---
+# Since you are using RSA Public/Private keys
+*.key
+*.pem
+*.pub
+/src/main/resources/keys/private.key
+
+# --- Maven Wrapper ---
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/
+!**/src/test/**/
+
+# --- Crash dumps & Temp files ---
+core
+*.swp
+*~
+.tmp/
+
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
