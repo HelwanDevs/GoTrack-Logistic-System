@@ -1,4 +1,4 @@
-package com.gotrack.branch_service.domain;
+package com.gotrack.branch_service.domain.entity;
 
 
 import jakarta.persistence.*;
@@ -10,9 +10,9 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name="branches")
-public class Branch {
+public class BranchEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "branch_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -24,7 +24,7 @@ public class Branch {
     @Column(nullable = false)
     private String phone;
 
-    @Column(name = "is_deleted" , nullable = false)
-    private Boolean deleted =false;
+    @Builder.Default
+    private Boolean deleted = false;
 
 }
