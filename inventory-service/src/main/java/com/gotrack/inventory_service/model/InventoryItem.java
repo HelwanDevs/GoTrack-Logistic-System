@@ -5,19 +5,23 @@ import lombok.Data;
 
 @Data  
 @Entity
-@Table(name = "products")
-public class Product {
+@Table(name = "inventory_items")
+public class InventoryItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long merchantId;
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
     @Column(nullable = false)
-    private String name;
+    private Long branchId;
+
+    @Column(nullable = false)
+    private Long pickupRequestId;
 
     @Column(unique = true, nullable = false)
-    private String baseSku;
+    private String uniqueSku;
 }
