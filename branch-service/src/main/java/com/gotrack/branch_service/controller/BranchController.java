@@ -6,6 +6,8 @@ import com.gotrack.branch_service.domain.entity.BranchEntity;
 import com.gotrack.branch_service.mappers.Mapper;
 import com.gotrack.branch_service.services.BranchService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,5 +52,21 @@ public class BranchController {
         return branches.stream()
                 .map(branchMapper::mapTo)
                 .collect((Collectors.toList()));
+    }
+
+    @PutMapping(path = "/branches/{id}")
+    public ResponseEntity<BranchDTO> fullUpdateBranch(@PathVariable("id") Long id ,
+                                                      @RequestBody BranchDTO branchDto){
+        if(!branchService.isExists(id)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        branchDto.setId(id);
+        BranchEntity branchEntity= branchMapper.mapFrom(branchDto);
+        BranchEntity updatedBranchEntity = branchService.updateBranch(branchEntity);
+        return new ResponseEntity<>(
+                branchMapper.mapTo(updatedBranchEntity),
+                HttpStatus.OK);
+
+
     }
 }

@@ -20,7 +20,7 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public BranchEntity createBranch(BranchEntity branchEntity) {
-       return branchRepository.save(branchEntity);
+        return branchRepository.save(branchEntity);
     }
 
     @Override
@@ -42,5 +42,16 @@ public class BranchServiceImpl implements BranchService {
                 .collect(Collectors.toList());
 
     }
+
+    @Override
+    public boolean isExists(Long id) {
+        return branchRepository.existsById(id);
+    }
+
+    @Override
+    public BranchEntity updateBranch(BranchEntity branchEntity) {
+        return branchRepository.save(branchEntity);
+    }
+
 
 }
