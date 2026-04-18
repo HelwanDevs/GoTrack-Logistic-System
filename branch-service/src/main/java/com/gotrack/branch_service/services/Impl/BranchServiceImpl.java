@@ -5,6 +5,10 @@ import com.gotrack.branch_service.repository.BranchRepository;
 import com.gotrack.branch_service.services.BranchService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 @Service
 public class BranchServiceImpl implements BranchService {
 
@@ -18,4 +22,14 @@ public class BranchServiceImpl implements BranchService {
     public BranchEntity createBranch(BranchEntity branchEntity) {
        return branchRepository.save(branchEntity);
     }
+
+    @Override
+    public List<BranchEntity> findAll() {
+        return StreamSupport.stream(branchRepository
+                        .findAll()
+                        .spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+
 }
