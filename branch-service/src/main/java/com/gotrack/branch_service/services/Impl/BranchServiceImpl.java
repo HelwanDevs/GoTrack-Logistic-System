@@ -6,6 +6,7 @@ import com.gotrack.branch_service.services.BranchService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -51,6 +52,14 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public BranchEntity updateBranch(BranchEntity branchEntity) {
         return branchRepository.save(branchEntity);
+    }
+
+    @Override
+    public void delete(Long id) {
+        Optional<BranchEntity> optionalBranch = branchRepository.findById(id);
+        BranchEntity branch = optionalBranch.get();
+        branch.setIsDeleted(true);
+        branchRepository.save(branch);
     }
 
 

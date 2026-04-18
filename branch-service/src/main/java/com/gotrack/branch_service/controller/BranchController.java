@@ -66,7 +66,16 @@ public class BranchController {
         return new ResponseEntity<>(
                 branchMapper.mapTo(updatedBranchEntity),
                 HttpStatus.OK);
-
+    }
+    @DeleteMapping(path = "/branches/{id}")
+    public ResponseEntity softDeleteBranch(@PathVariable("id") Long id){
+        if(!branchService.isExists(id)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        branchService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
+
+
 }

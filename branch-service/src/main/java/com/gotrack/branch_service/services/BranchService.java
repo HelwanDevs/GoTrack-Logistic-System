@@ -15,5 +15,7 @@ public interface BranchService {
     boolean isExists(Long id);
 
     BranchEntity updateBranch(BranchEntity branchEntity);
+
+    void delete(Long id);
 }
 
