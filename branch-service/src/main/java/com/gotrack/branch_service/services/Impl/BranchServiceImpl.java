@@ -31,5 +31,16 @@ public class BranchServiceImpl implements BranchService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<BranchEntity> search(String name, String location, Boolean isDeleted) {
+        return StreamSupport.stream(branchRepository
+                        .findAll()
+                        .spliterator(), false)
+                .filter(branch -> (name == null || branch.getName().toLowerCase().contains(name.toLowerCase())))
+                .filter(branch -> (location == null || branch.getLocation().toLowerCase().contains(location.toLowerCase())))
+                .filter(branch -> (isDeleted == null || branch.getIsDeleted().equals(isDeleted)))
+                .collect(Collectors.toList());
+
+    }
 
 }

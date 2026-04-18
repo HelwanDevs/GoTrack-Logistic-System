@@ -25,6 +25,6 @@ public class BranchEntity {
     private String phone;
 
     @Builder.Default
-    private Boolean deleted = false;
+    private Boolean isDeleted = false;
 
 }

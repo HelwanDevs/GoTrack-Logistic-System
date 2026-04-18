@@ -9,5 +9,7 @@ public interface BranchService {
     BranchEntity createBranch(BranchEntity branchEntity);
 
     List<BranchEntity> findAll();
+
+    List<BranchEntity> search(String name, String location , Boolean isDeleted);
 }
 

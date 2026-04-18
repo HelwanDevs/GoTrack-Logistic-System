@@ -5,10 +5,8 @@ import com.gotrack.branch_service.domain.dto.BranchDTO;
 import com.gotrack.branch_service.domain.entity.BranchEntity;
 import com.gotrack.branch_service.mappers.Mapper;
 import com.gotrack.branch_service.services.BranchService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,5 +38,17 @@ public class BranchController {
                 .map(branchMapper::mapTo)
                 .collect((Collectors.toList()));
 
+    }
+
+    @GetMapping(path= "/branches/search")
+    public List<BranchDTO> searchBranches(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) Boolean isDeleted
+    ){
+        List<BranchEntity> branches= branchService.search(name, location , isDeleted);
+        return branches.stream()
+                .map(branchMapper::mapTo)
+                .collect((Collectors.toList()));
     }
 }
