@@ -11,9 +11,15 @@ spring:
         webmvc:
           routes:
           - id: auth-service
-            uri: http://localhost:8081
+            uri: lb://auth-service
             
             predicates:
               - Path=/auth/**
             filters:
               - AddRequestHeader=X-Gateway, Dynamic
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
