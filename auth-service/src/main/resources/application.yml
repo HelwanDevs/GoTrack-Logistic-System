@@ -11,4 +11,4 @@ spring:
     secret: ${JWT_SECRET:default_secret_key}
     expiration: ${JWT_EXPIRATION:86400000} # 24 hour in milliseconds
 server:
-  port: 8080
+  port: 8081
