@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: auth-service
+  docker:
+    compose:
+      enabled: false
+  mongodb:
+    uri: ${SPRING_DATA_MONGODB_URI}
+  jwt:
+    secret: ${JWT_SECRET:default_secret_key}
+    expiration: ${JWT_EXPIRATION:86400000} # 24 hour in milliseconds
+server:
+  port: 8081
