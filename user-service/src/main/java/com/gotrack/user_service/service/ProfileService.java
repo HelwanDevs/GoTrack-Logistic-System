@@ -1,29 +1,17 @@
 package com.gotrack.user_service.service;
 
-import com.gotrack.user_service.model.Profile;
-import com.gotrack.user_service.repository.ProfileRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.gotrack.user_service.domain.dto.ProfileRequestDTO;
+import com.gotrack.user_service.domain.dto.ProfileResponseDTO;
+import com.gotrack.user_service.domain.dto.ProfileUpdateDTO;
 
 import java.util.List;
 import java.util.Map;
 
-@Service
-public class ProfileService {
+public interface ProfileService {
 
-    @Autowired  
-    private ProfileRepository profileRepository;
+    Map<String, Object> createProfile(ProfileRequestDTO dto);
 
-    public Map<String, Object> createProfile(Profile profile) {
-        Profile saved = profileRepository.save(profile); 
-        return Map.of(
-            "profileId", saved.getId(),
-            "message", "Profile created"
-        );
-    }
+    Map<String, Object> updateProfile(Long id, ProfileUpdateDTO dto);
 
-    public List<Profile> getAllProfiles() {
-        return profileRepository.findAll(); 
-    }
-
+    List<ProfileResponseDTO> getAllProfiles();
 }
