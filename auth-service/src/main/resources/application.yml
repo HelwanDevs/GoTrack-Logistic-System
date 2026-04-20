@@ -1,6 +1,6 @@
 spring:
   application:
-    name: auth-service
+    name: ${SPRING_APPLICATION_NAME:auth-service}
   docker:
     compose:
       enabled: false
@@ -10,10 +10,10 @@ spring:
     secret: ${JWT_SECRET:default_secret_key}
     expiration: ${JWT_EXPIRATION:86400000} # 24 hour in milliseconds
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
 
 eureka:
   client:
     enabled: true
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE}
