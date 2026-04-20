@@ -1,18 +1,29 @@
 package com.gotrack.core_logistic.finance_service.model.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.gotrack.core_logistic.finance_service.enums.PickupStatus;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "pickup_requests")
@@ -54,5 +65,8 @@ public class PickupRequest {
     private String receiverContact;
     @Column(name = "receiver_address", nullable = false)
     private String receiverAddress;
+
+    @Column(name = "Shipment_cost", nullable = false)
+    private BigDecimal Cost;
 
 }
