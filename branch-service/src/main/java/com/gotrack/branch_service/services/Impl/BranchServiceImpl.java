@@ -34,14 +34,28 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public List<BranchEntity> search(String name, String location, Boolean isDeleted) {
-        return StreamSupport.stream(branchRepository
-                        .findAll()
-                        .spliterator(), false)
-                .filter(branch -> (name == null || branch.getName().toLowerCase().contains(name.toLowerCase())))
-                .filter(branch -> (location == null || branch.getLocation().toLowerCase().contains(location.toLowerCase())))
-                .filter(branch -> (isDeleted == null || branch.getIsDeleted().equals(isDeleted)))
-                .collect(Collectors.toList());
 
+        String optimizedName= (name!= null)? name.toLowerCase():null;
+        String optimizedLocation= (location!= null)? location.toLowerCase():null;
+
+        boolean isDeletedReturnDefault = (isDeleted!=null) ? isDeleted: false;
+
+        return StreamSupport.stream(branchRepository
+                .findAll()
+                .spliterator(), false)
+                .filter(branch-> {
+                    if(optimizedName ==null) return true;
+                    return branch.getName() != null &&
+                            branch.getName().toLowerCase().contains(optimizedName);
+                })
+                .filter(branch -> {
+                    if (optimizedLocation == null) return true;
+                    return branch.getLocation() != null &&
+                            branch.getLocation().toLowerCase().contains(optimizedLocation);
+                })
+                .filter(branch -> Boolean.TRUE.equals(branch.getIsDeleted()) == isDeletedReturnDefault)
+
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -56,8 +70,9 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public void delete(Long id) {
-        Optional<BranchEntity> optionalBranch = branchRepository.findById(id);
-        BranchEntity branch = optionalBranch.get();
+        BranchEntity branch = branchRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Branch not found"));
+
         branch.setIsDeleted(true);
         branchRepository.save(branch);
     }
