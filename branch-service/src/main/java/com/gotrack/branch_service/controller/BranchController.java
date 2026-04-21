@@ -25,7 +25,7 @@ public class BranchController {
         this.branchMapper= branchMapper;
     }
 
-    @PostMapping(path = "/branches")
+    @PostMapping(path = "/api/branches")
     public BranchDTO createBranch(@RequestBody BranchDTO branch){
         BranchEntity branchEntity = branchMapper.mapFrom(branch);
         BranchEntity savedBranchEntity = branchService.createBranch(branchEntity);
@@ -33,7 +33,7 @@ public class BranchController {
 
     }
 
-    @GetMapping(path= "/branches")
+    @GetMapping(path= "/api/branches")
     public List<BranchDTO> listBranches(){
         List<BranchEntity> branches = branchService.findAll();
         return branches.stream()
@@ -42,7 +42,7 @@ public class BranchController {
 
     }
 
-    @GetMapping(path= "/branches/search")
+    @GetMapping(path= "/api/branches/search")
     public List<BranchDTO> searchBranches(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String location,
@@ -54,7 +54,7 @@ public class BranchController {
                 .collect((Collectors.toList()));
     }
 
-    @PutMapping(path = "/branches/{id}")
+    @PutMapping(path = "/api/branches/{id}")
     public ResponseEntity<BranchDTO> fullUpdateBranch(@PathVariable("id") Long id ,
                                                       @RequestBody BranchDTO branchDto){
         if(!branchService.isExists(id)){
@@ -67,7 +67,7 @@ public class BranchController {
                 branchMapper.mapTo(updatedBranchEntity),
                 HttpStatus.OK);
     }
-    @DeleteMapping(path = "/branches/{id}")
+    @DeleteMapping(path = "/api/branches/{id}")
     public ResponseEntity softDeleteBranch(@PathVariable("id") Long id){
         if(!branchService.isExists(id)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

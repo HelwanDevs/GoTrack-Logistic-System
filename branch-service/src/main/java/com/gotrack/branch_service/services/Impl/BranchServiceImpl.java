@@ -4,11 +4,13 @@ import com.gotrack.branch_service.domain.entity.BranchEntity;
 import com.gotrack.branch_service.repository.BranchRepository;
 import com.gotrack.branch_service.services.BranchService;
 import org.springframework.stereotype.Service;
+import org.springframework.data.jpa.domain.Specification;
+
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
 
 @Service
 public class BranchServiceImpl implements BranchService {
@@ -35,27 +37,27 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public List<BranchEntity> search(String name, String location, Boolean isDeleted) {
 
-        String optimizedName= (name!= null)? name.toLowerCase():null;
-        String optimizedLocation= (location!= null)? location.toLowerCase():null;
-
         boolean isDeletedReturnDefault = (isDeleted!=null) ? isDeleted: false;
 
-        return StreamSupport.stream(branchRepository
-                .findAll()
-                .spliterator(), false)
-                .filter(branch-> {
-                    if(optimizedName ==null) return true;
-                    return branch.getName() != null &&
-                            branch.getName().toLowerCase().contains(optimizedName);
-                })
-                .filter(branch -> {
-                    if (optimizedLocation == null) return true;
-                    return branch.getLocation() != null &&
-                            branch.getLocation().toLowerCase().contains(optimizedLocation);
-                })
-                .filter(branch -> Boolean.TRUE.equals(branch.getIsDeleted()) == isDeletedReturnDefault)
+        Specification<BranchEntity> spec = (root, query , cb) -> {
 
-                .collect(Collectors.toList());
+            var predicates = cb.conjunction();
+            if (name != null) {
+                predicates = cb.and(predicates,
+                        cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
+            }
+            if (location != null) {
+                predicates = cb.and(predicates,
+                        cb.like(cb.lower(root.get("location")), "%" + location.toLowerCase() + "%"));
+            }
+
+            predicates = cb.and(predicates,
+                    cb.equal(root.get("isDeleted"), isDeletedReturnDefault));
+
+            return predicates;
+        };
+
+        return branchRepository.findAll(spec);
     }
 
     @Override
@@ -65,7 +67,16 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public BranchEntity updateBranch(BranchEntity branchEntity) {
-        return branchRepository.save(branchEntity);
+
+        BranchEntity existingBranch = branchRepository.findById(branchEntity.getId())
+                .orElseThrow(() -> new RuntimeException("Branch not found"));
+        applyUpdates(existingBranch, branchEntity);
+        return branchRepository.save(existingBranch);
+    }
+    private void applyUpdates(BranchEntity existingBranch, BranchEntity newData) {
+        existingBranch.setName(newData.getName());
+        existingBranch.setLocation(newData.getLocation());
+        existingBranch.setPhone(newData.getPhone());
     }
 
     @Override
