@@ -6,6 +6,7 @@ import com.gotrack.branch_service.domain.entity.BranchEntity;
 import com.gotrack.branch_service.mappers.Mapper;
 import com.gotrack.branch_service.services.BranchService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class BranchController {
     }
 
     @PostMapping(path = "/api/branches")
-    public BranchDTO createBranch(@RequestBody BranchDTO branch){
+    public BranchDTO createBranch(@Valid @RequestBody BranchDTO branch){
         BranchEntity branchEntity = branchMapper.mapFrom(branch);
         BranchEntity savedBranchEntity = branchService.createBranch(branchEntity);
         return branchMapper.mapTo(savedBranchEntity);
@@ -55,8 +56,8 @@ public class BranchController {
     }
 
     @PutMapping(path = "/api/branches/{id}")
-    public ResponseEntity<BranchDTO> fullUpdateBranch(@PathVariable("id") Long id ,
-                                                      @RequestBody BranchDTO branchDto){
+    public ResponseEntity<BranchDTO> fullUpdateBranch(@PathVariable Long id ,
+                                                      @Valid @RequestBody BranchDTO branchDto){
         if(!branchService.isExists(id)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -68,7 +69,7 @@ public class BranchController {
                 HttpStatus.OK);
     }
     @DeleteMapping(path = "/api/branches/{id}")
-    public ResponseEntity softDeleteBranch(@PathVariable("id") Long id){
+    public ResponseEntity softDeleteBranch(@PathVariable Long id){
         if(!branchService.isExists(id)){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
