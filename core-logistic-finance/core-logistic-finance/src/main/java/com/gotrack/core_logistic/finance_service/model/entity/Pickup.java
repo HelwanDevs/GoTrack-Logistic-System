@@ -12,7 +12,6 @@ import com.gotrack.core_logistic.finance_service.enums.PickupStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -62,7 +61,7 @@ public class Pickup {
     
     private LocalDateTime pickupTime;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated
     private PickupStatus status;
     
     @Column(name = "receiver_name", nullable = false)
