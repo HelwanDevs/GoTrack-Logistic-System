@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.gotrack.inventory_service.Entity.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+    boolean existsByBaseSku(String baseSku);
 }

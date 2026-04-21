@@ -1,32 +1,51 @@
 package com.gotrack.inventory_service.controller;
 
-import java.util.List;
+import java.util.Map;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gotrack.inventory_service.Entity.Product;
-import com.gotrack.inventory_service.repository.ProductRepository;
+import com.gotrack.inventory_service.Dto.ProductDTO;
+import com.gotrack.inventory_service.Service.ProductService;
+
+import jakarta.validation.Valid;
+import com.gotrack.inventory_service.Exception.ForbiddenException; 
 
 @RestController
 @RequestMapping("/api/inventory/products")
 public class ProductController{
-    private final ProductRepository productRepository;
 
-    public ProductController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    private final ProductService productService;
 
-    @GetMapping
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
+    public ProductController(ProductService productService) {
+    this.productService = productService;
+}
+
 
     @PostMapping
-    public Product addProduct(@RequestBody Product product) {
-        return productRepository.save(product);
+    public ResponseEntity<?> createProduct(
+            @RequestHeader("role") String role,
+            @RequestHeader(value = "merchantId", required = false) Long merchantId,
+            @Valid @RequestBody ProductDTO productDto) {
+
+        
+        if (!role.equals("ADMIN") && !role.equals("EMPLOYEE") && !role.equals("MERCHANT")) {
+            throw new ForbiddenException("Unauthorized");
+        }
+
+        
+        if (role.equals("MERCHANT") && merchantId != null) {
+            if (!merchantId.equals(productDto.getMerchantId())) {
+               throw new ForbiddenException("You can only create your own products");
+            }
+        }
+
+        Map<String, Object> savedProduct = productService.createProduct(productDto);
+
+        return ResponseEntity.status(201).body(savedProduct);
     }
 }

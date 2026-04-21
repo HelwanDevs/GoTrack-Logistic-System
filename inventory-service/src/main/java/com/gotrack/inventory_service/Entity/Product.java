@@ -3,6 +3,8 @@ package com.gotrack.inventory_service.Entity;
 import java.util.List;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,12 +24,15 @@ public class Product {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
    
+    @NotNull(message = "Product name is required")
     private String name;
+
     @Column(name = "merchant_id" ,nullable = false)
      private Long merchantId;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<inventoryItem> inventoryItems;
+    private List<InventoryItem> inventoryItems;
 
+    @NotBlank(message = "Base SKU is required")
     private String baseSku;
 }
