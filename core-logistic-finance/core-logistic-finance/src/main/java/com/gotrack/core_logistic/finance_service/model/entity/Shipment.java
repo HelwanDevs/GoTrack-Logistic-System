@@ -20,7 +20,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,7 +29,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+
 
 public class Shipment {
 
@@ -39,7 +38,7 @@ public class Shipment {
 
     @ManyToOne
     @JoinColumn(name = "pickup_request_id", nullable = false)
-    private PickupRequest pickupRequest;
+    private Pickup pickupRequest;
     
     @OneToMany(mappedBy = "shipment", cascade = CascadeType.ALL)
     private List<ShipmentItem> items;
@@ -65,7 +64,7 @@ public class Shipment {
     private LocalDateTime lastUpDate;
 
     @Enumerated(EnumType.STRING)
-    private ShipmentStatus status;
+    private ShipmentStatus status=ShipmentStatus.PendingPickup;
 
     @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;

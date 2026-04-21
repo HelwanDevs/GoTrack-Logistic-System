@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.gotrack.core_logistic.finance_service.enums.PickupStatus;
@@ -18,9 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,8 +30,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class PickupRequest {
+public class Pickup {
     
     @OneToMany(mappedBy = "pickupRequest", cascade = CascadeType.ALL)
     private List<Shipment> shipments;
@@ -51,12 +49,19 @@ public class PickupRequest {
     private String pickupAddress;
     private String notes;
 
+
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+    
     @UpdateTimestamp
     @Column(name = "last_update")
     private LocalDateTime lastUpdate;
+    
+    private LocalDateTime pickupTime;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank
     private PickupStatus status;
     
     @Column(name = "receiver_name", nullable = false)
@@ -67,6 +72,6 @@ public class PickupRequest {
     private String receiverAddress;
 
     @Column(name = "Shipment_cost", nullable = false)
-    private BigDecimal Cost;
+    private BigDecimal cost;
 
 }

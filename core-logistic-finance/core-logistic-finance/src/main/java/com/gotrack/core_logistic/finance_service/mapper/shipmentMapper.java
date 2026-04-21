@@ -1,37 +1,45 @@
 package com.gotrack.core_logistic.finance_service.mapper;
 
-import com.gotrack.core_logistic.finance_service.model.dto.shipment.ShipmentRequest;
-import com.gotrack.core_logistic.finance_service.model.dto.shipment.ShipmentResponse;
-import com.gotrack.core_logistic.finance_service.model.entity.PickupRequest;
+import com.gotrack.core_logistic.finance_service.model.dto.ShipmentDTO;
+import com.gotrack.core_logistic.finance_service.model.entity.Pickup;
 import com.gotrack.core_logistic.finance_service.model.entity.Shipment;
 
 public class shipmentMapper {
 
-    public static Shipment toEntity(ShipmentRequest request, PickupRequest pickupRequest) {
-        return Shipment.builder()
-                .customerId(request.getCustomerId())
-                .courierId(request.getCourierId())
-                .pickupRequest(pickupRequest)
-                .flyerNumber(request.getFlyerNumber())
-                .note(request.getNote())
-                .ShipmentFee(request.getShipmentFee())
-                .build();
+    public class ShipmentMapper {
+
+    public static Shipment toEntity(ShipmentDTO request, Pickup pickupRequest) {
+
+        Shipment entity = new Shipment();
+
+        entity.setCustomerId(request.getCustomerId());
+        entity.setCourierId(request.getCourierId());
+        entity.setPickupRequest(pickupRequest);
+        entity.setFlyerNumber(request.getFlyerNumber());
+        entity.setNote(request.getNote());
+        entity.setShipmentFee(request.getShipmentFee());
+
+        return entity;
     }
 
-    public static ShipmentResponse toResponse(Shipment entity) {
-        return new ShipmentResponse(
-                entity.getId(),
-                entity.getCustomerId(),
-                entity.getCourierId(),
-                entity.getPickupRequest().getId(),
-                entity.getFlyerNumber(),
-                entity.getNote(),
-                entity.getStatus().name(),
-                entity.getTotalPrice(),
-                entity.getShipmentFee(),
-                entity.getDeliveryDate()
-        );
+    public static ShipmentDTO toResponse(Shipment entity) {
+
+        ShipmentDTO dto = new ShipmentDTO();
+
+        dto.setId(entity.getId());
+        dto.setCustomerId(entity.getCustomerId());
+        dto.setCourierId(entity.getCourierId());
+        dto.setPickupRequestId(entity.getPickupRequest().getId());
+        dto.setFlyerNumber(entity.getFlyerNumber());
+        dto.setNote(entity.getNote());
+        dto.setStatus(entity.getStatus().name());
+        dto.setTotalPrice(entity.getTotalPrice());
+        dto.setShipmentFee(entity.getShipmentFee());
+        dto.setDeliveryDate(entity.getDeliveryDate());
+
+        return dto;
     }
+}
 }    
 
 

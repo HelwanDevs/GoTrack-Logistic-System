@@ -1,12 +1,12 @@
 package com.gotrack.core_logistic.finance_service.mapper;
 
-import com.gotrack.core_logistic.finance_service.model.dto.finance.WalletResponse;
+import com.gotrack.core_logistic.finance_service.model.dto.finance.WalletResponseDTO;
 import com.gotrack.core_logistic.finance_service.model.entity.Wallet;
 
 public class WalletMapper {
 
-    public static WalletResponse toResponse(Wallet entity) {
-        return new WalletResponse(
+    public static WalletResponseDTO toResponse(Wallet entity) {
+        return new WalletResponseDTO(
                 entity.getId(),
                 entity.getProfileId(),
                 entity.getBalance()

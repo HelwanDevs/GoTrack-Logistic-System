@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import lombok.Getter;
 
 @Getter
-public class TransactionRequest {
+public class TransactionRequestDTO {
 
     private Long walletId;
     private Long shipmentId;

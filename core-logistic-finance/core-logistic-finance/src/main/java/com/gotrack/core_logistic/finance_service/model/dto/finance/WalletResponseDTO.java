@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WalletResponse {
+public class WalletResponseDTO {
 
     private Long id;
 

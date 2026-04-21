@@ -11,7 +11,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update   # ممكن تخليها create أول مرة
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:

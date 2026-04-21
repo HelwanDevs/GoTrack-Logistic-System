@@ -1,4 +1,4 @@
-package com.gotrack.core_logistic.finance_service.model.dto.shipment;
+package com.gotrack.core_logistic.finance_service.model.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -8,12 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShipmentResponse {
+public class ShipmentDTO {
 
     private Long id;
 

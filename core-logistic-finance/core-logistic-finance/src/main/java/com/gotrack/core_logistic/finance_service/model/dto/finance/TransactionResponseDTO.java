@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionResponse {
+public class TransactionResponseDTO {
 
     private Long id;
 
