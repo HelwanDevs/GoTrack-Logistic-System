@@ -63,8 +63,9 @@ public class Shipment {
     @UpdateTimestamp
     private LocalDateTime lastUpDate;
 
-    @Enumerated(EnumType.STRING)
-    private ShipmentStatus status=ShipmentStatus.PendingPickup;
+    @Enumerated
+    @Column(nullable = false)
+    private ShipmentStatus status;
 
     @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;

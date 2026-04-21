@@ -1,4 +1,4 @@
-package com.gotrack.core_logistic.finance_service.Service.Pickup;
+package com.gotrack.core_logistic.finance_service.Service;
 
 import java.util.List;
 
@@ -18,6 +18,7 @@ public class PickupService {
 
         @Autowired
         private PickupRepo pickupRepository;
+        
     
     
         public PickupRequestDTO createPickup(PickupRequestDTO pickupRequest) {
@@ -33,16 +34,26 @@ public class PickupService {
         public PickupRequestDTO updatePickup(Long id, PickupRequestDTO pickupRequest) {
                    Pickup existingPickup = pickupRepository.findById(id)
                          .orElseThrow(() -> new RuntimeException("Pickup not found with id: " + id));
+
+                   PickupStatus currentStatus = existingPickup.getStatus();   
+                   PickupStatus newStatus = pickupRequest.getStatus();      
                    
-                   if(existingPickup.getStatus() == PickupStatus.Completed || existingPickup.getStatus() == PickupStatus.Cancelled) {
+                   if(currentStatus == PickupStatus.Completed || currentStatus == PickupStatus.Cancelled) {
                         throw new RuntimeException("Cannot update a pickup that is already Completed or Cancelled");
                 }
-                
-                    existingPickup.setStatus(pickupRequest.getStatus());
-                    existingPickup.setPickupTime(pickupRequest.getPickupTime());
+                                    
+                    if(! currentStatus.canTransitionTo(newStatus)){
+                        throw new RuntimeException("Invalid status transition ");        
+                    }
 
+                    existingPickup.setPickupTime(pickupRequest.getPickupTime());
+                    existingPickup.setStatus(newStatus);
+
+                   
                    Pickup updatedPickup = pickupRepository.save(existingPickup);
                    return PickupRequestMapper.toDTO(updatedPickup);
+
+
         }
         
 

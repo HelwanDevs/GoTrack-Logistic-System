@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gotrack.core_logistic.finance_service.Service.Pickup.PickupService;
+import com.gotrack.core_logistic.finance_service.Service.PickupService;
 import com.gotrack.core_logistic.finance_service.model.dto.PickupRequestDTO;
 
 import lombok.RequiredArgsConstructor;

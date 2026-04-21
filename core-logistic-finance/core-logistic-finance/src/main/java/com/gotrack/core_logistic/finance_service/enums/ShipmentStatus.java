@@ -3,10 +3,30 @@ package com.gotrack.core_logistic.finance_service.enums;
 
 
 public enum ShipmentStatus {
-      DELIVERED, 
       PendingPickup,
       InTransitToWarehouse,
       ArrivedAtWarehouse ,
       OutForDelivery ,
-      InTransitToCustomer
+      InTransitToCustomer,
+      DELIVERED;
+
+
+
+
+      public boolean canTransitionToS(ShipmentStatus newStatus) {
+    switch (this) {
+        case PendingPickup:
+            return newStatus == InTransitToWarehouse ;
+        case InTransitToWarehouse:
+            return newStatus == ArrivedAtWarehouse ;
+        case ArrivedAtWarehouse:
+            return newStatus == OutForDelivery;
+        case OutForDelivery:
+            return newStatus == InTransitToCustomer ;
+        case InTransitToCustomer:
+            return newStatus == DELIVERED ;
+        default:
+            return false;
+    }
+}
 }

@@ -54,6 +54,7 @@ public class Pickup {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
     
     @UpdateTimestamp
     @Column(name = "last_update")

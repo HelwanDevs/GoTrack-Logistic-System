@@ -3,6 +3,8 @@ package com.gotrack.core_logistic.finance_service.model.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.gotrack.core_logistic.finance_service.enums.ShipmentStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +26,7 @@ public class ShipmentDTO {
     private Long flyerNumber;
     private String note;
 
-    private String status;
+    private ShipmentStatus status;
 
     private BigDecimal totalPrice;
     private BigDecimal shipmentFee;

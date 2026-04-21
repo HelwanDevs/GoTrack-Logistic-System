@@ -18,11 +18,14 @@ public class shipmentMapper {
         entity.setFlyerNumber(request.getFlyerNumber());
         entity.setNote(request.getNote());
         entity.setShipmentFee(request.getShipmentFee());
+        entity.setTotalPrice(request.getTotalPrice());
+        entity.setDeliveryDate(request.getDeliveryDate());
+        entity.setStatus(request.getStatus());
 
         return entity;
     }
 
-    public static ShipmentDTO toResponse(Shipment entity) {
+    public static ShipmentDTO toDto(Shipment entity) {
 
         ShipmentDTO dto = new ShipmentDTO();
 
@@ -32,7 +35,7 @@ public class shipmentMapper {
         dto.setPickupRequestId(entity.getPickupRequest().getId());
         dto.setFlyerNumber(entity.getFlyerNumber());
         dto.setNote(entity.getNote());
-        dto.setStatus(entity.getStatus().name());
+        dto.setStatus(entity.getStatus());
         dto.setTotalPrice(entity.getTotalPrice());
         dto.setShipmentFee(entity.getShipmentFee());
         dto.setDeliveryDate(entity.getDeliveryDate());
