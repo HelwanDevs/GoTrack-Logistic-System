@@ -1,6 +1,8 @@
 package com.gotrack.branch_service.services.Impl;
 
 import com.gotrack.branch_service.domain.entity.BranchEntity;
+import com.gotrack.branch_service.exceptions.BranchBadRequestException;
+import com.gotrack.branch_service.exceptions.BranchNotFoundException;
 import com.gotrack.branch_service.repository.BranchRepository;
 import com.gotrack.branch_service.services.BranchService;
 import org.springframework.stereotype.Service;
@@ -69,7 +71,7 @@ public class BranchServiceImpl implements BranchService {
     public BranchEntity updateBranch(BranchEntity branchEntity) {
 
         BranchEntity existingBranch = branchRepository.findById(branchEntity.getId())
-                .orElseThrow(() -> new RuntimeException("Branch not found"));
+                .orElseThrow(() -> new BranchNotFoundException("Branch not found"));
         applyUpdates(existingBranch, branchEntity);
         return branchRepository.save(existingBranch);
     }
@@ -82,7 +84,7 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public void delete(Long id) {
         BranchEntity branch = branchRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Branch not found"));
+                .orElseThrow(() -> new BranchNotFoundException("Branch not found"));
 
         branch.setIsDeleted(true);
         branchRepository.save(branch);
