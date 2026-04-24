@@ -3,23 +3,20 @@ package com.gotrack.inventory_service.Dto;
 import java.util.List;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 
 public class inventoryItemDto {
     private int id;
 
     @NotNull(message = "Branch ID is required")
-    private int branchId;
+    private Integer branchId;
 
     @NotEmpty(message = "uniqueSkus must not be empty")
     private List<String> uniqueSkus;

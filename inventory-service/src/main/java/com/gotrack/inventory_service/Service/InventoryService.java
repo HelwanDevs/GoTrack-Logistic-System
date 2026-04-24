@@ -1,7 +1,6 @@
 package com.gotrack.inventory_service.Service;
 
 import java.util.Map;
-
 import org.springframework.stereotype.Service;
 
 import com.gotrack.inventory_service.Dto.inventoryItemDto;
@@ -28,9 +27,11 @@ public class InventoryService {
     }
 
     public Map<String, String> receiveItems(inventoryItemDto dto) {
-
+       
+        // TODO: validate branchId exists in database (requires BranchRepository from user-service)
+        // Example: "Branch with ID " + dto.getBranchId() + " not found"
     Product product = productRepository.findById(dto.getProductId())
-            .orElseThrow(() -> new NotFoundException("Product ID or Branch ID not found"));
+            .orElseThrow(() -> new NotFoundException( "Product with ID " + dto.getProductId() + " not found"));
 
     for (String sku : dto.getUniqueSkus()) {
 

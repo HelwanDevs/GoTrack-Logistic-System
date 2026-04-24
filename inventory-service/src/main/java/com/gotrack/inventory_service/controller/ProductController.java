@@ -2,6 +2,7 @@ package com.gotrack.inventory_service.controller;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,24 +20,18 @@ import com.gotrack.inventory_service.Exception.ForbiddenException;
 @RequestMapping("/api/inventory/products")
 public class ProductController{
 
-    private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-    this.productService = productService;
-}
+   @Autowired
+    private ProductService productService;
 
 
     @PostMapping
-    public ResponseEntity<?> createProduct(
+    public ResponseEntity<Map<String, Object>> createProduct(
             @RequestHeader("role") String role,
             @RequestHeader(value = "merchantId", required = false) Long merchantId,
             @Valid @RequestBody ProductDTO productDto) {
 
-        
-        if (!role.equals("ADMIN") && !role.equals("EMPLOYEE") && !role.equals("MERCHANT")) {
-            throw new ForbiddenException("Unauthorized");
-        }
-
+                // TODO: role and merchantId should be extracted from JWT token via API Gateway
+               
         
         if (role.equals("MERCHANT") && merchantId != null) {
             if (!merchantId.equals(productDto.getMerchantId())) {
@@ -44,8 +39,11 @@ public class ProductController{
             }
         }
 
-        Map<String, Object> savedProduct = productService.createProduct(productDto);
+        
 
-        return ResponseEntity.status(201).body(savedProduct);
-    }
+        return ResponseEntity.status(201).body(
+            productService.createProduct(productDto)
+    );
+    
+}
 }
