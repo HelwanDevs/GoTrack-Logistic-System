@@ -4,7 +4,9 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,17 +35,32 @@ public class ProductController{
                 // TODO: role and merchantId should be extracted from JWT token via API Gateway
                
         
-        if (role.equals("MERCHANT") && merchantId != null) {
+        if ("MERCHANT".equals(role) && merchantId != null) {
             if (!merchantId.equals(productDto.getMerchantId())) {
                throw new ForbiddenException("You can only create your own products");
             }
         }
 
-        
 
         return ResponseEntity.status(201).body(
             productService.createProduct(productDto)
     );
     
 }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> updateProduct(
+            @PathVariable Long id,
+            @RequestHeader("role") String role,
+            @Valid @RequestBody ProductDTO productDto) {
+
+        // TODO: role and merchantId should be extracted from JWT token via API Gateway
+        if (!"ADMIN".equals(role) && !"EMPLOYEE".equals(role)) {
+            throw new ForbiddenException("You are not allowed to update products");
+        }
+
+        return ResponseEntity.status(200).body(
+                productService.updateProduct(id, productDto)
+        );
+    }
 }
