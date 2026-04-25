@@ -1,0 +1,6 @@
+spring:
+    application:
+        name: support-and-notifications-service
+    mongodb:
+        uri: mongodb+srv://goTrackNotificationUsername:u-EvhFaiBUetCJ3@gotrack.pefntiy.mongodb.net/
+    
