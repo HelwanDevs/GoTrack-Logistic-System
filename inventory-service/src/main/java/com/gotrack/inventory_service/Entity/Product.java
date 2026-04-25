@@ -2,6 +2,8 @@ package com.gotrack.inventory_service.Entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,6 +32,7 @@ public class Product {
     @Column(name = "merchant_id" ,nullable = false)
      private Long merchantId;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<InventoryItem> inventoryItems;
 

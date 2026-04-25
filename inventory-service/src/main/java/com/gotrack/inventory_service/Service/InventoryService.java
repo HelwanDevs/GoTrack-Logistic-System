@@ -1,5 +1,6 @@
 package com.gotrack.inventory_service.Service;
 
+import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
 
@@ -50,5 +51,8 @@ public class InventoryService {
     }
 
     return Map.of("message", "Items received into inventory successfully");
-}
+    }
+public List<InventoryItem> getAllItems() {
+        return inventoryRepository.findAll();
+    }
 }
