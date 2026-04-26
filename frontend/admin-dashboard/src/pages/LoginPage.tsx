@@ -46,9 +46,9 @@ export const LoginPage = () => {
         email: formData.email,
         password: formData.password,
       });
+      
 
       await navigate({ to: "/dashboard" });
-
     } catch (error: any) {
       switch (error.status || error.cause?.status) {
         case 400:
@@ -56,6 +56,12 @@ export const LoginPage = () => {
           break;
         case 401:
           setErrors({ submit: "ليس لدي صلاحية الوصول لهذه الصفحه" });
+          break;
+        case 403:
+          setErrors({ submit: "ليس لديك صلاحية الوصول لهذه الصفحة" });
+          break;
+        case 404:
+          setErrors({ submit: "البريد الإلكتروني أو كلمة المرور غير صحيحة" });
           break;
         case 500:
           setErrors({ submit: "خطأ في الخادم. حاول مرة أخرى لاحقًا" });
@@ -83,8 +89,6 @@ export const LoginPage = () => {
       dir="rtl"
     >
       <div className="w-full max-w-md">
-
-
         <div className="text-center mb-8">
           <img
             src="./gotrack_logo.png"
@@ -92,7 +96,6 @@ export const LoginPage = () => {
             className="img-fluid mx-auto mb-4 w-64"
           />
         </div>
-
 
         <Card>
           <div className="mb-6">
@@ -135,7 +138,6 @@ export const LoginPage = () => {
               required
             />
 
-
             <Button
               type="submit"
               variant="primary"
@@ -149,7 +151,6 @@ export const LoginPage = () => {
             </Button>
           </form>
         </Card>
-
       </div>
     </div>
   );

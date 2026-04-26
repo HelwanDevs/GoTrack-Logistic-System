@@ -16,8 +16,24 @@ export interface AccountResponse {
   id: string;
   email: string;
   role: UserRole;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Account extends AccountResponse {}
+
+export interface ListAccountsParams {
+  page: number;
+  size: number;
+  role?: UserRole;
+  email?: string;
+  includeDeleted?: boolean;
+}
+
+export interface ListAccountsResponse {
+  accounts: AccountResponse[];
+  totalCount: number;
+  page: number;
+  size: number;
+  totalPages: number;
+}

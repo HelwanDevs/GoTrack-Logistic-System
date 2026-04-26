@@ -3,9 +3,12 @@ export type {
   CreateAccountRequest,
   UpdateAccountRequest,
   AccountResponse,
+  ListAccountsParams,
+  ListAccountsResponse,
 } from "./types";
 
 export {
+  listAccountsApi,
   createAccountApi,
   getAccountApi,
   updateAccountApi,
@@ -13,6 +16,7 @@ export {
 } from "./api";
 
 export {
+  useAccountsQuery,
   useCreateAccountMutation,
   useUpdateAccountMutation,
   useDeleteAccountMutation,

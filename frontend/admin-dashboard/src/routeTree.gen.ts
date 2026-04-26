@@ -10,15 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as R404RouteImport } from './routes/404'
 import { Route as SplatRouteImport } from './routes/$'
-import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as authenticatedDashboardRouteImport } from './routes/(authenticated)/dashboard'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as DashboardAccountsRouteImport } from './routes/dashboard/accounts'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const R404Route = R404RouteImport.update({
@@ -31,64 +37,77 @@ const SplatRoute = SplatRouteImport.update({
   path: '/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const authenticatedRouteRoute = authenticatedRouteRouteImport.update({
-  id: '/(authenticated)',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const authenticatedDashboardRoute = authenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => authenticatedRouteRoute,
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAccountsRoute = DashboardAccountsRouteImport.update({
+  id: '/accounts',
+  path: '/accounts',
+  getParentRoute: () => DashboardRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/404': typeof R404Route
+  '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
-  '/dashboard': typeof authenticatedDashboardRoute
+  '/dashboard/accounts': typeof DashboardAccountsRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/404': typeof R404Route
   '/login': typeof LoginRoute
-  '/dashboard': typeof authenticatedDashboardRoute
+  '/dashboard/accounts': typeof DashboardAccountsRoute
+  '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/(authenticated)': typeof authenticatedRouteRouteWithChildren
   '/$': typeof SplatRoute
   '/404': typeof R404Route
+  '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
-  '/(authenticated)/dashboard': typeof authenticatedDashboardRoute
+  '/dashboard/accounts': typeof DashboardAccountsRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$' | '/404' | '/login' | '/dashboard'
+  fullPaths:
+    | '/'
+    | '/$'
+    | '/404'
+    | '/dashboard'
+    | '/login'
+    | '/dashboard/accounts'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$' | '/404' | '/login' | '/dashboard'
+  to: '/' | '/$' | '/404' | '/login' | '/dashboard/accounts' | '/dashboard'
   id:
     | '__root__'
     | '/'
-    | '/(authenticated)'
     | '/$'
     | '/404'
+    | '/dashboard'
     | '/login'
-    | '/(authenticated)/dashboard'
+    | '/dashboard/accounts'
+    | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  authenticatedRouteRoute: typeof authenticatedRouteRouteWithChildren
   SplatRoute: typeof SplatRoute
   R404Route: typeof R404Route
+  DashboardRoute: typeof DashboardRouteWithChildren
   LoginRoute: typeof LoginRoute
 }
 
@@ -99,6 +118,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/404': {
@@ -115,13 +141,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(authenticated)': {
-      id: '/(authenticated)'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof authenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -129,32 +148,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(authenticated)/dashboard': {
-      id: '/(authenticated)/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof authenticatedDashboardRouteImport
-      parentRoute: typeof authenticatedRouteRoute
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/accounts': {
+      id: '/dashboard/accounts'
+      path: '/accounts'
+      fullPath: '/dashboard/accounts'
+      preLoaderRoute: typeof DashboardAccountsRouteImport
+      parentRoute: typeof DashboardRoute
     }
   }
 }
 
-interface authenticatedRouteRouteChildren {
-  authenticatedDashboardRoute: typeof authenticatedDashboardRoute
+interface DashboardRouteChildren {
+  DashboardAccountsRoute: typeof DashboardAccountsRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
-const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
-  authenticatedDashboardRoute: authenticatedDashboardRoute,
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAccountsRoute: DashboardAccountsRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
 }
 
-const authenticatedRouteRouteWithChildren =
-  authenticatedRouteRoute._addFileChildren(authenticatedRouteRouteChildren)
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  authenticatedRouteRoute: authenticatedRouteRouteWithChildren,
   SplatRoute: SplatRoute,
   R404Route: R404Route,
+  DashboardRoute: DashboardRouteWithChildren,
   LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport

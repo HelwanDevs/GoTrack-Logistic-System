@@ -9,7 +9,5 @@ export { useAuthState, authQueryKeys } from "./query-keys";
 
 export {
   checkIsAuthenticated,
-  getAuthState,
   checkIsEmployee,
-  checkUserRole,
 } from "./utils";
