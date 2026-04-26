@@ -1,12 +1,19 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { fakeCheckAuthApi } from "@/features/auth";
+import { checkIsEmployee, checkIsAuthenticated } from "@/features/auth";
+import { Sidebar } from "@/components/Sidebar";
 
 export const Route = createFileRoute("/(authenticated)")({
   beforeLoad: async () => {
-    const authState = await fakeCheckAuthApi();
-    if (!authState.isAuthenticated) {
+    if (!checkIsAuthenticated() || !checkIsEmployee()) {
       throw redirect({ to: "/login" });
     }
   },
-  component: () => <Outlet />,
+  component: () => (
+    <div className="min-h-screen bg-background flex" dir="rtl">
+      {/* Sidebar */}
+      <Sidebar />
+      {/* Main Content */}
+      <Outlet />
+    </div>
+  ),
 });

@@ -3,16 +3,17 @@ import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { Card } from "@/components/Card";
+import { useLoginMutation } from "@/features/auth";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
+  const loginMutation = useLoginMutation();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    rememberMe: false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isLoading, setIsLoading] = useState(false);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -33,35 +34,44 @@ export const LoginPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
 
-    setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      // Mock successful login
-      await navigate({ to: "/dashboard" });
-    } catch (error) {
-      setErrors({
-        submit: "فشل تسجيل الدخول. حاول مرة أخرى",
+      await loginMutation.mutateAsync({
+        email: formData.email,
+        password: formData.password,
       });
-    } finally {
-      setIsLoading(false);
+
+      await navigate({ to: "/dashboard" });
+
+    } catch (error: any) {
+      switch (error.status || error.cause?.status) {
+        case 400:
+          setErrors({ submit: "البريد الإلكتروني أو كلمة المرور غير صحيحة" });
+          break;
+        case 401:
+          setErrors({ submit: "ليس لدي صلاحية الوصول لهذه الصفحه" });
+          break;
+        case 500:
+          setErrors({ submit: "خطأ في الخادم. حاول مرة أخرى لاحقًا" });
+          break;
+        default:
+          setErrors({ submit: "فشل تسجيل الدخول. حاول مرة أخرى" });
+      }
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
-    // Clear error for this field
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -73,7 +83,8 @@ export const LoginPage = () => {
       dir="rtl"
     >
       <div className="w-full max-w-md">
-        {/* Logo Section */}
+
+
         <div className="text-center mb-8">
           <img
             src="./gotrack_logo.png"
@@ -82,7 +93,7 @@ export const LoginPage = () => {
           />
         </div>
 
-        {/* Login Card */}
+
         <Card>
           <div className="mb-6">
             <h2 className="text-xl font-headline-md text-on-background mb-1">
@@ -124,45 +135,21 @@ export const LoginPage = () => {
               required
             />
 
-            {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleInputChange}
-                  className="w-4 h-4 rounded border-outline-variant text-secondary-container focus:ring-secondary-container"
-                />
-                <span className="font-body-sm text-body-sm text-on-surface">
-                  تذكرني
-                </span>
-              </label>
-            </div>
 
-            {/* Submit Button */}
             <Button
               type="submit"
               variant="primary"
               size="lg"
               fullWidth
-              isLoading={isLoading}
+              isLoading={loginMutation.isPending}
             >
-              {isLoading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+              {loginMutation.isPending
+                ? "جاري تسجيل الدخول..."
+                : "تسجيل الدخول"}
             </Button>
           </form>
         </Card>
 
-        {/* Demo Credentials */}
-        <div className="bg-surface-container-lowest mt-6 p-4 bg-primary-container/10 rounded-lg border border-primary-container/20">
-          <p className="text-body-sm text-on-surface-variant mb-2">
-            بيانات التجربة:
-          </p>
-          <p className="text-body-sm text-on-surface">
-            البريد: demo@gotrack.com
-          </p>
-          <p className="text-body-sm text-on-surface">كلمة المرور: 123456</p>
-        </div>
       </div>
     </div>
   );

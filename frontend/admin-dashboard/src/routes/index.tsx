@@ -1,13 +1,12 @@
-import { fakeCheckAuthApi } from "@/features/auth";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { checkIsEmployee, checkIsAuthenticated } from "@/features/auth";
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
-    const authState = await fakeCheckAuthApi();
-    if (!authState.isAuthenticated) {
-      throw redirect({ to: "/login" });
+    if (checkIsAuthenticated() && checkIsEmployee()) {
+      throw redirect({ to: "/dashboard" });
     } else {
-      // throw redirect({ to: "/dashboard" });
+      throw redirect({ to: "/login" });
     }
   },
 });

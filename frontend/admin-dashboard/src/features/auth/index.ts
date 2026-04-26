@@ -1,14 +1,15 @@
-// Export types
-export type { AuthUser, AuthState } from "./types";
+export type { AuthUser, AuthState, LoginRequest, LoginResponse } from "./types";
 
-// Export API functions and hooks
+
+export { loginApi, refreshTokenApi, logoutApi } from "./api";
+
+export { useLoginMutation, useLogoutMutation } from "./hooks";
+
+export { useAuthState, authQueryKeys } from "./query-keys";
+
 export {
-  fakeLoginApi,
-  fakeLogoutApi,
-  fakeCheckAuthApi,
-  useLogin,
-  useLogout,
-} from "./api";
-
-// Export query utilities
-export { useAuthState } from "./query-keys";
+  checkIsAuthenticated,
+  getAuthState,
+  checkIsEmployee,
+  checkUserRole,
+} from "./utils";

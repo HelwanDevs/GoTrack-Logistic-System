@@ -1,13 +1,25 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Button } from "./Button";
 import { useNavigate } from "@tanstack/react-router";
+import { useLogoutMutation } from "@/features/auth";
+import { getStoredRefreshToken } from "@/utils/storage";
 
 export const Sidebar = () => {
   const navigate = useNavigate();
+  const logoutMutation = useLogoutMutation();
   const [activeNav, setActiveNav] = useState("dashboard");
 
   const handleLogout = async () => {
-    await navigate({ to: "/login" });
+    try {
+      const refreshToken = getStoredRefreshToken();
+      if (refreshToken) {
+        await logoutMutation.mutateAsync(refreshToken);
+      }
+      await navigate({ to: "/login" });
+    } catch (error) {
+      console.error("Logout error:", error);
+      await navigate({ to: "/login" });
+    }
   };
 
   const sidebarItems = [
@@ -16,6 +28,18 @@ export const Sidebar = () => {
       label: "لوحة التحكم",
       icon: "📊",
       onClick: () => setActiveNav("dashboard"),
+    },
+    {
+        id: "accounts",
+        label: "إدارة الحسابات",
+        icon: "👥",
+        onClick: () => setActiveNav("accounts"),
+    },
+    {
+        id: "profiles",
+        label: "إدارة الملفات الشخصية",
+        icon: "👤",
+        onClick: () => setActiveNav("profiles"),
     },
     {
       id: "shipments",
@@ -43,7 +67,9 @@ export const Sidebar = () => {
       onClick: () => setActiveNav("settings"),
     },
   ];
-
+  useEffect(() => {
+    navigate({ to: `/dashboard/${activeNav == "dashboard" ? "" : activeNav}` });
+  }, [activeNav]);
   return (
     <nav className="fixed right-0 top-0 h-screen w-64 bg-primary-container flex-col z-40 border-l border-white/10 shadow-xl hidden md:flex">
       {/* Logo Section */}
@@ -55,7 +81,7 @@ export const Sidebar = () => {
               alt="GoTrack Logo"
               className="img-fluid mx-auto w-64"
             />
-          </div>{" "}
+          </div>
         </div>
       </div>
 
@@ -83,8 +109,14 @@ export const Sidebar = () => {
       </div>
 
       <div className="p-3">
-        <Button variant="primary" size="lg" fullWidth onClick={handleLogout}>
-          تسجيل الخروج
+        <Button 
+          variant="primary" 
+          size="lg" 
+          fullWidth 
+          onClick={handleLogout}
+          isLoading={logoutMutation.isPending}
+        >
+          {logoutMutation.isPending ? "جاري تسجيل الخروج..." : "تسجيل الخروج"}
         </Button>
       </div>
     </nav>

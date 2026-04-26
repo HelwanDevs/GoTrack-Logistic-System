@@ -1,7 +1,3 @@
-/**
- * GoTrack Design System Component Types
- */
-
 export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
 export type ButtonSize = "sm" | "md" | "lg";
 export type MetricCardColor = "primary" | "secondary" | "error" | "success";

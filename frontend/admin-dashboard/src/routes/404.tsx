@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { NotFoundPage } from "@/pages/NotFoundPage";
 
 export const Route = createFileRoute("/404")({
-  component: () => <h1>404 - Not Found</h1>,
+  component: () => <NotFoundPage />,
 });
