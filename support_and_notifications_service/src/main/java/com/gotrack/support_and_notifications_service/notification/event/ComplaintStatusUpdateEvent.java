@@ -9,13 +9,13 @@ import lombok.Setter;
 @Setter
 public class ComplaintStatusUpdateEvent {
     private final String complaintId;
-    private final long merchantId;
+    private final String profileId;
     private final ComplaintStatus status;
     private final String note;
 
-    public ComplaintStatusUpdateEvent(String complaintId, long merchantId, ComplaintStatus status, String note) {
+    public ComplaintStatusUpdateEvent(String complaintId, String profileId, ComplaintStatus status, String note) {
         this.complaintId = complaintId;
-        this.merchantId = merchantId;
+        this.profileId = profileId;
         this.status = status;
         this.note = note;
     }

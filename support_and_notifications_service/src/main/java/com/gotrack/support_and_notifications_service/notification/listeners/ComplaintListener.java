@@ -20,7 +20,7 @@ public class ComplaintListener {
     public void handleComplaintSubmitEvent(ComplaintSubmit event) {
         String message = String.format("New complaint submitted: %s (Shipment ID: %d)", event.getSubject(),
                 event.getShipmentId());
-        service.createNotification(event.getMerchantId(), message, "SMS");
+        service.createNotification(event.getProfileId(), message, "SMS");
 
     }
 
@@ -31,7 +31,7 @@ public class ComplaintListener {
         if (event.getNote() != null && !event.getNote().isEmpty()) {
             message += ". Note: " + event.getNote();
         }
-        service.createNotification(event.getMerchantId(), message, "SMS");
+        service.createNotification(event.getProfileId(), message, "SMS");
     }
 
 }

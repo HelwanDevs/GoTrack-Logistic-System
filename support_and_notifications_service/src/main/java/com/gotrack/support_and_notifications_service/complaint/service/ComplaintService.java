@@ -1,11 +1,10 @@
 package com.gotrack.support_and_notifications_service.complaint.service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +23,6 @@ import com.gotrack.support_and_notifications_service.eventWrapper.WEventPublishe
 import com.gotrack.support_and_notifications_service.notification.event.ComplaintStatusUpdateEvent;
 import com.gotrack.support_and_notifications_service.notification.event.ComplaintSubmit;
 import com.gotrack.support_and_notifications_service.shipment.CheckShipment;
-
-import java.util.stream.Collectors;
 
 @Service
 public class ComplaintService implements ComplaintServiceInt {
@@ -46,24 +43,25 @@ public class ComplaintService implements ComplaintServiceInt {
     @Transactional
     @Override
     public ComplaintCreated createComplaint(CreateComplaint request) {
-        long merchantId = user.getCurrentUserId();
+        String profileId = user.getCurrentUserId();
 
         if (request.getShipmentId() != null) {
             shipment.checkShipmentExists(request.getShipmentId());
         }
 
         Complaint complaint = Complaint.builder()
-                .merchantId(merchantId)
+                .profileId(profileId)
                 .shipmentId(request.getShipmentId())
                 .subject(request.getSubject())
                 .content(request.getContent())
+                .createdAt(Instant.now())
                 .status(ComplaintStatus.PENDING)
                 .build();
 
         Complaint saved = repo.save(complaint);
         eventPublisher.publish(new ComplaintSubmit(
                 saved.getId(),
-                merchantId,
+                profileId,
                 saved.getSubject(),
                 saved.getShipmentId()
 
@@ -90,7 +88,7 @@ public class ComplaintService implements ComplaintServiceInt {
 
         eventPublisher.publish(new ComplaintStatusUpdateEvent(
                 updated.getId(),
-                updated.getMerchantId(),
+                updated.getProfileId(),
                 updated.getStatus(),
                 updated.getNote()));
 
@@ -126,8 +124,8 @@ public class ComplaintService implements ComplaintServiceInt {
 
     @Override
     public List<ComplaintResponse> getMyComplaints() {
-        long merchantId = user.getCurrentUserId();
-        List<Complaint> complaints = repo.findByMerchantIdOrderByCreatedAtDesc(merchantId);
+        String profileId = user.getCurrentUserId();
+        List<Complaint> complaints = repo.findByProfileIdOrderByCreatedAtDesc(profileId);
         return mapper.toResponseList(complaints);
     }
 

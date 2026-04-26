@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtService {
 
-    private String secretKeyStr = "abcd";
+    private String secretKeyStr = "thisIsASecretKeyForJWTtokensThatWasMadeByMomoWithAnFathomaleAmountOfHate";
 
     public Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
@@ -20,8 +20,8 @@ public class JwtService {
 
     }
 
-    public Long extractAccountId(String token) {
-        return Long.parseLong(extractAllClaims(token).get("accountId").toString());
+    public String extractAccountId(String token) {
+        return extractAllClaims(token).get("accountId").toString();
     }
 
     public String extractRole(String token) {

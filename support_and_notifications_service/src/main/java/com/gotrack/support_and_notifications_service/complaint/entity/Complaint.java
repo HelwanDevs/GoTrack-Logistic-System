@@ -24,7 +24,7 @@ public class Complaint {
     @Id
     private String id;
 
-    private Long merchantId;
+    private String profileId;
 
     private Long shipmentId;
 

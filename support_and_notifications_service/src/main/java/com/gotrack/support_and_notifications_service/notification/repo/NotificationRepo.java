@@ -7,8 +7,8 @@ import com.gotrack.support_and_notifications_service.notification.entity.Notific
 
 public interface NotificationRepo extends MongoRepository<Notifications, String> {
 
-    List<Notifications> findByProfileIdOrderBySentAtDesc(Long profileId);
+    List<Notifications> findByProfileIdOrderBySentAtDesc(String profileId);
 
-    List<Notifications> findByProfileIdAndIsReadFalseOrderBySentAtDesc(Long profileId);
+    List<Notifications> findByProfileIdAndIsReadFalseOrderBySentAtDesc(String profileId);
 
 }

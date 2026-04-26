@@ -8,11 +8,11 @@ import lombok.Setter;
 public class NotificationCreated {
 
     private final String NotificationId;
-    private final long profileId;
+    private final String profileId;
     private final String message;
     private final String channel;
 
-    public NotificationCreated(String notificationId, long profileId, String message, String channel) {
+    public NotificationCreated(String notificationId, String profileId, String message, String channel) {
         this.NotificationId = notificationId;
         this.profileId = profileId;
         this.message = message;

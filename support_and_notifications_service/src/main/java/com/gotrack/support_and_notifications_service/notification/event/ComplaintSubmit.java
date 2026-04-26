@@ -9,13 +9,13 @@ public class ComplaintSubmit {
 
     private final String complaintId;
     private final String subject;
-    private final long merchantId;
+    private final String profileId;
     private final long shipmentId;
 
-    public ComplaintSubmit(String complaintId, long merchantId, String subject, long shipmentId) {
+    public ComplaintSubmit(String complaintId, String profileId, String subject, long shipmentId) {
         this.complaintId = complaintId;
         this.subject = subject;
-        this.merchantId = merchantId;
+        this.profileId = profileId;
         this.shipmentId = shipmentId;
     }
 

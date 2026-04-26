@@ -7,7 +7,7 @@ import com.gotrack.support_and_notifications_service.notification.entity.Notific
 @Component
 public class NotificationMapper {
 
-    public Notifications toNotificationMessage(long profileId, String message) {
+    public Notifications toNotificationMessage(String profileId, String message) {
 
         return Notifications.builder()
                 .profileId(profileId)

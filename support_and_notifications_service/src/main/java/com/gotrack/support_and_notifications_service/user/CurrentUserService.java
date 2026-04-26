@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class CurrentUserService {
 
-    public long getCurrentUserId() {
+    public String getCurrentUserId() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) {
             throw new RuntimeException("No authenticated user found");
         }
-        return Long.parseLong(auth.getPrincipal().toString());
+        return auth.getPrincipal().toString();
     }
 
     public String getRole() {

@@ -23,14 +23,14 @@ public class Notifications {
     @Id
     private String id;
 
-    private Long profileId;
+    private String profileId;
 
     private String message;
 
     private String channel;
 
     @CreatedDate
-    private Instant sent_at;
+    private Instant sentAt;
 
     private boolean isRead;
 

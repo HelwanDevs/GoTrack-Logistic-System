@@ -10,15 +10,15 @@ import com.gotrack.support_and_notifications_service.complaint.entity.ComplaintS
 
 public interface ComplaintRepo extends MongoRepository<Complaint, String> {
 
-    Optional<Complaint> findByIdAndMerchantId(String id, Long merchantId);
+    Optional<Complaint> findByIdAndProfileId(String id, String profileId);
 
-    List<Complaint> findByMerchantIdOrderByCreatedAtDesc(Long merchantId);
+    List<Complaint> findByProfileIdOrderByCreatedAtDesc(String profileId);
 
-    List<Complaint> findByMerchantIdAndStatusInOrderByCreatedAtDesc(Long merchantId, List<ComplaintStatus> statuses);
+    List<Complaint> findByprofileIdAndStatusInOrderByCreatedAtDesc(String profileId, List<ComplaintStatus> statuses);
 
     List<Complaint> findByStatusInOrderByCreatedAtDesc(List<ComplaintStatus> statuses);
 
     List<Complaint> findBySubjectContainingIgnoreCaseOrderByCreatedAtDesc(String subject);
 
-    List<Complaint> findByShipmentIdOrderByCreatedAtDesc(Long shipmentId);
+    List<Complaint> findByShipmentIdOrderByCreatedAtDesc(String shipmentId);
 }
