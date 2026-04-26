@@ -18,7 +18,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "complaints")
+@Document(collection = "Complaint")
 public class Complaint {
 
     @Id
