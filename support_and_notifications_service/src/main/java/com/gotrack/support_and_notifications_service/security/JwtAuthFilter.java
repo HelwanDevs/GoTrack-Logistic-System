@@ -26,10 +26,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        System.out.println("JWT FILTER CREATED");
-
         String authHeader = request.getHeader("Authorization");
-        System.out.println("AUTH HEADER: " + authHeader);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -40,7 +37,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         System.out.println("TOKEN VALID: " + jwtService.isTokenValid(token));
 
         if (!jwtService.isTokenValid(token)) {
-            filterChain.doFilter(request, response);
+            response.setStatus(401);
+            response.setContentType("application/json");
+            response.getWriter().write("""
+                        {
+                          "status": 401,
+                          "error": "Unauthorized",
+                          "message": "Invalid token"
+                        }
+                    """);
             return;
         }
 
@@ -53,11 +58,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 accountId, null, List.of(new SimpleGrantedAuthority(authority)));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        System.out.println("TOKEN VALID: " + jwtService.isTokenValid(token));
-        System.out.println("ACCOUNT ID: " + accountId);
-        System.out.println("ROLE: " + role);
-        System.out.println("AUTHORITY: " + authority);
-        System.out.println("SECURITY CONTEXT AUTH: " + SecurityContextHolder.getContext().getAuthentication());
+
         filterChain.doFilter(request, response);
 
     }
