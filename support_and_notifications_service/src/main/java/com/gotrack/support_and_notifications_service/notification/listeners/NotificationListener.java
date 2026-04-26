@@ -18,12 +18,25 @@ public class NotificationListener {// this class is for demonstration purposes, 
     @Async
     @EventListener
     public void handleNotificationCreatedEvent(NotificationCreated event) {
-        log.info(
-                "Notification created: id={}, profileId={}, channel={}, message={}",
-                event.getNotificationId(),
-                event.getProfileId(),
-                event.getChannel(),
-                event.getMessage());
+
+        switch (event.getChannel()) {
+            case "SMS":
+                sendsms(event);
+                break;
+            case "EMAIL":
+                sendemail(event);
+                break;
+            default:
+                log.warn("Unknown notification channel: " + event.getChannel());
+        }
+    }
+
+    private void sendsms(NotificationCreated event) {
+        System.out.println("Sending SMS to profile " + event.getProfileId() + ": " + event.getMessage());
+    }
+
+    private void sendemail(NotificationCreated event) {
+        System.out.println("Sending EMAIL to profile " + event.getProfileId() + ": " + event.getMessage());
     }
 
 }

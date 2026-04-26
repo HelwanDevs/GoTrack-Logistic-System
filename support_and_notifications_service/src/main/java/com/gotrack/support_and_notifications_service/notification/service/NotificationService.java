@@ -6,12 +6,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gotrack.support_and_notifications_service.error.ResourceNotFoundException;
 import com.gotrack.support_and_notifications_service.eventWrapper.WEventPublisher;
 import com.gotrack.support_and_notifications_service.notification.entity.Notifications;
 import com.gotrack.support_and_notifications_service.notification.event.NotificationCreated;
 import com.gotrack.support_and_notifications_service.notification.mapper.NotificationMapper;
 import com.gotrack.support_and_notifications_service.notification.repo.NotificationRepo;
 import com.gotrack.support_and_notifications_service.user.CurrentUserService;
+import com.gotrack.support_and_notifications_service.error.*;
 
 @Service
 public class NotificationService {
@@ -54,6 +56,22 @@ public class NotificationService {
                 .build();
 
         return repo.save(notification);
+    }
+
+    public List<Notifications> getUnreadNotificationsForProfile() {
+        String profileId = user.getCurrentUserId();
+        return repo.findByProfileIdAndIsReadFalseOrderBySentAtDesc(profileId);
+    }
+
+    public void markAsRead(String notificationId, String profileId) {
+        Notifications noti = repo.findById(notificationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Notification not found"));
+        if (!noti.getProfileId().equals(profileId)) {
+            throw new AccessDeniedException("Not allowed");
+        }
+
+        noti.setRead(true);
+        repo.save(noti);
     }
 
 }
