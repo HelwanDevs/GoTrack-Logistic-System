@@ -16,6 +16,6 @@ jwt:
   
 eureka:
   client:
-    enabled: true
+    enabled: false
     service-url:
       defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE}

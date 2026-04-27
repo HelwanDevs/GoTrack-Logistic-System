@@ -34,14 +34,17 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    const isAuthEndpoint = originalRequest?.url?.includes("/auth/");
-    if (isAuthEndpoint || originalRequest?._retry) {
+    if (originalRequest?._retry) {
       return Promise.reject(error);
     }
 
     if (error.response?.status === 401) {
       originalRequest._retry = true;
-
+      if (originalRequest.url?.includes("/api/auth/refresh-token")) {
+        removeStoredTokens();
+        window.location.href = "/login";
+        return Promise.reject(new Error("Refresh token expired or invalid"));
+      }
       try {
         const refreshToken = getStoredRefreshToken();
         if (!refreshToken) {
@@ -50,9 +53,31 @@ apiClient.interceptors.response.use(
           return Promise.reject(new Error("No refresh token available"));
         }
 
-        const { accessToken, refreshToken: newRefreshToken } =
-          await refreshTokenApi(refreshToken);
+        let refreshResponse;
+        try {
+          refreshResponse = await refreshTokenApi(refreshToken);
+        } catch (refreshApiError: any) {
+          // Handle refresh token API errors (e.g., token deleted from DB, expired, invalid)
+          console.error("Refresh token API error:", refreshApiError);
+          removeStoredTokens();
+          window.location.href = "/login";
+          return Promise.reject(
+            new Error(
+              refreshApiError?.response?.data?.message ||
+                "Failed to refresh token",
+            ),
+          );
+        }
 
+        const { status, data } = refreshResponse;
+
+        if (!data?.accessToken || status !== 200) {
+          removeStoredTokens();
+          window.location.href = "/login";
+          return Promise.reject(new Error("Failed to refresh token"));
+        }
+
+        const { accessToken, refreshToken: newRefreshToken } = data;
         localStorage.setItem("access_token", accessToken);
 
         if (newRefreshToken) {

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -40,9 +41,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
         String email = null;
-
         try {
             Claims claims = jwtService.extractAllClaims(token);
+            System.out.println("JwtFilter is processing token: " + token);
             email = claims.getSubject();
             Object accountId = claims.get("accountId");
 
@@ -50,7 +51,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 System.out.println("Filter is looking for user: [" + email + "]");
 
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
-
                 if (!jwtService.isTokenValid(token, userDetails.getUsername())) {
                     sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
                     return;
@@ -72,6 +72,14 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         } catch (UsernameNotFoundException e) {
             sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "User no longer exists");
+            return;
+        } catch (ExpiredJwtException e) {
+            String path = request.getServletPath();
+            if (path.equals("/api/auth/refresh-token")) {
+                filterChain.doFilter(request, response);
+            } else
+                sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Token has expired");
+
             return;
         } catch (JwtException e) {
             sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid, tampered, or expired token");

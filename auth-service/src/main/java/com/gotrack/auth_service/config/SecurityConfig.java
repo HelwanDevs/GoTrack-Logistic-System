@@ -67,6 +67,7 @@ public class SecurityConfig {
                         }))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/logout").permitAll()
                         .requestMatchers("/api/auth/refresh-token").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/auth/accounts").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/auth/accounts/**").hasRole("ADMIN")

@@ -1,15 +1,24 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { accountQueryKeys } from "./query-keys";
-import { listAccountsApi, createAccountApi, updateAccountApi, deleteAccountApi } from "./api";
-import { UpdateAccountRequest, ListAccountsParams, ListAccountsResponse } from "./types";
+import {
+  listAccountsApi,
+  createAccountApi,
+  updateAccountApi,
+  deleteAccountApi,
+} from "./api";
+import {
+  UpdateAccountRequest,
+  ListAccountsParams,
+  ListAccountsResponse,
+} from "./types";
 
 export const useAccountsQuery = (params: ListAccountsParams) => {
   return useQuery<ListAccountsResponse>({
     queryKey: accountQueryKeys.list(),
     queryFn: () => listAccountsApi(params),
     staleTime: 0,
-    refetchInterval: 1000, // Refetch every 5 minutes
-    refetchIntervalInBackground: true,
+    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
+    refetchIntervalInBackground: false,
     gcTime: 10 * 60 * 1000, //  cache Time if not used
   });
 };

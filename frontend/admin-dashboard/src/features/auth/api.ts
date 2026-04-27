@@ -6,6 +6,7 @@ import {
   RefreshTokenRequest,
   RefreshTokenResponse,
 } from "./types";
+import { AxiosResponse } from "axios";
 
 export const loginApi = async (
   credentials: LoginRequest,
@@ -19,14 +20,14 @@ export const loginApi = async (
 
 export const refreshTokenApi = async (
   refreshToken: string,
-): Promise<RefreshTokenResponse> => {
+): Promise<AxiosResponse<RefreshTokenResponse>> => {
   const response = await apiClient.post<RefreshTokenResponse>(
     "/api/auth/refresh-token",
     {
       refreshToken,
     },
   );
-  return response.data;
+  return response;
 };
 
 export const logoutApi = async (refreshToken: string): Promise<void> => {
