@@ -74,7 +74,7 @@ export const Sidebar = () => {
       label: "الإعدادات",
       icon: "⚙️",
       onClick: () => setActiveNav("settings"),
-      Roles: ["admin"],
+      Roles: ["admin", "employee"],
     },
   ];
   useEffect(() => {

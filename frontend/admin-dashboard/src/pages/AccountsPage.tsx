@@ -506,7 +506,7 @@ export const AccountsPage = () => {
 
             <div className="col-span-1 md:col-span-2 flex items-center">
               <Checkbox
-                label="تضمين المحذوفة"
+                label="تضمين المحذوف"
                 checked={deletedFilter}
                 size="3xl"
                 onChange={(e) => {
