@@ -1,5 +1,6 @@
 package com.gotrack.auth_service.Jwt;
 
+import java.sql.Ref;
 import java.util.Date;
 import java.util.UUID;
 
@@ -52,4 +53,10 @@ public class RefreshTokenService {
     public void deleteByToken(String token) {
         repo.deleteByToken(token);
     }
+
+    public RefreshToken findByUsername(String email) {
+        return repo.findByEmail(email)
+                .orElseThrow(() -> new InvalidTokenException("No refresh token found for user"));
+    }
+
 }

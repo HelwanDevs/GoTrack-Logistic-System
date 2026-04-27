@@ -5,6 +5,7 @@ import {
   createAccountApi,
   updateAccountApi,
   deleteAccountApi,
+  changeAccountPasswordApi,
 } from "./api";
 import {
   UpdateAccountRequest,
@@ -14,7 +15,7 @@ import {
 
 export const useAccountsQuery = (params: ListAccountsParams) => {
   return useQuery<ListAccountsResponse>({
-    queryKey: accountQueryKeys.list(),
+    queryKey: accountQueryKeys.list(params),
     queryFn: () => listAccountsApi(params),
     staleTime: 0,
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
@@ -29,7 +30,7 @@ export const useCreateAccountMutation = () => {
   return useMutation({
     mutationFn: createAccountApi,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: accountQueryKeys.list() });
+      queryClient.invalidateQueries({ queryKey: ["accounts", "list"] });
     },
     onError: (error: any) => {
       const message =
@@ -56,7 +57,7 @@ export const useUpdateAccountMutation = () => {
       queryClient.invalidateQueries({
         queryKey: accountQueryKeys.detail(data.id),
       });
-      queryClient.invalidateQueries({ queryKey: accountQueryKeys.list() });
+      queryClient.invalidateQueries({ queryKey: ["accounts", "list"] });
     },
     onError: (error: any) => {
       const message =
@@ -74,13 +75,40 @@ export const useDeleteAccountMutation = () => {
   return useMutation({
     mutationFn: deleteAccountApi,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: accountQueryKeys.list() });
+      queryClient.invalidateQueries({ queryKey: ["accounts", "list"] });
     },
     onError: (error: any) => {
       const message =
         error.response?.data?.message ||
         error.message ||
         "Failed to delete account";
+      throw new Error(message);
+    },
+  });
+};
+
+export const useChangePasswordMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      accountId,
+      newPassword,
+    }: {
+      accountId: string;
+      newPassword: string;
+    }) => changeAccountPasswordApi(accountId, newPassword),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: accountQueryKeys.detail(data.id),
+      });
+      queryClient.invalidateQueries({ queryKey: ["accounts", "list"] });
+    },
+    onError: (error: any) => {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to change password";
       throw new Error(message);
     },
   });

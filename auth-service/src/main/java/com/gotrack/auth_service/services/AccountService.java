@@ -1,5 +1,6 @@
 package com.gotrack.auth_service.services;
 
+import com.gotrack.auth_service.Jwt.RefreshTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +31,8 @@ import java.util.stream.Collectors;
 @Service
 public class AccountService {
 
+    @Autowired
+    RefreshTokenService refreshTokenService;
     @Autowired
     AccountRepository accRepository;
 
@@ -95,7 +98,7 @@ public class AccountService {
             throw new AccessDeniedException("Access denied: This is not your profile.");
         }
 
-        return new AccountResponse(user.getId(), user.getEmail(), user.getRole().name());
+        return new AccountResponse(user.getId(), user.getEmail(), user.getRole().name(), user.getDeleted());
     }
 
     public UpdateDeleteResponse updateAccount(String targetId, UpdateAccountRequest request) {
@@ -112,15 +115,24 @@ public class AccountService {
         Account currentUser = accRepository.findById(currentUserId)
                 .orElseThrow(() -> new AccountNotFoundException("Your account not found"));
 
+        if (currentUserId.equals(targetId) && request.getEmail() == null && request.getPassword() == null
+                && request.getRole() != null) {
+            throw new AccessDeniedException("You cannot change your own role.");
+        }
         validateAuthorization(currentUser, targetUser, request.getRole());
 
         checkEmailConflict(targetUser.getEmail(), request.getEmail());
         applyUpdates(targetUser, request);
         accRepository.save(targetUser);
 
+        // make the user re-login
+        if (request.getPassword() != null || request.getEmail() != null || request.getRole() != null) {
+            refreshTokenService.deleteByUsername(targetUser.getEmail());
+        }
+
         if (currentUser.getRole() == Role.ADMIN && !targetId.equals(currentUserId)) {
 
-            return new UpdateDeleteResponse("Account updated successfully");
+            return new UpdateDeleteResponse("Account updated successfully from Admin");
         }
 
         String newToken = jwtService.generateToken(targetUser);
@@ -176,7 +188,8 @@ public class AccountService {
                 pageable);
 
         List<AccountResponse> accountResponses = accountPage.getContent().stream()
-                .map(account -> new AccountResponse(account.getId(), account.getEmail(), account.getRole().name()))
+                .map(account -> new AccountResponse(account.getId(), account.getEmail(), account.getRole().name(),
+                        account.getDeleted()))
                 .collect(Collectors.toList());
 
         return new ListAccountsResponse(
@@ -215,6 +228,8 @@ public class AccountService {
             user.setEmail(request.getEmail());
         if (request.getPassword() != null)
             user.setPassword(passwordEncoder.encode(request.getPassword()));
+        if (request.getRole() != null)
+            user.setRole(request.getRole());
     }
 
     private void checkEmailConflict(String currentEmail, String newEmail) {

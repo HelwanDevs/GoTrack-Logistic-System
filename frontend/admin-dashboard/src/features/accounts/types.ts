@@ -18,6 +18,7 @@ export interface AccountResponse {
   role: UserRole;
   createdAt?: string;
   updatedAt?: string;
+  deleted?: boolean;
 }
 
 export interface Account extends AccountResponse {}

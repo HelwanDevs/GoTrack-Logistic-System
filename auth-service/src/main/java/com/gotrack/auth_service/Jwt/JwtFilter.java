@@ -12,6 +12,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.gotrack.auth_service.Exceptions.InvalidTokenException;
+import com.gotrack.auth_service.entity.RefreshToken;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -25,6 +28,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    RefreshTokenService refreshTokenService;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -43,7 +49,6 @@ public class JwtFilter extends OncePerRequestFilter {
         String email = null;
         try {
             Claims claims = jwtService.extractAllClaims(token);
-            System.out.println("JwtFilter is processing token: " + token);
             email = claims.getSubject();
             Object accountId = claims.get("accountId");
 
@@ -62,6 +67,14 @@ public class JwtFilter extends OncePerRequestFilter {
                     return;
                 }
 
+                // check if user has a refresh token
+                RefreshToken userRefreshToken = refreshTokenService.findByUsername(email);
+                if (userRefreshToken == null) {
+                    sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED,
+                            "No valid refresh token found for user");
+                    return;
+                }
+
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
@@ -69,6 +82,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 authToken.setDetails(accountId);
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+
             }
         } catch (UsernameNotFoundException e) {
             sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "User no longer exists");
@@ -83,6 +97,10 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         } catch (JwtException e) {
             sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid, tampered, or expired token");
+            return;
+        } catch (InvalidTokenException e) {
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED,
+                    "No valid refresh token found for user");
             return;
         } catch (Exception e) {
             sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,

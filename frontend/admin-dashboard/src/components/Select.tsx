@@ -46,7 +46,7 @@ export const Select = ({
             </option>
           ))}
         </select>
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">
           <svg
             className="w-5 h-5"
             fill="none"
