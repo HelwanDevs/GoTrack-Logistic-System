@@ -41,7 +41,7 @@ public class AuthService {
         Account user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Incorrect email or password"));
         if (user.getDeleted()) {
-            throw new AccountInactiveException("Account is inactive or soft-deleted");
+            throw new BadCredentialsException("Account is inactive or soft-deleted");
         }
         try {
             authenticationManager.authenticate(

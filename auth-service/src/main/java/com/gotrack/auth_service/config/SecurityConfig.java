@@ -93,7 +93,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of(
-                "http://localhost:5173" // React
+                "http://localhost:5173", // Admin dashboard
+                "http://localhost:5174" // Merchant dashboard
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
