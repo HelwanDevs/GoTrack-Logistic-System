@@ -27,7 +27,6 @@ public class BranchGlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(response);
     }
-    // Handle conflicts (409)
     @ExceptionHandler(BranchNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleNotFound(BranchNotFoundException ex) {
 
@@ -37,6 +36,17 @@ public class BranchGlobalExceptionHandler {
         response.put("message", ex.getMessage());
 
         return ResponseEntity.status(404).body(response);
+    }
+
+    @ExceptionHandler(BranchConflictException.class)
+    public ResponseEntity<Map<String, Object>> handleConflict(BranchConflictException ex) {
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", 409);
+        response.put("error", "Conflict");
+        response.put("message", ex.getMessage());
+
+        return ResponseEntity.status(409).body(response);
     }
 
     @ExceptionHandler(Exception.class)
