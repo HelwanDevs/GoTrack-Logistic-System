@@ -2,6 +2,7 @@ package com.gotrack.branch_service.services.Impl;
 
 import com.gotrack.branch_service.domain.entity.BranchEntity;
 import com.gotrack.branch_service.exceptions.BranchBadRequestException;
+import com.gotrack.branch_service.exceptions.BranchConflictException;
 import com.gotrack.branch_service.exceptions.BranchNotFoundException;
 import com.gotrack.branch_service.repository.BranchRepository;
 import com.gotrack.branch_service.services.BranchService;
@@ -25,6 +26,10 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public BranchEntity createBranch(BranchEntity branchEntity) {
+        if ((branchEntity.getPhone() != null &&
+                branchRepository.existsByPhoneAndIsDeletedFalse(branchEntity.getPhone()))) {
+            throw new BranchConflictException("Phone already in use by another branch");
+        }
         return branchRepository.save(branchEntity);
     }
 
