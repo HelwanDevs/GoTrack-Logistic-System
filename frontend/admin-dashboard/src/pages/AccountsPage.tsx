@@ -7,6 +7,7 @@ import { Select } from "@/components/Select";
 import { Checkbox } from "@/components/Checkbox";
 import { Modal } from "@/components/Modal";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { Pagination } from "@/components/Pagination";
 import {
   useAccountsQuery,
   useCreateAccountMutation,
@@ -712,57 +713,15 @@ export const AccountsPage = () => {
               </tbody>
             </table>
 
-            {/* Pagination Controls */}
-            <div className="mt-6 grid grid-cols-12 items-center justify-between p-4 bg-surface-container-low rounded-lg">
-              <div className="col-span-3 text-body-sm text-on-surface-variant">
-                عرض {accounts.length} من {totalCount} حساب
-                {totalPages > 1 && ` (الصفحة ${page + 1} من ${totalPages})`}
-              </div>
-
-              <div className="flex col-span-6 gap-2 justify-center">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={page === 0 || isLoading}
-                  onClick={() => setPage(Math.max(0, page - 1))}
-                >
-                  السابق
-                </Button>
-
-                {/* Page Info */}
-                <div className="flex items-center gap-2 px-4 py-2 bg-surface-container rounded-lg">
-                  <span className="text-body-sm text-on-surface">
-                    {page + 1} / {Math.max(1, totalPages)}
-                  </span>
-                </div>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={page >= totalPages - 1 || isLoading}
-                  onClick={() => setPage(page + 1)}
-                >
-                  التالي
-                </Button>
-              </div>
-
-              {/* Page Size Selector */}
-              <div className="col-span-3">
-                <Select
-                  value={size.toString()}
-                  onChange={(e) => {
-                    setSize(parseInt(e.target.value));
-                    setPage(0);
-                  }}
-                  options={[
-                    { value: "5", label: "5 عناصر" },
-                    { value: "10", label: "10 عناصر" },
-                    { value: "25", label: "25 عنصر" },
-                    { value: "50", label: "50 عنصر" },
-                  ]}
-                />
-              </div>
-            </div>
+            <Pagination
+              page={page}
+              setPage={setPage}
+              size={size}
+              setSize={setSize}
+              totalCount={totalCount}
+              isLoading={isLoading}
+              totalPages={totalPages}
+            />
           </div>
         )}
       </Card>
