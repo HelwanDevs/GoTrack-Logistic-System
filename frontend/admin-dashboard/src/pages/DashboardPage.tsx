@@ -8,7 +8,7 @@ import { Card } from "@/components/Card";
 
 export const DashboardPage = () => {
   return (
-    <main className="flex-1 mr-0 md:mr-64 p-6 lg:p-10 flex flex-col gap-8">
+    <main className="flex-1 mr-0  p-6 lg:p-10 flex flex-col gap-8">
       <Header
         title="لوحة التحكم"
         subtitle="عرض إحصائيات الشحنات والعمليات الجارية"

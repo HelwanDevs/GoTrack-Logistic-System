@@ -347,7 +347,7 @@ export const AccountsPage = () => {
   };
 
   return (
-    <main className="flex-1 mr-0 md:mr-64 p-6 lg:p-10 flex flex-col gap-8">
+    <main className="flex-1 p-6 lg:p-10 flex flex-col gap-8">
       <Header
         title="إدارة الحسابات"
         subtitle="إنشاء وتحديث وحذف حسابات المستخدمين"
