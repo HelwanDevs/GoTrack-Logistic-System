@@ -71,8 +71,8 @@ export const useAccountQuery = (id: string) => {
     queryKey: accountQueryKeys.detail(id),
     queryFn: () => getAccountApi(id),
     staleTime: 0,
-    refetchInterval:  1000, // Refetch every 5 minutes
+    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
     refetchIntervalInBackground: false,
-    gcTime: 10 * 60 * 1000, //  cache Time if not used
+    gcTime: 10 *  60 * 1000, //  cache Time if not used
   });
 };
