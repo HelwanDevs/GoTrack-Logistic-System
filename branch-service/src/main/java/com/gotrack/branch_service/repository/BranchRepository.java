@@ -9,5 +9,9 @@ import org.springframework.stereotype.Repository;
 public interface BranchRepository extends JpaRepository<BranchEntity, Long>,
         JpaSpecificationExecutor<BranchEntity> {
 
-    boolean existsByPhoneAndIsDeletedFalse(String phone);
+    boolean existsByPhoneAndIsDeletedFalse(String phone); // create
+
+    boolean existsByPhoneAndIdNotAndIsDeletedFalse(String phone, Long id); // update (same phone , not this id , active)
+
+
 }

@@ -77,7 +77,14 @@ public class BranchServiceImpl implements BranchService {
 
         BranchEntity existingBranch = branchRepository.findById(branchEntity.getId())
                 .orElseThrow(() -> new BranchNotFoundException("Branch not found"));
+        if (branchRepository.existsByPhoneAndIdNotAndIsDeletedFalse(
+                branchEntity.getPhone(), branchEntity.getId())) {
+
+            throw new BranchConflictException("Phone already used by another branch");
+        }
+
         applyUpdates(existingBranch, branchEntity);
+
         return branchRepository.save(existingBranch);
     }
     private void applyUpdates(BranchEntity existingBranch, BranchEntity newData) {
