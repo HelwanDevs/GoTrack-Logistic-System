@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
-import { Sidebar } from "@/components/Sidebar";
+
 import { Header } from "@/components/Header";
 import { Button } from "@/components/Button";
 import { MetricCard } from "@/components/MetricCard";

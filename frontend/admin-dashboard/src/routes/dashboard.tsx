@@ -1,8 +1,4 @@
-import {
-  createFileRoute,
-  Outlet,
-  redirect,
-} from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { checkIsEmployee, checkIsAuthenticated } from "@/features/auth";
 import { Sidebar } from "@/components/Sidebar";
 export const Route = createFileRoute("/dashboard")({
@@ -16,10 +12,7 @@ export const Route = createFileRoute("/dashboard")({
       {/* Sidebar */}
       <Sidebar />
       {/* Main Content */}
-      <div className="flex-col flex-1 p-0">
-      
-        <Outlet />
-      </div>
+      <Outlet />
     </div>
   ),
 });
