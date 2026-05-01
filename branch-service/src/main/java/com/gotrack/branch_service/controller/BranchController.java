@@ -6,12 +6,14 @@ import com.gotrack.branch_service.domain.entity.BranchEntity;
 import com.gotrack.branch_service.mappers.Mapper;
 import com.gotrack.branch_service.services.BranchService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 public class BranchController {
@@ -34,24 +36,49 @@ public class BranchController {
     }
 
     @GetMapping(path= "/api/branches")
-    public List<BranchDTO> listBranches(){
-        List<BranchEntity> branches = branchService.findAll();
-        return branches.stream()
-                .map(branchMapper::mapTo)
-                .collect((Collectors.toList()));
+    public ResponseEntity<?> listBranches(@PageableDefault(size = 5, sort = "id")
+                                              Pageable pageable) {
 
+        Page<BranchEntity> page = branchService.findAll(pageable);
+
+        List<BranchDTO> dto = page.getContent()
+                .stream()
+                .map(branchMapper::mapTo)
+                .toList();
+        return ResponseEntity.ok(
+                Map.of(
+                        "content", dto,
+                        "page", page.getNumber(),
+                        "size", page.getSize(),
+                        "totalElements", page.getTotalElements(),
+                        "totalPages", page.getTotalPages()
+                )
+        );
     }
 
     @GetMapping(path= "/api/branches/search")
-    public List<BranchDTO> searchBranches(
+    public ResponseEntity<?> searchBranches(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String location,
-            @RequestParam(required = false) Boolean isDeleted
+            @RequestParam(required = false) Boolean isDeleted,
+            @PageableDefault(size = 5, sort = "id")
+            Pageable pageable
     ){
-        List<BranchEntity> branches= branchService.search(name, location , isDeleted);
-        return branches.stream()
+        Page<BranchEntity> page = branchService.search(name, location, isDeleted, pageable);
+
+        List<BranchDTO> dto = page.getContent()
+                .stream()
                 .map(branchMapper::mapTo)
-                .collect((Collectors.toList()));
+                .toList();
+        return ResponseEntity.ok(
+                Map.of(
+                        "content", dto,
+                        "page", page.getNumber(),
+                        "size", page.getSize(),
+                        "totalElements", page.getTotalElements(),
+                        "totalPages", page.getTotalPages()
+                )
+        );
     }
 
     @PutMapping(path = "/api/branches/{id}")

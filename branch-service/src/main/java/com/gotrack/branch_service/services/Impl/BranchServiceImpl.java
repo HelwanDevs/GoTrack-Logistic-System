@@ -6,6 +6,8 @@ import com.gotrack.branch_service.exceptions.BranchConflictException;
 import com.gotrack.branch_service.exceptions.BranchNotFoundException;
 import com.gotrack.branch_service.repository.BranchRepository;
 import com.gotrack.branch_service.services.BranchService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -30,34 +32,31 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public List<BranchEntity> findAll() {
-        return branchRepository.findAll();
+    public Page<BranchEntity> findAll(Pageable pageable) {
+        return branchRepository.findAll(pageable);
     }
 
     @Override
-    public List<BranchEntity> search(String name, String location, Boolean isDeleted) {
+    public Page<BranchEntity> search(String name, String location, Boolean isDeleted, Pageable pageable) {
+        boolean isDeletedReturnDefault = (isDeleted != null) ? isDeleted : false;
 
-        boolean isDeletedReturnDefault = (isDeleted!=null) ? isDeleted: false;
-
-        Specification<BranchEntity> spec = (root, query , cb) -> {
-
+        Specification<BranchEntity> spec = (root, query, cb) -> {
             var predicates = cb.conjunction();
+
             if (name != null) {
                 predicates = cb.and(predicates,
                         cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
             }
+
             if (location != null) {
                 predicates = cb.and(predicates,
                         cb.like(cb.lower(root.get("location")), "%" + location.toLowerCase() + "%"));
             }
-
             predicates = cb.and(predicates,
                     cb.equal(root.get("isDeleted"), isDeletedReturnDefault));
-
             return predicates;
         };
-
-        return branchRepository.findAll(spec);
+        return branchRepository.findAll(spec, pageable);
     }
 
     @Override
@@ -65,6 +64,10 @@ public class BranchServiceImpl implements BranchService {
 
         BranchEntity existingBranch = branchRepository.findById(branchEntity.getId())
                 .orElseThrow(() -> new BranchNotFoundException("Branch not found"));
+        if (Boolean.TRUE.equals(existingBranch.getIsDeleted())) {
+            throw new BranchBadRequestException("Cannot update a deleted branch");
+        }
+
         if (branchRepository.existsByPhoneAndIdNotAndIsDeletedFalse(
                 branchEntity.getPhone(), branchEntity.getId())) {
 
