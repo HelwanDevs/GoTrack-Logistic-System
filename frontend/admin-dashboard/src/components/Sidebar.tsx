@@ -48,6 +48,13 @@ export const Sidebar = () => {
       Roles: ["admin", "employee"],
     },
     {
+      id: "branches",
+      label: "إدارة الفروع",
+      icon: "🏢",
+      onClick: () => setActiveNav("branches"),
+      Roles: ["admin"],
+    },
+    {
       id: "shipments",
       label: "إدارة الشحنات",
       icon: "📦",
