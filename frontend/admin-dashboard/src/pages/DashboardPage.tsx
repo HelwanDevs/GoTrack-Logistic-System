@@ -97,7 +97,7 @@ export const DashboardPage = () => {
                   </p>
                 </div>
                 <span
-                  className={`${shipment.statusColor} text-on-surface text-body-sm font-label-md px-3 py-1 rounded-full`}
+                  className={`${shipment.statusColor} ${shipment.statusColor === "bg-primary-container" ? "text-on-primary" : "text-on-surface-variant"} text-body-sm font-label-md px-3 py-1 rounded-full`}
                 >
                   {shipment.status}
                 </span>

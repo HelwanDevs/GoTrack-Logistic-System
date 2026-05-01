@@ -20,6 +20,7 @@ public class ListAccountsResponse {
 
     private int totalPages;
 
+
     public ListAccountsResponse(List<AccountResponse> accounts, long totalCount, int page, int size) {
         this.accounts = accounts;
         this.totalCount = totalCount;

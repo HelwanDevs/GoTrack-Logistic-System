@@ -1,15 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { Input } from "@/components/Input";
 import { Select } from "@/components/Select";
+import { Checkbox } from "@/components/Checkbox";
+import { Modal } from "@/components/Modal";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import {
   useAccountsQuery,
   useCreateAccountMutation,
   useUpdateAccountMutation,
   useDeleteAccountMutation,
+  useChangePasswordMutation,
   type Account,
   type CreateAccountRequest,
   type UpdateAccountRequest,
@@ -28,6 +31,9 @@ interface EditingAccount {
   email: string;
   password: string;
   role: UserRole | "";
+  createdAt: string;
+  updatedAt: string;
+  deleted: boolean;
 }
 
 export const AccountsPage = () => {
@@ -42,6 +48,7 @@ export const AccountsPage = () => {
   // Filters
   const [emailSearch, setEmailSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<UserRole | "">();
+  const [deletedFilter, setDeletedFilter] = useState(false);
 
   // Fetch accounts from API with pagination and filters
   const queryParams: ListAccountsParams = {
@@ -49,6 +56,7 @@ export const AccountsPage = () => {
     size,
     ...(emailSearch && { email: emailSearch }),
     ...(roleFilter && { role: roleFilter as UserRole }),
+    ...(deletedFilter && { includeDeleted: deletedFilter }),
   };
 
   const {
@@ -64,6 +72,19 @@ export const AccountsPage = () => {
   const createMutation = useCreateAccountMutation();
   const updateMutation = useUpdateAccountMutation();
   const deleteMutation = useDeleteAccountMutation();
+  const changePasswordMutation = useChangePasswordMutation();
+
+  // Change Password Modal State
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const [changePasswordAccountId, setChangePasswordAccountId] = useState<
+    string | null
+  >(null);
+  const [changePasswordAccountEmail, setChangePasswordAccountEmail] =
+    useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [changePasswordErrors, setChangePasswordErrors] = useState<
+    Record<string, string>
+  >({});
 
   const [createForm, setCreateForm] = useState<FormData>({
     email: "",
@@ -76,6 +97,9 @@ export const AccountsPage = () => {
     email: "",
     password: "",
     role: "",
+    createdAt: "",
+    updatedAt: "",
+    deleted: false,
   });
 
   const roleOptions = [
@@ -128,7 +152,7 @@ export const AccountsPage = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleCreateAccount = async (e: React.FormEvent) => {
+  const handleCreateAccount = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validateCreateForm()) {
@@ -141,14 +165,27 @@ export const AccountsPage = () => {
       setShowCreateForm(false);
       setFormErrors({});
     } catch (error: any) {
-      setFormErrors({
-        submit: error.message || "فشل إنشاء الحساب. حاول مرة أخرى",
-      });
+      switch (error.status) {
+        case 400:
+          setFormErrors({
+            submit: error.response?.data?.message || "بيانات غير صحيحة",
+          });
+          break;
+        case 409:
+          setFormErrors({
+            submit: "الحساب موجود بالفعل",
+          });
+          break;
+        default:
+          setFormErrors({
+            submit: error.message || "فشل إنشاء الحساب. حاول مرة أخرى",
+          });
+      }
     }
   };
 
-  const handleEditAccount = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleEditAccount = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    // e.preventDefault();
 
     if (!validateEditForm()) {
       return;
@@ -170,7 +207,15 @@ export const AccountsPage = () => {
       });
 
       setEditingId(null);
-      setEditForm({ id: "", email: "", password: "", role: "" });
+      setEditForm({
+        id: "",
+        email: "",
+        password: "",
+        role: "",
+        createdAt: "",
+        updatedAt: "",
+        deleted: false,
+      });
       setFormErrors({});
     } catch (error: any) {
       setFormErrors({
@@ -180,7 +225,7 @@ export const AccountsPage = () => {
   };
 
   const handleDeleteAccount = async (accountId: string) => {
-    if (!confirm("هل تأكد من رغبتك في حذف هذا الحساب؟")) {
+    if (!confirm("هل متأكد من رغبتك في حذف هذا الحساب؟")) {
       return;
     }
 
@@ -198,8 +243,83 @@ export const AccountsPage = () => {
       email: account.email,
       password: "",
       role: account.role,
+      createdAt: account.createdAt ?? "غير معروف",
+      updatedAt: account.updatedAt ?? "غير معروف",
+      deleted: account.deleted ?? false,
     });
     setFormErrors({});
+  };
+
+  const handleOpenChangePasswordModal = (account: Account) => {
+    setChangePasswordAccountId(account.id);
+    setChangePasswordAccountEmail(account.email);
+    setNewPassword("");
+    setChangePasswordErrors({});
+    setShowChangePasswordModal(true);
+  };
+
+  const handleCloseChangePasswordModal = () => {
+    setShowChangePasswordModal(false);
+    setChangePasswordAccountId(null);
+    setChangePasswordAccountEmail("");
+    setNewPassword("");
+    setChangePasswordErrors({});
+  };
+
+  const handleChangePassword = async () => {
+    const errors: Record<string, string> = {};
+
+    if (!newPassword) {
+      errors.newPassword = "كلمة المرور الجديدة مطلوبة";
+    } else if (newPassword.length < 6) {
+      errors.newPassword = "كلمة المرور يجب أن تكون 6 أحرف على الأقل";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setChangePasswordErrors(errors);
+      return;
+    }
+
+    if (
+      !confirm(
+        `هل تأكد من رغبتك في تغيير كلمة المرور للحساب ${changePasswordAccountEmail}؟`,
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await changePasswordMutation.mutateAsync({
+        accountId: changePasswordAccountId!,
+        newPassword,
+      });
+      handleCloseChangePasswordModal();
+      alert("تم تغيير كلمة المرور بنجاح");
+    } catch (error: any) {
+      switch (error.status) {
+        case 403:
+          setChangePasswordErrors({
+            submit: "ليس لديك صلاحية لتغيير كلمة المرور لهذا الحساب",
+          });
+          break;
+        case 404:
+          setChangePasswordErrors({
+            submit: "الحساب غير موجود",
+          });
+          break;
+        case 400:
+          setChangePasswordErrors({
+            submit: "بيانات غير صحيحة",
+          });
+          break;
+
+        default:
+          setChangePasswordErrors({
+            submit: "فشل تغيير كلمة المرور. حاول مرة أخرى",
+          });
+          break;
+      }
+    }
   };
 
   const getRoleLabel = (role: UserRole): string => {
@@ -341,7 +461,7 @@ export const AccountsPage = () => {
         </Card>
       )}
 
-      {/* Accounts List */}
+      {/* Search and Filter Section */}
       <Card>
         <div className="mb-6">
           <h3 className="font-headline-md text-headline-md text-on-background mb-1">
@@ -352,36 +472,51 @@ export const AccountsPage = () => {
           </p>
         </div>
 
-        {/* Search and Filter Section */}
         <div className="mb-6 space-y-4 p-4 bg-surface-container-low rounded-lg">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Input
-              label="البحث حسب البريد الإلكتروني"
-              type="text"
-              placeholder="ابحث..."
-              value={emailSearch}
-              onChange={(e) => {
-                setEmailSearch(e.target.value);
-                setPage(0); // Reset to first page on search
-              }}
-            />
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div className="col-span-1 md:col-span-4">
+              <Input
+                label="البحث حسب البريد الإلكتروني"
+                type="text"
+                placeholder="ابحث..."
+                value={emailSearch}
+                onChange={(e) => {
+                  setEmailSearch(e.target.value);
+                  setPage(0); // Reset to first page on search
+                }}
+              />
+            </div>
 
-            <Select
-              label="تصفية حسب الدور"
-              value={roleFilter || ""}
-              onChange={(e) => {
-                setRoleFilter((e.target.value as UserRole) || "");
-                setPage(0); // Reset to first page on filter change
-              }}
-              options={[
-                { value: "", label: "جميع الأدوار" },
-                { value: UserRole.ADMIN, label: "مسؤول" },
-                { value: UserRole.EMPLOYEE, label: "موظف" },
-                { value: UserRole.MERCHANT, label: "تاجر" },
-              ]}
-            />
+            <div className="col-span-1 md:col-span-4">
+              <Select
+                label="تصفية حسب الدور"
+                value={roleFilter || ""}
+                onChange={(e) => {
+                  setRoleFilter((e.target.value as UserRole) || "");
+                  setPage(0); // Reset to first page on filter change
+                }}
+                options={[
+                  { value: "", label: "جميع الأدوار" },
+                  { value: UserRole.ADMIN, label: "مسؤول" },
+                  { value: UserRole.EMPLOYEE, label: "موظف" },
+                  { value: UserRole.MERCHANT, label: "تاجر" },
+                ]}
+              />
+            </div>
 
-            <div className="flex items-end">
+            <div className="col-span-1 md:col-span-2 flex items-center">
+              <Checkbox
+                label="تضمين المحذوف"
+                checked={deletedFilter}
+                size="3xl"
+                onChange={(e) => {
+                  setDeletedFilter(e.target.checked);
+                  setPage(0); // Reset to first page on filter change
+                }}
+              />
+            </div>
+
+            <div className="col-span-1 md:col-span-2 flex items-end">
               <Button
                 variant="outline"
                 size="md"
@@ -397,7 +532,10 @@ export const AccountsPage = () => {
             </div>
           </div>
         </div>
+      </Card>
 
+      {/* Accounts List */}
+      <Card>
         {/* Loading State */}
         {isLoading && (
           <div className="flex justify-center items-center py-12">
@@ -446,6 +584,15 @@ export const AccountsPage = () => {
                     تاريخ الإنشاء
                   </th>
                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                    تاريخ التعديل
+                  </th>
+                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                    محذوف
+                  </th>
+                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                    تعديل كملة المرور
+                  </th>
+                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
                     الإجراءات
                   </th>
                 </tr>
@@ -475,6 +622,7 @@ export const AccountsPage = () => {
                         </p>
                       )}
                     </td>
+
                     <td className="p-4">
                       {editingId === account.id ? (
                         <Select
@@ -502,7 +650,32 @@ export const AccountsPage = () => {
                       )}
                     </td>
                     <td className="p-4 text-body-sm text-on-surface-variant">
-                      {new Date(account.createdAt ?? new Date()).toLocaleDateString("ar-SA")}
+                      {new Date(
+                        account.createdAt ?? new Date(),
+                      ).toLocaleDateString("ar-SA")}
+                    </td>
+                    <td className="p-4 text-body-sm text-on-surface-variant">
+                      {new Date(
+                        account.updatedAt ?? new Date(),
+                      ).toLocaleDateString("ar-SA")}
+                    </td>
+                    <td className={`p-6 text-body-sm`}>
+                      <span
+                        className={`px-4 py-1 rounded-full ${account.deleted ? "bg-error text-on-error" : "bg-surface-variant text-on-surface-variant"}`}
+                      >
+                        {account.deleted ? "نعم" : "لا"}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          handleOpenChangePasswordModal(account);
+                        }}
+                      >
+                        تغيير كلمة المرور
+                      </Button>
                     </td>
                     <td className="p-4">
                       <div className="flex gap-2">
@@ -555,13 +728,13 @@ export const AccountsPage = () => {
             </table>
 
             {/* Pagination Controls */}
-            <div className="mt-6 flex items-center justify-between p-4 bg-surface-container-low rounded-lg">
-              <div className="text-body-sm text-on-surface-variant">
+            <div className="mt-6 grid grid-cols-12 items-center justify-between p-4 bg-surface-container-low rounded-lg">
+              <div className="col-span-3 text-body-sm text-on-surface-variant">
                 عرض {accounts.length} من {totalCount} حساب
                 {totalPages > 1 && ` (الصفحة ${page + 1} من ${totalPages})`}
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex col-span-6 gap-2 justify-center">
                 <Button
                   variant="outline"
                   size="sm"
@@ -589,23 +762,88 @@ export const AccountsPage = () => {
               </div>
 
               {/* Page Size Selector */}
-              <Select
-                value={size.toString()}
-                onChange={(e) => {
-                  setSize(parseInt(e.target.value));
-                  setPage(0);
-                }}
-                options={[
-                  { value: "5", label: "5 عناصر" },
-                  { value: "10", label: "10 عناصر" },
-                  { value: "25", label: "25 عنصر" },
-                  { value: "50", label: "50 عنصر" },
-                ]}
-              />
+              <div className="col-span-3">
+                <Select
+                  value={size.toString()}
+                  onChange={(e) => {
+                    setSize(parseInt(e.target.value));
+                    setPage(0);
+                  }}
+                  options={[
+                    { value: "5", label: "5 عناصر" },
+                    { value: "10", label: "10 عناصر" },
+                    { value: "25", label: "25 عنصر" },
+                    { value: "50", label: "50 عنصر" },
+                  ]}
+                />
+              </div>
             </div>
           </div>
         )}
       </Card>
+
+      {/* Change Password Modal */}
+      <Modal
+        isOpen={showChangePasswordModal}
+        title={`تغيير كلمة المرور - ${changePasswordAccountEmail}`}
+        onClose={handleCloseChangePasswordModal}
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleChangePassword();
+          }}
+          className="space-y-4"
+        >
+          <Input
+            label="كلمة المرور الجديدة"
+            type="password"
+            placeholder="••••••••"
+            value={newPassword}
+            onChange={(e) => {
+              setNewPassword(e.target.value);
+              if (changePasswordErrors.newPassword) {
+                setChangePasswordErrors({
+                  ...changePasswordErrors,
+                  newPassword: "",
+                });
+              }
+            }}
+            error={changePasswordErrors.newPassword}
+            required
+          />
+
+          {changePasswordErrors.submit && (
+            <div className="p-3 bg-error/10 border border-error rounded-lg">
+              <p className="text-error text-body-sm">
+                {changePasswordErrors.submit}
+              </p>
+            </div>
+          )}
+
+          <div className="flex gap-3 pt-2">
+            <Button
+              type="submit"
+              variant="primary"
+              size="md"
+              disabled={changePasswordMutation.isPending}
+              isLoading={changePasswordMutation.isPending}
+            >
+              {changePasswordMutation.isPending
+                ? "جاري التحديث..."
+                : "تغيير كلمة المرور"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="md"
+              onClick={handleCloseChangePasswordModal}
+            >
+              إلغاء
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </main>
   );
 };

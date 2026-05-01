@@ -12,7 +12,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.gotrack.auth_service.Exceptions.InvalidTokenException;
+import com.gotrack.auth_service.entity.RefreshToken;
+
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,6 +28,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    RefreshTokenService refreshTokenService;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -40,7 +47,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
         String email = null;
-
         try {
             Claims claims = jwtService.extractAllClaims(token);
             email = claims.getSubject();
@@ -50,7 +56,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 System.out.println("Filter is looking for user: [" + email + "]");
 
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
-
                 if (!jwtService.isTokenValid(token, userDetails.getUsername())) {
                     sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
                     return;
@@ -62,6 +67,14 @@ public class JwtFilter extends OncePerRequestFilter {
                     return;
                 }
 
+                // check if user has a refresh token
+                RefreshToken userRefreshToken = refreshTokenService.findByUsername(email);
+                if (userRefreshToken == null) {
+                    sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED,
+                            "No valid refresh token found for user");
+                    return;
+                }
+
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
@@ -69,12 +82,25 @@ public class JwtFilter extends OncePerRequestFilter {
                 authToken.setDetails(accountId);
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+
             }
         } catch (UsernameNotFoundException e) {
             sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "User no longer exists");
             return;
+        } catch (ExpiredJwtException e) {
+            String path = request.getServletPath();
+            if (path.equals("/api/auth/refresh-token")) {
+                filterChain.doFilter(request, response);
+            } else
+                sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Token has expired");
+
+            return;
         } catch (JwtException e) {
             sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid, tampered, or expired token");
+            return;
+        } catch (InvalidTokenException e) {
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED,
+                    "No valid refresh token found for user");
             return;
         } catch (Exception e) {
             sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,

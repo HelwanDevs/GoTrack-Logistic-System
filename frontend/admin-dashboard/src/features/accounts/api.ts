@@ -78,3 +78,14 @@ export const updateAccountApi = async (
 export const deleteAccountApi = async (accountId: string): Promise<void> => {
   await apiClient.delete(`/api/auth/accounts/${accountId}`);
 };
+
+export const changeAccountPasswordApi = async (
+  accountId: string,
+  newPassword: string,
+): Promise<AccountResponse> => {
+  const response = await apiClient.put<AccountResponse>(
+    `/api/auth/accounts/${accountId}`,
+    { password: newPassword },
+  );
+  return response.data;
+};

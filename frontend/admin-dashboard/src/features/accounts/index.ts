@@ -13,6 +13,7 @@ export {
   getAccountApi,
   updateAccountApi,
   deleteAccountApi,
+  changeAccountPasswordApi,
 } from "./api";
 
 export {
@@ -20,6 +21,7 @@ export {
   useCreateAccountMutation,
   useUpdateAccountMutation,
   useDeleteAccountMutation,
+  useChangePasswordMutation,
 } from "./hooks";
 
 export { accountQueryKeys } from "./query-keys";

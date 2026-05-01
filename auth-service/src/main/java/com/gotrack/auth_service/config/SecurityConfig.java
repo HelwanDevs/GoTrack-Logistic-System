@@ -67,6 +67,7 @@ public class SecurityConfig {
                         }))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/logout").permitAll()
                         .requestMatchers("/api/auth/refresh-token").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/auth/accounts").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/auth/accounts/**").hasRole("ADMIN")
@@ -92,7 +93,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of(
-                "http://localhost:5173" // React
+                "http://localhost:5173", // Admin dashboard
+                "http://localhost:5174" // Merchant dashboard
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

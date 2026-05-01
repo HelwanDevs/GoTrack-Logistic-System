@@ -37,15 +37,11 @@ public class JwtService {
     }
 
     public Claims extractAllClaims(String token) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(secretKeyStr.getBytes()))
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (Exception e) {
-            throw new JwtException("Invalid token");
-        }
+        return Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secretKeyStr.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     public String extractUsername(String token) {
@@ -62,8 +58,9 @@ public class JwtService {
             return false;
         }
         // }
-        // public boolean isTokenExpired(String token) {
-        // return extractAllClaims(token).getExpiration().before(new Date());
-        // }
+    }
+
+    public boolean isTokenExpired(String token) {
+        return extractAllClaims(token).getExpiration().after(new Date());
     }
 }
