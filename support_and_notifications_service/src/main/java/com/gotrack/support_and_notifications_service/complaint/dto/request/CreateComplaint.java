@@ -1,5 +1,7 @@
 package com.gotrack.support_and_notifications_service.complaint.dto.request;
 
+import com.gotrack.support_and_notifications_service.notification.entity.NotificationChannel;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -24,4 +26,6 @@ public class CreateComplaint {
     @NotBlank(message = "Subject or content missing")
     @Size(max = 4000, message = "Content is too long")
     private String content;
+
+    private NotificationChannel channel;
 }

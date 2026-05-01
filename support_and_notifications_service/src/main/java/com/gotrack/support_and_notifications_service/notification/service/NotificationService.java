@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.gotrack.support_and_notifications_service.error.ResourceNotFoundException;
 import com.gotrack.support_and_notifications_service.eventWrapper.WEventPublisher;
+import com.gotrack.support_and_notifications_service.notification.entity.NotificationChannel;
 import com.gotrack.support_and_notifications_service.notification.entity.Notifications;
 import com.gotrack.support_and_notifications_service.notification.event.NotificationCreated;
 import com.gotrack.support_and_notifications_service.notification.mapper.NotificationMapper;
@@ -27,16 +28,17 @@ public class NotificationService {
     @Autowired
     private CurrentUserService user;
 
-    public Notifications createNotification(String profileId, String message, String channel) {
-        Notifications noti = mapper.toNotificationMessage(profileId, message);
-        noti.setChannel(channel);
+    public Notifications createNotification(String profileId, String message, NotificationChannel channel,
+            String email) {
+        Notifications noti = mapper.toNotificationMessage(profileId, message, channel);
         noti.setSentAt(Instant.now());
         Notifications saved = repo.save(noti);
         eventPublisher.publish(new NotificationCreated(
                 saved.getId(),
                 saved.getProfileId(),
                 saved.getMessage(),
-                saved.getChannel()));
+                saved.getChannel(),
+                email));
         return saved;
     }
 
@@ -45,7 +47,7 @@ public class NotificationService {
         return repo.findByProfileIdOrderBySentAtDesc(profileId);
     }
 
-    public Notifications createAdminNotification(String profileId, String message, String channel) {
+    public Notifications createAdminNotification(String profileId, String message, NotificationChannel channel) {
 
         Notifications notification = Notifications.builder()
                 .profileId(profileId)

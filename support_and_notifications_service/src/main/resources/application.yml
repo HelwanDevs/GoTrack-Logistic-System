@@ -4,6 +4,20 @@ spring:
   mongodb:
       uri: mongodb+srv://goTrackNotificationUsername:u-EvhFaiBUetCJ3@gotrack.pefntiy.mongodb.net/notifications
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: springyboots@gmail.com
+    password: pmjbauobjyyayece
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+
   docker:
     compose:
       enabled: false

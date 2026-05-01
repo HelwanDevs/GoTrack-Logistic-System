@@ -26,4 +26,12 @@ public class CurrentUserService {
                 .orElse("UNKNOWN");
     }
 
+    public String getUserEmail() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new RuntimeException("No authenticated user found");
+        }
+        return (String) auth.getDetails();
+    }
+
 }

@@ -1,7 +1,6 @@
 package com.gotrack.support_and_notifications_service.complaint.service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +43,14 @@ public class ComplaintService implements ComplaintServiceInt {
     @Override
     public ComplaintCreated createComplaint(CreateComplaint request) {
         String profileId = user.getCurrentUserId();
-
+        String email = user.getUserEmail();
         if (request.getShipmentId() != null) {
             shipment.checkShipmentExists(request.getShipmentId());
         }
 
         Complaint complaint = Complaint.builder()
                 .profileId(profileId)
+                .email(email)
                 .shipmentId(request.getShipmentId())
                 .subject(request.getSubject())
                 .content(request.getContent())
@@ -59,13 +59,9 @@ public class ComplaintService implements ComplaintServiceInt {
                 .build();
 
         Complaint saved = repo.save(complaint);
-        eventPublisher.publish(new ComplaintSubmit(
-                saved.getId(),
-                profileId,
-                saved.getSubject(),
-                saved.getShipmentId()
-
-        ));
+        eventPublisher.publish(
+                new ComplaintSubmit(saved.getId(), profileId, email, saved.getSubject(), saved.getShipmentId(),
+                        request.getChannel()));
 
         return mapper.toCreatedResponse(saved);
     }
@@ -79,6 +75,7 @@ public class ComplaintService implements ComplaintServiceInt {
         if (request.getStatus() == null || request.getNote() == null || request.getNote().isBlank()) {
             throw new BadRequestException("Invalid status update");
         }
+        String email = complaint.getEmail();
 
         checkTransition.checkTransition(complaint.getStatus(), request.getStatus());
 
@@ -88,9 +85,7 @@ public class ComplaintService implements ComplaintServiceInt {
 
         eventPublisher.publish(new ComplaintStatusUpdateEvent(
                 updated.getId(),
-                updated.getProfileId(),
-                updated.getStatus(),
-                updated.getNote()));
+                updated.getProfileId(), email, updated.getStatus(), updated.getNote(), request.getChannel()));
 
         return ComplaintStatusUpdate.builder()
                 .message("Complaint status updated")

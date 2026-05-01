@@ -27,7 +27,7 @@ public class Notifications {
 
     private String message;
 
-    private String channel;
+    private NotificationChannel channel;
 
     @CreatedDate
     private Instant sentAt;

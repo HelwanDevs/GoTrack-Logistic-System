@@ -1,20 +1,18 @@
 package com.gotrack.support_and_notifications_service.notification.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
+import com.gotrack.support_and_notifications_service.notification.entity.NotificationChannel;
 import com.gotrack.support_and_notifications_service.notification.entity.Notifications;
 
-@Component
-public class NotificationMapper {
+@Mapper(componentModel = "spring")
+public interface NotificationMapper {
 
-    public Notifications toNotificationMessage(String profileId, String message) {
-
-        return Notifications.builder()
-                .profileId(profileId)
-                .message(message)
-                .channel("SMS")
-                .isRead(false)
-                .build();
-    }
+    @Mapping(target = "profileId", source = "profileId")
+    @Mapping(target = "message", source = "message")
+    @Mapping(target = "channel", source = "channel")
+    @Mapping(target = "isRead", constant = "false")
+    Notifications toNotificationMessage(String profileId, String message, NotificationChannel channel);
 
 }

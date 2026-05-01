@@ -10,13 +10,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gotrack.support_and_notifications_service.notification.dto.AdminNotificationRequest;
 import com.gotrack.support_and_notifications_service.notification.entity.Notifications;
 import com.gotrack.support_and_notifications_service.notification.service.NotificationService;
 import com.gotrack.support_and_notifications_service.user.CurrentUserService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -35,15 +38,14 @@ public class NotificationController {
 
     @PostMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Notifications> createAdminNotification(@RequestParam String profileId,
-            @RequestParam String message,
-            @RequestParam(defaultValue = "IN_APP") String channel) {
-        Notifications notification = service.createAdminNotification(profileId, message, channel);
+    public ResponseEntity<Notifications> createAdminNotification(@Valid @RequestBody AdminNotificationRequest request) {
+        Notifications notification = service.createAdminNotification(request.getProfileId(), request.getMessage(),
+                request.getChannel());
         return ResponseEntity.ok(notification);
     }
 
     @PutMapping("/{id}/read")
-    public ResponseEntity<?> markAsRead(@PathVariable String notificationId) {
+    public ResponseEntity<?> markAsRead(@PathVariable("id") String notificationId) {
         String profileId = currentUserService.getCurrentUserId();
 
         service.markAsRead(notificationId, profileId);

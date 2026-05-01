@@ -20,5 +20,5 @@ public interface ComplaintRepo extends MongoRepository<Complaint, String> {
 
     List<Complaint> findBySubjectContainingIgnoreCaseOrderByCreatedAtDesc(String subject);
 
-    List<Complaint> findByShipmentIdOrderByCreatedAtDesc(String shipmentId);
+    List<Complaint> findByShipmentIdOrderByCreatedAtDesc(Long shipmentId);
 }

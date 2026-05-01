@@ -1,28 +1,27 @@
-package com.gotrack.support_and_notifications_service.complaint.dto.request;
+package com.gotrack.support_and_notifications_service.notification.dto;
 
-import com.gotrack.support_and_notifications_service.complaint.entity.ComplaintStatus;
 import com.gotrack.support_and_notifications_service.notification.entity.NotificationChannel;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateComplaintStatus {
+public class AdminNotificationRequest {
 
-    @NotNull(message = "Invalid status update")
-    private ComplaintStatus status;
+    @NotBlank(message = "Profile ID is required")
+    private String profileId;
 
-    @NotBlank(message = "Invalid status update")
-    private String note;
+    @NotBlank(message = "Message is required")
+    private String message;
 
+    @NotNull(message = "Notification channel is required")
     private NotificationChannel channel;
+
 }

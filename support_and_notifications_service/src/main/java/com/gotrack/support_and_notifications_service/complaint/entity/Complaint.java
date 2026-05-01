@@ -35,6 +35,7 @@ public class Complaint {
     private ComplaintStatus status;
 
     private String note;
+    private String email;
 
     @CreatedDate
     private Instant createdAt;
