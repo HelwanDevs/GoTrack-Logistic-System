@@ -54,7 +54,7 @@ export const SettingsPage = () => {
 
   if (!currentUser) {
     return (
-      <main className="flex-1 mr-0 md:mr-64 p-6 lg:p-10 flex flex-col gap-8">
+      <main className="flex-1 mr-0 p-6 lg:p-10 flex flex-col gap-8">
         <div className="text-center py-12">
           <p className="text-error text-body-md">
             خطأ: لم يتم العثور على بيانات المستخدم
@@ -185,7 +185,7 @@ export const SettingsPage = () => {
   };
 
   return (
-    <main className="flex-1 mr-0 md:mr-64 p-6 lg:p-10 flex flex-col gap-8">
+    <main className="flex-1 mr-0 p-6 lg:p-10 flex flex-col gap-8">
       <Header title="الإعدادات" subtitle="إدارة بيانات حسابك الشخصية" />
 
       {/* Account Info Card */}
