@@ -12,8 +12,6 @@ public interface BranchService {
 
     List<BranchEntity> search(String name, String location , Boolean isDeleted);
 
-    boolean isExists(Long id);
-
     BranchEntity updateBranch(BranchEntity branchEntity);
 
     void delete(Long id);

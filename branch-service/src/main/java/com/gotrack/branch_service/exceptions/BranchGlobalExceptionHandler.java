@@ -27,6 +27,19 @@ public class BranchGlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(response);
     }
+
+
+    @ExceptionHandler(BranchBadRequestException.class)
+    public ResponseEntity<Map<String, Object>> handleBadRequest(BranchBadRequestException ex) {
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", 400);
+        response.put("error", "Bad Request");
+        response.put("message", ex.getMessage());
+
+        return ResponseEntity.status(400).body(response);
+    }
+
     @ExceptionHandler(BranchNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleNotFound(BranchNotFoundException ex) {
 
@@ -49,8 +62,10 @@ public class BranchGlobalExceptionHandler {
         return ResponseEntity.status(409).body(response);
     }
 
+
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGeneral(Exception ex) {
+    public ResponseEntity<Map<String, Object>> handleGeneral() {
 
         Map<String, Object> response = new HashMap<>();
         response.put("status", 500);

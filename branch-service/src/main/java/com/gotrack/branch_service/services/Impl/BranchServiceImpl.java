@@ -11,9 +11,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 
 @Service
 public class BranchServiceImpl implements BranchService {
@@ -26,8 +23,7 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public BranchEntity createBranch(BranchEntity branchEntity) {
-        if ((branchEntity.getPhone() != null &&
-                branchRepository.existsByPhoneAndIsDeletedFalse(branchEntity.getPhone()))) {
+        if (branchRepository.existsByPhoneAndIsDeletedFalse(branchEntity.getPhone())) {
             throw new BranchConflictException("Phone already in use by another branch");
         }
         return branchRepository.save(branchEntity);
@@ -35,10 +31,7 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public List<BranchEntity> findAll() {
-        return StreamSupport.stream(branchRepository
-                        .findAll()
-                        .spliterator(), false)
-                .collect(Collectors.toList());
+        return branchRepository.findAll();
     }
 
     @Override
@@ -68,11 +61,6 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public boolean isExists(Long id) {
-        return branchRepository.existsById(id);
-    }
-
-    @Override
     public BranchEntity updateBranch(BranchEntity branchEntity) {
 
         BranchEntity existingBranch = branchRepository.findById(branchEntity.getId())
@@ -97,7 +85,9 @@ public class BranchServiceImpl implements BranchService {
     public void delete(Long id) {
         BranchEntity branch = branchRepository.findById(id)
                 .orElseThrow(() -> new BranchNotFoundException("Branch not found"));
-
+        if (Boolean.TRUE.equals(branch.getIsDeleted())) {
+            throw new BranchBadRequestException("Branch already deleted");
+        }
         branch.setIsDeleted(true);
         branchRepository.save(branch);
     }
