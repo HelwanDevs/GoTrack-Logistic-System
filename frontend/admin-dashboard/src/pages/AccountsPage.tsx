@@ -331,21 +331,6 @@ export const AccountsPage = () => {
     return roleMap[role];
   };
 
-  const getRoleBadgeColor = (
-    role: UserRole,
-  ): "primary" | "secondary" | "error" => {
-    switch (role) {
-      case UserRole.ADMIN:
-        return "primary";
-      case UserRole.EMPLOYEE:
-        return "secondary";
-      case UserRole.MERCHANT:
-        return "error";
-      default:
-        return "primary";
-    }
-  };
-
   return (
     <main className="flex-1 p-6 lg:p-10 flex flex-col gap-8">
       <Header
