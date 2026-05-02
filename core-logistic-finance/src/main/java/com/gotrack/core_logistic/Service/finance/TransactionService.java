@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gotrack.core_logistic.ExceptionHandling.ConflictException;
+import com.gotrack.core_logistic.ExceptionHandling.ResourceNotFoundException;
 import com.gotrack.core_logistic.mapper.FinancialSummaryMapper;
 import com.gotrack.core_logistic.mapper.TransactionMapper;
 import com.gotrack.core_logistic.model.dto.FinancialSummaryDTO;
@@ -41,12 +43,14 @@ public class TransactionService {
     BigDecimal amount = request.getAmount();
 
     Wallet fromWallet = walletRepo.findByProfileId(request.getTransacteFrom())
-        .orElseThrow(() -> new RuntimeException("Sender not found"));
+        .orElseThrow(() -> new ResourceNotFoundException("Sender not found"));
 
     Wallet toWallet = walletRepo.findByProfileId(request.getTransacteTo())
-        .orElseThrow(() -> new RuntimeException("Receiver not found"));
+        .orElseThrow(() -> new ResourceNotFoundException("Receiver not found"));
 
-    
+    if(fromWallet.getBalance().compareTo(amount) < 0){
+        throw new ConflictException("Insufficient balance");
+    }
     
     fromWallet.setBalance(fromWallet.getBalance().subtract(amount));
     toWallet.setBalance(toWallet.getBalance().add(amount));
@@ -57,11 +61,8 @@ public class TransactionService {
 
     Transaction transaction = transactionMapper.toEntity(request);
     transaction.setWallet(fromWallet);
-
     Transaction savedTransaction = transactionRepo.save(transaction);
-
     financeService.calculate(request);
-
     return transactionMapper.toDTO(savedTransaction);
 }
     
@@ -71,7 +72,7 @@ public class TransactionService {
     public  FinancialSummaryDTO ReportTransaction(){
 
     FinancialSummary finance = financeRepo.findTopByOrderByIdDesc()
-        .orElseThrow(() -> new RuntimeException("No Financial Summary Found"));
+        .orElseThrow(() -> new ResourceNotFoundException("No Financial Summary Found"));
 
     return financialMapper.toDTO(finance);
 }

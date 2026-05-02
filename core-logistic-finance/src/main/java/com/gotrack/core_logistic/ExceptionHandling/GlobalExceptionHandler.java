@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
                 errors.put(err.getField(), err.getDefaultMessage())
         );
 
-        return buildResponse("VALIDATION_ERROR", "Invalid input data", HttpStatus.BAD_REQUEST);
+        return buildResponse("VALIDATION_ERROR", "Invalid input data: "+ errors.toString(), HttpStatus.BAD_REQUEST);
     }
 
     // 400 (Bad Request)

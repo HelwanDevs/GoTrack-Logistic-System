@@ -29,9 +29,10 @@ public class PickupRequestDTO {
     private LocalDateTime pickupTime;
 
     @NotBlank(message = "Receiver name is required") 
-    @Pattern(regexp="^[a-zA-Z]+$", message="Receiver name must contain only letters")
+    @Pattern(regexp="^[a-zA-Z]+( [a-zA-Z]+)*$", 
+         message="Receiver name must contain only letters and single spaces between words")
     private String receiverName;
-
+    
     @NotBlank(message = "Receiver contact is required")
     @Pattern(regexp="^[0-9]+$", message="Receiver contact must contain only numbers")
     private String receiverContact;

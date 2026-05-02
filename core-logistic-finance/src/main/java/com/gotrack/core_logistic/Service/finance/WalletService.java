@@ -1,10 +1,14 @@
 package com.gotrack.core_logistic.Service.finance;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.gotrack.core_logistic.ExceptionHandling.ResourceNotFoundException;
 import com.gotrack.core_logistic.mapper.TransactionMapper;
 import com.gotrack.core_logistic.mapper.WalletMapper;
 import com.gotrack.core_logistic.model.dto.TransactionDTO;
@@ -23,18 +27,19 @@ public class WalletService {
       TransactionMapper transactionMapper;
 
 
-        public List<WalletDTO> GetAllWallets() {
-        List<Wallet> Wallets = walletRepo.findAll();
-        return Wallets.stream().map(walletMapper :: toDto).toList();
-        }
+        public Page<WalletDTO> getAllWallets(Pageable pageable) {
+         return walletRepo.findAll(pageable)
+              .map(walletMapper::toDto);
+}
 
        
         public WalletDTO GetMyWallets(Long id) {
             Wallet wallet = walletRepo.findByProfileId(id)
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found for profile id: " + id));
                 
                 List<TransactionDTO> transactions = wallet.getTransactions().stream()
                     .map(transactionMapper :: toDTO)
+                    .sorted(Comparator.comparing(TransactionDTO::getCreatedAt).reversed())
                     .limit(10) 
                     .toList();
  

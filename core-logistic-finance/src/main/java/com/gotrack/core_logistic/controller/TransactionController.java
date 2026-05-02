@@ -12,6 +12,8 @@ import com.gotrack.core_logistic.Service.finance.TransactionService;
 import com.gotrack.core_logistic.model.dto.FinancialSummaryDTO;
 import com.gotrack.core_logistic.model.dto.TransactionDTO;
 
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/api/finance/transactions")
@@ -21,7 +23,7 @@ public class TransactionController {
     TransactionService transactionService;    
     
     @PostMapping
-    public ResponseEntity<TransactionDTO> createTransaction (@RequestBody TransactionDTO request) {
+    public ResponseEntity<TransactionDTO> createTransaction (@Valid @RequestBody TransactionDTO request) {
          TransactionDTO response = transactionService.createTransaction(request);
             return ResponseEntity.ok(response);
     }
