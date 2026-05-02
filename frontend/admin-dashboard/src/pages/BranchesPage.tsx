@@ -20,68 +20,103 @@ import {
 } from "@/features/accounts";
 
 export const BranchesPage = () =>{
-    //  {const headers =[
-    //                     {
-    //                         id: 1,
-    //                         KEY: "NAME",
-    //                         Label :"Name"
-    //                     },
-    //                     {
-    //                         id: 2,
-    //                         KEY: "LOCATION",
-    //                         Label:"Location"
-    //                     },
-    //                     {
-    //                         id:3,
-    //                         KEY: "PHONE",
-    //                         Label: "Phone"
-    //                     },
-    //                     {
-    //                         id: 4,
-    //                         KEY: "DEL",
-    //                         Label: "Del"
-    //                     },
-    //                     {
-    //                         id:5,
-    //                         KEY:"EDIT",
-    //                         Label:"Edit"
-    //                     }
-    //                 ]}
+     const headers =[
+                        {
+                            id: 1,
+                            KEY: "NAME",
+                            Label :"Name"
+                        },
+                        {
+                            id: 2,
+                            KEY: "LOCATION",
+                            Label:"Location"
+                        },
+                        {
+                            id:3,
+                            KEY: "PHONE",
+                            Label: "Phone"
+                        },
+                        {
+                            id: 4,
+                            KEY: "DEL",
+                            Label: "Del"
+                        },
+                        {
+                            id:5,
+                            KEY:"EDIT",
+                            Label:"Edit"
+                        }
+                    ]
 
-    // {const [testData,setTestData] =useState([
-    // {
-    // id:1 ,
-    // NAME: "branch1",
-    // LOCATION: "Helwan" ,
-    // PHONE:"123" ,
-    //     DEL: "no" ,
-    // },
-    // {
-    //     id:2 ,
-    //     NAME:"branche2" ,
-    //     LOCATION:"makram" ,
-    //     PHONE:"456" ,
-    //     DEL:"yes" ,
-    // },
-    // {
-    //     id: 3,
-    //     NAME:"Branch3" ,
-    //     LOCATION:"shobra" ,
-    //     PHONE: "789" ,
-    //     DEL: "no" ,
-    // }
-    // ])}
-    // {const data = testData}
+
+
+
+                    //backup display table        
+                    /* {testData.map((row,) => (
+                       <tr key={index}>
+                            {headers.map((header,index)=>{
+                                return(
+                                    <td key ={index}>
+                                        {row[header.KEY]}
+                                    </td>
+                                )
+                            })}
+                       </tr> 
+                        ))} */
+
+
+    const [testData,setTestData] =useState([
+    {
+    id:1 ,
+    NAME: "branch1",
+    LOCATION: "Helwan" ,
+    PHONE:"123123123" ,
+        DEL: false ,
+    },
+    {
+        id:2 ,
+        NAME:"branche2" ,
+        LOCATION:"makram" ,
+        PHONE:"456456456" ,
+        DEL:true ,
+    },
+    {
+        id: 3,
+        NAME:"Branch3" ,
+        LOCATION:"shobra" ,
+        PHONE: "789789798" ,
+        DEL: false ,
+    }
+    ])
+    const data = testData
+
+
+    const[showForm,setShowForm] = useState(false);
+    const showFormFun = (e) => {
+        setShowForm(true)
+    }
+    const hideFormFun = (e) =>{
+        setShowForm(false)
+    }
+    const locations = ["helwan","makram","shobra","rehab"];
+    const [deletedFilter, setDeletedFilter] = useState(false);
     return(
         <main className="flex-1 p-6 lg:p-10 flex flex-col gap-8">
             <Header
              title="Branch management"
              subtitle="add and update branch info"
+             actions ={
+                <Button
+                variant="primary"
+                size="sm"
+                onClick={showFormFun}
+                >Add New Branch+</Button>
+             }
              >
 
              </Header>
              {/* new branch form */}
-             <Card className="bg-surface-container-low border-2 border-secondary-container/20"> 
+             {showForm && <Card className="newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
                 <Header className="font-headline-md text-headline-md text-on-background mb-6" title="Add new branch"></Header>
                 <form>
                     <div>
@@ -106,21 +141,58 @@ export const BranchesPage = () =>{
                 <Button
                 type="button"
                 variant="outline"
-                size="md">Cancle</Button>
+                size="md"
+                onClick={hideFormFun}>Cancle</Button>
                </div>
               
               </form>
-             </Card>
+             </Card>}
              {/* add the filter here */}
              <Card>
                 <div className = "mb-6">
                     <h3 className="font-headline-md text-headline-md text-on-background mb-1">
                         Filter Branches
                     </h3>
+                     <p className="text-body-sm text-on-surface-variant">
+            Number of branches : 1
+          </p>
                 </div>
                 <div className="mb-6 space-y-4 p-4 bg-surface-container-low rounded-lg">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                         <div className="col-span-1 md:col-span-4"></div>
+                         <div className="col-span-1 md:col-span-4">
+                            <label>search branch name</label>
+                            <Input type="text" placeholder="branch name"></Input>
+                         </div>
+
+                         <div className="col-span-1 md:col-span-4">
+                            <label>Search branch location</label>
+                            <Select options={locations}></Select>
+                         </div>
+                         <div className= "col-span-1 md:col-span-2 flex items-center">
+                             <Checkbox
+                label="تضمين المحذوف"
+                checked={deletedFilter}
+                size="3xl"
+                onChange={(e) => {
+                  setDeletedFilter(e.target.checked)
+                }}
+              />
+                         </div>
+
+                          <div className="col-span-1 md:col-span-2 flex items-end">
+              <Button
+                variant="outline"
+                size="md"
+                fullWidth
+                // onClick={() => {
+                //   setEmailSearch("");
+                //   setRoleFilter("");
+                //   setPage(0);
+                // }}
+              >
+                إعادة تعيين الفلاتر
+              </Button>
+            </div>
                     </div>
                 </div>
              </Card>
@@ -154,20 +226,45 @@ export const BranchesPage = () =>{
                   </th>
                         </tr>
                      </thead>
-                     {/* <tbody>
-                        {testData.map((row,index) => (
-                       <tr key={index}>
-                            {headers.map((header,index)=>{
-                                return(
-                                    <td key ={index}>
-                                        {row[header.KEY]}
-                                    </td>
-                                )
-                            })}
-                       </tr> 
-                        ))}
-                     </tbody> */}
                      <tbody>
+
+                        {testData.map((data) =>(
+                            <tr 
+                             key={data.id}
+                              className="border-b border-surface-variant hover:bg-surface-container-low transition">
+                                <td className="p-4">
+                                    <p className="text-body-md text-on-surface">{data.NAME}</p>
+                                </td>
+
+                                <td className="p-4">
+                                    <p className="text-body-md text-on-surface">{data.LOCATION}</p>
+                                </td>
+
+                                <td className="p-4">
+                                    <span className= " p-2 rounded-full bg-secondary-container text-on-primary">{data.PHONE} </span>
+                                </td>
+                                <td className="p-4">
+                                   <span
+                        className={`px-4 py-1 rounded-full ${data.DEL ? "bg-error text-on-error" : "bg-surface-variant text-on-surface-variant"}`}
+                      > {data.DEL ? "نعم" : "لا"}</span>
+                                </td>
+                                <td className="p-4">
+                                    <div className="flex gap-2">
+                                    <Button
+                                    variant="secondary"
+                                    size="sm">Edit</Button>
+                                
+                                 
+                                    <Button
+                                    variant="outline"
+                                    size="sm">delete</Button>
+                                    </div>
+                                </td>
+                              </tr>
+                        ))}
+
+                     </tbody>
+                     {/* <tbody>
                         <tr className="border-b border-surface-variant hover:bg-surface-container-low transition">
                             <td className="p-4">test name</td>
                             <td className="p-4">Helwan</td>
@@ -188,7 +285,7 @@ export const BranchesPage = () =>{
                               size="sm"> delete</Button> </div>
                             </td>
                         </tr>
-                     </tbody>
+                     </tbody> */}
                  </table>
              </Card>
         </main>
