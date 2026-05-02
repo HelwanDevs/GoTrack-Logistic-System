@@ -63,13 +63,6 @@ export const Sidebar = () => {
       Roles: ["admin", "employee"],
     },
     {
-      id: "tracking",
-      label: "تتبع مباشر",
-      icon: "🗺️",
-      onClick: () => setActiveNav("tracking"),
-      Roles: ["admin", "employee"],
-    },
-    {
       id: "reports",
       label: "التقارير",
       icon: "📈",
