@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gotrack.support_and_notifications_service.complaint.entity.ComplaintStatus;
 import com.gotrack.support_and_notifications_service.notification.dto.AdminNotificationRequest;
 import com.gotrack.support_and_notifications_service.notification.entity.Notifications;
 import com.gotrack.support_and_notifications_service.notification.service.NotificationService;
@@ -31,8 +33,9 @@ public class NotificationController {
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<Notifications>> getMyNotifications() {
-        List<Notifications> notifications = service.getNotificationsForProfile();
+    public ResponseEntity<List<Notifications>> getMyNotifications(@RequestParam(required = false) Boolean readStatus) {
+        // i'll make it if null then get all, 1 for read, 0 for unread
+        List<Notifications> notifications = service.getNotificationsForProfile(readStatus);
         return ResponseEntity.ok(notifications);
     }
 
@@ -53,5 +56,15 @@ public class NotificationController {
 
         return ResponseEntity.ok(
                 Map.of("message", "Notification marked as read"));
+    }
+
+    @PutMapping("/{id}/unread")
+    public ResponseEntity<?> markAsUnread(@PathVariable("id") String notificationId) {
+        String profileId = currentUserService.getCurrentUserId();
+
+        service.markAsUnread(notificationId, profileId);
+
+        return ResponseEntity.ok(
+                Map.of("message", "Notification marked as unread"));
     }
 }

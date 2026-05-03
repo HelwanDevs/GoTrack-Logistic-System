@@ -9,4 +9,8 @@ public class UserRepo {
 
         return true;
     }
+
+    public String getEmailByProfileId(String profileId) {
+        return "profile" + profileId + "@example.com";
+    }
 }

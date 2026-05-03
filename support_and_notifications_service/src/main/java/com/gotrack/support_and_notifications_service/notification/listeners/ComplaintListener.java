@@ -21,8 +21,11 @@ public class ComplaintListener {
     @Async
     @EventListener
     public void handleComplaintSubmitEvent(ComplaintSubmit event) {
-        String message = String.format("New complaint submitted: %s (Shipment ID: %d)", event.getSubject(),
-                event.getShipmentId());
+        String message = "New complaint submitted: " + event.getSubject();
+        if (event.getShipmentId() != null) {
+            message += " for shipment " + event.getShipmentId();
+        }
+
         List<NotificationChannel> channels = (event.getChannel() != null && !event.getChannel().isEmpty())
                 ? event.getChannel()
                 : List.of(NotificationChannel.IN_APP);

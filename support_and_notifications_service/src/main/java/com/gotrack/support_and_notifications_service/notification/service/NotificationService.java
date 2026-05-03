@@ -45,15 +45,28 @@ public class NotificationService {
         return saved;
     }
 
-    public List<Notifications> getNotificationsForProfile() {
+    public List<Notifications> getNotificationsForProfile(Boolean isRead) {
         String profileId = user.getCurrentUserId();
-        return repo.findByProfileIdOrderBySentAtDesc(profileId);
+        if (isRead == null) {
+            return repo.findByProfileIdOrderBySentAtDesc(profileId);
+        }
+        return repo.findByProfileIdAndIsReadOrderBySentAtDesc(profileId, isRead);
     }
 
     public List<Notifications> createAdminNotification(String profileId, String message,
             List<NotificationChannel> channels, String email) {
 
         checkUser.checkUserExists(profileId);
+
+        System.out.println("email before: " + email);
+        if (email == null || email.isBlank()) {
+            email = checkUser.getUserEmailById(profileId);
+        }
+        System.out.println("email after: " + email);
+
+        if (channels == null || channels.isEmpty()) {
+            channels = List.of(NotificationChannel.IN_APP);
+        }
 
         List<Notifications> noti = new ArrayList<>();
         for (NotificationChannel channel : channels) {
@@ -93,6 +106,18 @@ public class NotificationService {
         }
 
         noti.setRead(true);
+        repo.save(noti);
+    }
+
+    public void markAsUnread(String notificationId, String profileId) {
+        checkUser.checkUserExists(profileId);
+        Notifications noti = repo.findById(notificationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Notification " + notificationId + " not found"));
+        if (!noti.getProfileId().equals(profileId)) {
+            throw new AccessDeniedException("Not allowed");
+        }
+
+        noti.setRead(false);
         repo.save(noti);
     }
 

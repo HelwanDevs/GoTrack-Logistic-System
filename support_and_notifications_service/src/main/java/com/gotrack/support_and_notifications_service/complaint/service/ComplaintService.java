@@ -42,6 +42,8 @@ public class ComplaintService implements ComplaintServiceInt {
     @Transactional
     @Override
     public ComplaintCreated createComplaint(CreateComplaint request) {
+        System.out.println("Creating complaint with: " + request.getContent() + ", " + request.getSubject() + ", "
+                + request.getShipmentId() + ", " + request.getChannel());
         String profileId = user.getCurrentUserId();
         String email = user.getUserEmail();
         if (request.getShipmentId() != null) {

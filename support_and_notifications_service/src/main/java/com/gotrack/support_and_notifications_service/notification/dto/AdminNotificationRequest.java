@@ -26,7 +26,6 @@ public class AdminNotificationRequest {
     @NotNull(message = "Notification channel is required")
     private List<NotificationChannel> channel;
 
-    @NotBlank(message = "Email is required")
     private String email;
 
 }

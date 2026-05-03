@@ -17,4 +17,11 @@ public class CheckUser {
         }
 
     }
+
+    public String getUserEmailById(String profileId) {
+
+        checkUserExists(profileId);
+        return repo.getEmailByProfileId(profileId);
+
+    }
 }
