@@ -317,7 +317,7 @@ export const ProfilesTable = ({
                             branch_id: branch ? branch.id : null,
                           });
                         }}
-                        className="w-37.5"
+                        className="w-37.5!"
                         onSelect={handleBranchSelect}
                         onClear={handleBranchClear}
                         hasClear
