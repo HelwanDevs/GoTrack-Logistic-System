@@ -3,6 +3,8 @@ package com.gotrack.support_and_notifications_service.shipment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gotrack.support_and_notifications_service.error.ResourceNotFoundException;
+
 @Service
 public class CheckShipment {
     @Autowired
@@ -10,7 +12,7 @@ public class CheckShipment {
 
     public void checkShipmentExists(Long shipmentId) {
         if (!repo.existsById(shipmentId)) {
-            throw new IllegalArgumentException("Shipment with ID " + shipmentId + " does not exist.");
+            throw new ResourceNotFoundException("Shipment " + shipmentId + " does not exist");
         }
     }
 

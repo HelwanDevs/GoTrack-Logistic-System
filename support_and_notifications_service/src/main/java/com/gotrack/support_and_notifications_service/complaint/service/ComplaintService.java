@@ -70,7 +70,7 @@ public class ComplaintService implements ComplaintServiceInt {
     @Override
     public ComplaintStatusUpdate updateComplaintStatus(String complaintId, UpdateComplaintStatus request) {
         Complaint complaint = repo.findById(complaintId)
-                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Complaint " + complaintId + " not found"));
 
         if (request.getStatus() == null || request.getNote() == null || request.getNote().isBlank()) {
             throw new BadRequestException("Invalid status update");

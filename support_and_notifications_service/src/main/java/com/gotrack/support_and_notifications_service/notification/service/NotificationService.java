@@ -1,5 +1,6 @@
 package com.gotrack.support_and_notifications_service.notification.service;
 
+import com.gotrack.support_and_notifications_service.user.CheckUser;
 import java.time.Instant;
 import java.util.List;
 
@@ -19,6 +20,8 @@ import com.gotrack.support_and_notifications_service.error.*;
 @Service
 public class NotificationService {
 
+    @Autowired
+    private CheckUser checkUser;
     @Autowired
     private NotificationRepo repo;
     @Autowired
@@ -49,6 +52,7 @@ public class NotificationService {
 
     public Notifications createAdminNotification(String profileId, String message, NotificationChannel channel) {
 
+        checkUser.checkUserExists(profileId);
         Notifications notification = Notifications.builder()
                 .profileId(profileId)
                 .message(message)
@@ -66,8 +70,9 @@ public class NotificationService {
     }
 
     public void markAsRead(String notificationId, String profileId) {
+        checkUser.checkUserExists(profileId);
         Notifications noti = repo.findById(notificationId)
-                .orElseThrow(() -> new ResourceNotFoundException("Notification not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Notification " + notificationId + " not found"));
         if (!noti.getProfileId().equals(profileId)) {
             throw new AccessDeniedException("Not allowed");
         }
