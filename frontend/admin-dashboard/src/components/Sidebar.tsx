@@ -82,7 +82,7 @@ export const Sidebar = () => {
   }, [activeNav]);
 
   return (
-    <nav className="sticky right-0 top-0 h-screen w-64 bg-primary-container flex-col z-40 border-l border-white/10 shadow-xl hidden md:flex">
+    <nav className="sticky right-0 top-0 h-screen w-64 min-w-64 bg-primary-container flex-col z-40 border-l border-white/10 shadow-xl hidden md:flex">
       {/* Logo Section */}
       <div className="p-6 flex flex-col items-center border-b  border-white/10 mb-10">
         <div className="flex items-center justify-center mb-4">
