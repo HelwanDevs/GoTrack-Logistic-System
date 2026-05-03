@@ -6,6 +6,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   helpText?: string;
   icon?: ReactNode;
   prefix?: string;
+  width?: string;
 }
 
 export const Input = ({
@@ -14,12 +15,12 @@ export const Input = ({
   helpText,
   icon,
   prefix,
+  width = "w-full",
   className = "",
   ...props
 }: InputProps) => {
-  const [value, setValue] = useState(props.value || "");
   return (
-    <div className="w-full">
+    <div className={width}>
       {label && (
         <label className="font-label-md text-label-md text-on-surface block mb-2">
           {label}
@@ -29,7 +30,7 @@ export const Input = ({
       )}
       <div className="relative">
         {prefix && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">
+          <div className="absolute left-2 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">
             {prefix}
           </div>
         )}
@@ -40,7 +41,7 @@ export const Input = ({
           {...props}
         />
         {icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
+          <div className="absolute left-2 top-1/2 -translate-y-1/2 text-on-surface-variant">
             {icon}
           </div>
         )}
