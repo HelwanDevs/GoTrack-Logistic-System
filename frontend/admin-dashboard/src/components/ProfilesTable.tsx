@@ -5,6 +5,7 @@ import { Input } from "@/components/Input";
 import { Select } from "@/components/Select";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { Pagination } from "@/components/Pagination";
+import { SearchableSelect } from "@/components/SearchableSelect";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -57,6 +58,7 @@ interface ProfilesTableProps {
   onDelete: (id: string) => void;
   onOpenLink: (profile: Profile) => void;
   isLoading: boolean;
+  branches: { id: string; name: string }[];
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -79,6 +81,11 @@ const getProfileStatusLabel = (status: ProfileStatus): string => {
   return map[status];
 };
 
+const getBranchName = (branchId: string | null, branches: { id: string; name: string }[]): string => {
+  const branch = branches.find((b) => b.id === branchId);
+  return branch ? branch.name : "غير مرتبط";
+};
+
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export const ProfilesTable = ({
@@ -97,6 +104,7 @@ export const ProfilesTable = ({
   onDelete,
   onOpenLink,
   isLoading,
+  branches,
 }: ProfilesTableProps) => {
   const paged = filtered.slice(searchPage * size, searchPage * size + size);
 
@@ -113,6 +121,23 @@ export const ProfilesTable = ({
     { value: ProfileStatus.ACTIVE, label: "نشط" },
     { value: ProfileStatus.INACTIVE, label: "غير نشط" },
   ];
+
+  const branchOptions = [
+    { value: "", label: "بدون فرع" },
+    ...branches.map((b) => ({ value: b.name, label: b.name })),
+  ];
+
+  const handleBranchSelect = (opt: { value: string; label: string }) => {
+    const branch = branches.find((b) => b.name === opt.label);
+    setEditForm({
+      ...editForm,
+      branch_id: branch ? branch.id : null,
+    });
+  };
+
+  const handleBranchClear = () => {
+    setEditForm({ ...editForm, branch_id: null });
+  };
 
   return (
     <Card>
@@ -151,6 +176,9 @@ export const ProfilesTable = ({
                   الحساب المرتبط
                 </th>
                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  الفرع
+                </th>
+                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
                   تاريخ الإنشاء
                 </th>
                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
@@ -174,7 +202,7 @@ export const ProfilesTable = ({
                             full_name: e.target.value,
                           })
                         }
-                        className="text-body-sm"
+                        className="text-body-sm w-50!"
                       />
                     ) : (
                       <p className="text-body-md text-on-surface">
@@ -186,23 +214,24 @@ export const ProfilesTable = ({
                   <td className="p-4">
                     {editingId === profile.id ? (
                       <Input
-                        value={editForm.phone_number}
-                        onChange={(e) => {
-                          if (/^\+?[0-9]*$/.test(e.target.value)) {
-                            setEditForm({
-                              ...editForm,
-                              phone_number: e.target.value,
-                            });
-                          } else {
-                            setEditForm((prev) => ({
-                              ...prev,
-                            }));
-                          }
-                        }}
-                        type="tel"
-                        className="text-body-sm pl-6"
-                        prefix="+"
-                      />
+                         value={editForm.phone_number}
+                         onChange={(e) => {
+                           if (/^\+?[0-9]*$/.test(e.target.value)) {
+                             setEditForm({
+                               ...editForm,
+                               phone_number: e.target.value,
+                             });
+                           } else {
+                             setEditForm((prev) => ({
+                               ...prev,
+                             }));
+                           }
+                         }}
+                         type="tel"
+                         className="text-body-sm pr-3!"
+                         prefix="+"
+                         width="w-40"
+                       />
                     ) : (
                       <p className="text-body-md text-on-surface">
                         {profile.phone_number}+
@@ -272,6 +301,30 @@ export const ProfilesTable = ({
                         }`}
                       >
                         {profile.account?.email || "غير مرتبط"}
+                      </span>
+                    )}
+                  </td>
+
+                  <td className="p-4">
+                    {editingId === profile.id ? (
+                      <SearchableSelect
+                        options={branchOptions}
+                        searchQuery={getBranchName(editForm.branch_id, branches)}
+                        setSearchQuery={(v) => {
+                          const branch = branches.find((b) => b.name === v);
+                          setEditForm({
+                            ...editForm,
+                            branch_id: branch ? branch.id : null,
+                          });
+                        }}
+                        className="w-37.5"
+                        onSelect={handleBranchSelect}
+                        onClear={handleBranchClear}
+                        hasClear
+                      />
+                    ) : (
+                      <span className="px-3 py-1 rounded-full text-label-md font-label-md bg-primary-container text-on-primary">
+                        {getBranchName(profile.branch_id, branches)}
                       </span>
                     )}
                   </td>

@@ -5,6 +5,7 @@ import { Input } from "@/components/Input";
 import { Select } from "@/components/Select";
 import { ProfileType, ProfileStatus } from "@/types/enums";
 import { AccountSearchDropdown } from "@/components/AccountSearchDropdown";
+import { SearchableSelect } from "@/components/SearchableSelect";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -24,6 +25,7 @@ interface ProfilesCreateFormProps {
   setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
   onSubmit: () => void;
   onCancel: () => void;
+  branches: { id: string; name: string }[];
 }
 
 interface AccountResult {
@@ -51,10 +53,10 @@ export const ProfilesCreateForm = ({
   setErrors,
   onSubmit,
   onCancel,
+  branches,
 }: ProfilesCreateFormProps) => {
   const [localErrors, setLocalErrors] = useState<Record<string, string>>({});
   const [accountSearchQuery, setAccountSearchQuery] = useState("");
-  const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const [linkedAccount, setLinkedAccount] = useState<AccountResult | null>(
     null,
   );
@@ -83,13 +85,27 @@ export const ProfilesCreateForm = ({
     setLinkedAccount(account);
     setForm({ ...form, account_id: account.id });
     setAccountSearchQuery(account.email);
-    setAccountDropdownOpen(false);
+    setAccountSearchQuery("");
   };
 
   const handleRemoveAccount = () => {
     setLinkedAccount(null);
     setForm({ ...form, account_id: null });
     setAccountSearchQuery("");
+  };
+
+  const branchOptions = [
+    { value: "", label: "بدون فرع" },
+    ...branches.map((b) => ({ value: b.name, label: b.name })),
+  ];
+
+  const handleBranchSelect = (opt: { value: string; label: string }) => {
+    const branch = branches.find((b) => b.name === opt.label);
+    setForm({ ...form, branch_id: branch ? branch.id : null });
+  };
+
+  const handleBranchClear = () => {
+    setForm({ ...form, branch_id: null });
   };
 
   const typeOptions = [
@@ -132,75 +148,107 @@ export const ProfilesCreateForm = ({
           error={errors.full_name || localErrors.full_name}
           required
         />
-
-        <Input
-          label="رقم الهاتف"
-          placeholder="501234567"
-          value={form.phone_number}
-          onChange={(e) => {
-            if (/^\+?[0-9]*$/.test(e.target.value)) {
-              setForm({ ...form, phone_number: e.target.value });
-              clearError("phone_number");
-            } else {
-              setLocalErrors((prev) => ({
-                ...prev,
-                phone_number: "رقم الهاتف يجب أن يحتوي على أرقام فقط",
-              }));
-            }
-          }}
-          className="pl-6"
-          type="tel"
-          error={errors.phone_number || localErrors.phone_number}
-          required
-          prefix="+"
-        />
-
-        <Select
-          label="النوع"
-          value={form.type}
-          onChange={(e) => {
-            setForm({ ...form, type: (e.target.value as ProfileType) || "" });
-            clearError("type");
-          }}
-          options={typeOptions}
-          error={errors.type || localErrors.type}
-          required
-        />
-
-        <Select
-          label="الحالة"
-          value={form.status}
-          onChange={(e) => {
-            setForm({
-              ...form,
-              status: (e.target.value as ProfileStatus) || "",
-            });
-            clearError("status");
-          }}
-          options={statusOptions}
-          error={errors.status || localErrors.status}
-          required
-        />
+        <div className="grid grid-cols-12 gap-3">
+          <div className="col-span-3">
+            <Input
+              label="رقم الهاتف"
+              placeholder="501234567"
+              value={form.phone_number}
+              onChange={(e) => {
+                if (/^\+?[0-9]*$/.test(e.target.value)) {
+                  setForm({ ...form, phone_number: e.target.value });
+                  clearError("phone_number");
+                } else {
+                  setLocalErrors((prev) => ({
+                    ...prev,
+                    phone_number: "رقم الهاتف يجب أن يحتوي على أرقام فقط",
+                  }));
+                }
+              }}
+              className="pl-6"
+              type="tel"
+              error={errors.phone_number || localErrors.phone_number}
+              required
+              prefix="+"
+            />
+          </div>
+          <div className="col-span-3">
+            <Select
+              label="النوع"
+              value={form.type}
+              onChange={(e) => {
+                setForm({
+                  ...form,
+                  type: (e.target.value as ProfileType) || "",
+                });
+                clearError("type");
+              }}
+              options={typeOptions}
+              error={errors.type || localErrors.type}
+              required
+            />
+          </div>
+          <div className="col-span-3">
+            <Select
+              label="الحالة"
+              value={form.status}
+              onChange={(e) => {
+                setForm({
+                  ...form,
+                  status: (e.target.value as ProfileStatus) || "",
+                });
+                clearError("status");
+              }}
+              options={statusOptions}
+              error={errors.status || localErrors.status}
+              required
+            />
+          </div>
+          <div className="col-span-3">
+            <SearchableSelect
+              options={branchOptions}
+              searchQuery={
+                form.branch_id
+                  ? branches.find((b) => b.id === form.branch_id)?.name || ""
+                  : ""
+              }
+              setSearchQuery={(v) => {
+                const branch = branches.find((b) => b.name === v);
+                setForm({ ...form, branch_id: branch ? branch.id : null });
+              }}
+              onSelect={handleBranchSelect}
+              onClear={handleBranchClear}
+              hasClear
+              label="الفرع"
+            />
+          </div>
+        </div>
 
         {/* ── Linked Account Dropdown ── */}
         {linkedAccount ? (
-          <div className="flex gap-3 items-start">
-            <div className="flex-1 p-3 bg-primary-container/20 border border-primary/30 rounded-lg">
-              <p className="text-body-sm text-on-surface">
-                <span className="font-label-md">{linkedAccount.email}</span> —{" "}
-                <span className="text-on-surface-variant">
-                  {linkedAccount.role}
-                </span>
-              </p>
+          <div>
+            <label className="font-label-md text-label-md text-on-surface block mb-2">
+              الحساب المرتبط
+            </label>
+            <div className="flex gap-3 items-start">
+              <div className="flex-1 p-3 bg-primary-container/20 border border-primary/30 rounded-lg">
+                <p className="text-body-sm text-on-surface">
+                  <span className="font-label-md">{linkedAccount.email}</span> —{" "}
+                  <span className="text-on-surface-variant">
+                    {linkedAccount.role}
+                  </span>
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                type="button"
+                onClick={handleRemoveAccount}
+                className="my-auto"
+              >
+                إزالة
+              </Button>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              type="button"
-              onClick={handleRemoveAccount}
-            >
-              إزالة
-            </Button>
           </div>
         ) : (
           <div>
@@ -211,8 +259,6 @@ export const ProfilesCreateForm = ({
               accounts={fakeAccounts}
               searchQuery={accountSearchQuery}
               setSearchQuery={setAccountSearchQuery}
-              dropdownOpen={accountDropdownOpen}
-              setDropdownOpen={setAccountDropdownOpen}
               onSelect={handleSelectAccount}
               placeholder="example@domain.com"
               selectedId={form.account_id || undefined}

@@ -86,6 +86,21 @@ const fakeProfiles: Profile[] = [
   },
 ];
 
+// ─── Fake Branch Data ────────────────────────────────────────────────────────
+
+interface Branch {
+  id: string;
+  name: string;
+}
+
+const fakeBranches: Branch[] = [
+  { id: "1", name: "الفرع الرئيسي" },
+  { id: "2", name: "فرع الشمال" },
+  { id: "3", name: "فرع الجنوب" },
+  { id: "4", name: "فرع الشرق" },
+  { id: "5", name: "فرع الغرب" },
+];
+
 // ─── Page Component ──────────────────────────────────────────────────────────
 
 export const ProfilesPage = () => {
@@ -125,6 +140,7 @@ export const ProfilesPage = () => {
   const [nameSearch, setNameSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<ProfileType | "">("");
   const [statusFilter, setStatusFilter] = useState<ProfileStatus | "">("");
+  const [branchFilter, setBranchFilter] = useState("");
   const [searchPage, setSearchPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
 
@@ -133,6 +149,10 @@ export const ProfilesPage = () => {
     if (nameSearch && !p.full_name.includes(nameSearch)) return false;
     if (typeFilter && p.type !== typeFilter) return false;
     if (statusFilter && p.status !== statusFilter) return false;
+    if (branchFilter) {
+      const branchName = fakeBranches.find((b) => b.id === p.branch_id)?.name;
+      if (branchName !== branchFilter) return false;
+    }
     return true;
   });
 
@@ -192,6 +212,7 @@ export const ProfilesPage = () => {
             phone_number: editForm.phone_number,
             type: editForm.type as ProfileType,
             status: editForm.status as ProfileStatus,
+            branch_id: editForm.branch_id,
           };
         }
         return p;
@@ -256,11 +277,12 @@ export const ProfilesPage = () => {
     setNameSearch("");
     setTypeFilter("");
     setStatusFilter("");
+    setBranchFilter("");
     setSearchPage(0);
   };
 
   return (
-    <main className="flex-1 p-6 lg:p-10 flex flex-col gap-8">
+    <main className="flex-1 p-6 flex flex-col gap-8">
       <Header
         title="إدارة الملفات الشخصية"
         subtitle="إنشاء وتعديل وإدارة ملفات المستخدمين"
@@ -307,6 +329,7 @@ export const ProfilesPage = () => {
             });
             setFormErrors({});
           }}
+          branches={fakeBranches}
         />
       )}
 
@@ -327,8 +350,14 @@ export const ProfilesPage = () => {
           setStatusFilter(v);
           setSearchPage(0);
         }}
+        branchFilter={branchFilter}
+        onBranchFilterChange={(v) => {
+          setBranchFilter(v);
+          setSearchPage(0);
+        }}
         onResetFilters={handleResetFilters}
         totalCount={filtered.length}
+        branches={fakeBranches}
       />
 
       {/* ── Table ── */}
@@ -349,6 +378,7 @@ export const ProfilesPage = () => {
         onDelete={handleDelete}
         onOpenLink={handleOpenLink}
         isLoading={false}
+        branches={fakeBranches}
       />
 
       {/* ── Link Account Modal ── */}
