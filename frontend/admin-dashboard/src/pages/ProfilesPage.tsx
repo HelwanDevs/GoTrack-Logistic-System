@@ -11,6 +11,10 @@ import {
 } from "../components/ProfilesTable";
 import { ProfilesLinkAccountModal } from "../components/ProfilesLinkAccountModal";
 import { ProfileAccount as ProfileAccountDisplaying } from "../components/ProfilesLinkAccountModal";
+import {
+  ProfilesNotifyModal,
+  type NotifyData,
+} from "../components/ProfilesNotifyModal";
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 interface Profile {
@@ -48,7 +52,7 @@ const fakeProfiles: Profile[] = [
     created_by: "system",
     status: ProfileStatus.ACTIVE,
     created_at: "2025-01-15T10:00:00Z",
-    account: { id: "1", email: "ahmed@company.com", role: UserRole.EMPLOYEE },
+    account: { id: "1", email: "ahmed_mohamed2023@company.com", role: UserRole.EMPLOYEE },
   },
   {
     id: "2",
@@ -112,6 +116,7 @@ export const ProfilesPage = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingProfile, setEditingProfile] = useState<Profile | null>(null);
   const [linkingProfile, setLinkingProfile] = useState<Profile | null>(null);
+  const [notifyingProfile, setNotifyingProfile] = useState<Profile | null>(null);
 
   // ── Forms ──
   const [createForm, setCreateForm] = useState<CreateProfileForm>({
@@ -242,6 +247,22 @@ export const ProfilesPage = () => {
 
   const handleCloseLink = () => {
     setLinkingProfile(null);
+  };
+
+  const handleNotifySubmit = (data: NotifyData) => {
+    console.log("Notification sent:", {
+      profile: notifyingProfile,
+      ...data,
+    });
+    setNotifyingProfile(null);
+  };
+
+  const handleOpenNotify = (profile: Profile) => {
+    setNotifyingProfile(profile);
+  };
+
+  const handleCloseNotify = () => {
+    setNotifyingProfile(null);
   };
 
   const handleConfirmLink = (
@@ -377,6 +398,7 @@ export const ProfilesPage = () => {
         onCancelEdit={handleCancelEdit}
         onDelete={handleDelete}
         onOpenLink={handleOpenLink}
+        onNotify={handleOpenNotify}
         isLoading={false}
         branches={fakeBranches}
       />
@@ -387,6 +409,14 @@ export const ProfilesPage = () => {
         profile={linkingProfile}
         onClose={handleCloseLink}
         onConfirmLink={handleConfirmLink}
+      />
+
+      {/* ── Notify Modal ── */}
+      <ProfilesNotifyModal
+        isOpen={!!notifyingProfile}
+        profile={notifyingProfile}
+        onClose={handleCloseNotify}
+        onSubmit={handleNotifySubmit}
       />
     </main>
   );

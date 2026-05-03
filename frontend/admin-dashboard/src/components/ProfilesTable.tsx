@@ -57,6 +57,7 @@ interface ProfilesTableProps {
   onCancelEdit: () => void;
   onDelete: (id: string) => void;
   onOpenLink: (profile: Profile) => void;
+  onNotify: (profile: Profile) => void;
   isLoading: boolean;
   branches: { id: string; name: string }[];
 }
@@ -67,7 +68,7 @@ const getProfileTypeLabel = (type: ProfileType): string => {
   const map: Record<ProfileType, string> = {
     [ProfileType.EMPLOYEE]: "موظف",
     [ProfileType.COURIER]: "سائق توصيل",
-    [ProfileType.CUSTOMER]: "عميل",
+    [ProfileType.CUSTOMER]: "تاجر",
     [ProfileType.ADMIN]: "مسؤول",
   };
   return map[type];
@@ -81,7 +82,10 @@ const getProfileStatusLabel = (status: ProfileStatus): string => {
   return map[status];
 };
 
-const getBranchName = (branchId: string | null, branches: { id: string; name: string }[]): string => {
+const getBranchName = (
+  branchId: string | null,
+  branches: { id: string; name: string }[],
+): string => {
   const branch = branches.find((b) => b.id === branchId);
   return branch ? branch.name : "غير مرتبط";
 };
@@ -103,6 +107,7 @@ export const ProfilesTable = ({
   onCancelEdit,
   onDelete,
   onOpenLink,
+  onNotify,
   isLoading,
   branches,
 }: ProfilesTableProps) => {
@@ -112,7 +117,7 @@ export const ProfilesTable = ({
     { value: "", label: "اختر النوع" },
     { value: ProfileType.EMPLOYEE, label: "موظف" },
     { value: ProfileType.COURIER, label: "سائق توصيل" },
-    { value: ProfileType.CUSTOMER, label: "عميل" },
+    { value: ProfileType.CUSTOMER, label: "تاجر" },
     { value: ProfileType.ADMIN, label: "مسؤول" },
   ];
 
@@ -141,10 +146,10 @@ export const ProfilesTable = ({
 
   return (
     <Card>
-      {filtered.length === 0 && !isLoading && (
+      {(filtered.length === 0 || paged.length === 0) && !isLoading && (
         <div className="text-center py-12">
-          <p className="text-on-surface-variant text-body-md mb-4">
-            لا توجد ملف شخصي حالياً
+          <p className="text-body-md mb-4 bg-red-100 border border-red-300 text-red-700 rounded-lg inline-block px-4 py-2">
+            لا يوجد ملف شخصي حالياً
           </p>
         </div>
       )}
@@ -157,7 +162,7 @@ export const ProfilesTable = ({
 
       {paged.length > 0 && (
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full text-nowrap">
             <thead>
               <tr className="border-b border-outline-variant">
                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
@@ -181,9 +186,9 @@ export const ProfilesTable = ({
                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
                   تاريخ الإنشاء
                 </th>
-                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                  الإجراءات
-                </th>
+             <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md max-w-28">
+                   الإجراءات
+                 </th>
               </tr>
             </thead>
             <tbody>
@@ -193,45 +198,49 @@ export const ProfilesTable = ({
                   className="border-b border-surface-variant hover:bg-surface-container-low transition"
                 >
                   <td className="p-4">
-                    {editingId === profile.id ? (
-                      <Input
-                        value={editForm.full_name}
-                        onChange={(e) =>
-                          setEditForm({
-                            ...editForm,
-                            full_name: e.target.value,
-                          })
-                        }
-                        className="text-body-sm w-50!"
-                      />
-                    ) : (
-                      <p className="text-body-md text-on-surface">
-                        {profile.full_name}
-                      </p>
-                    )}
+                    <div
+                      className={`${editingId === profile.id ? "w-50" : "w-30"} overflow-x-scroll`}
+                    >
+                      {editingId === profile.id ? (
+                        <Input
+                          value={editForm.full_name}
+                          onChange={(e) =>
+                            setEditForm({
+                              ...editForm,
+                              full_name: e.target.value,
+                            })
+                          }
+                          className="text-body-sm w-50!"
+                        />
+                      ) : (
+                        <p className="text-body-md text-on-surface">
+                          {profile.full_name}
+                        </p>
+                      )}
+                    </div>
                   </td>
 
                   <td className="p-4">
                     {editingId === profile.id ? (
                       <Input
-                         value={editForm.phone_number}
-                         onChange={(e) => {
-                           if (/^\+?[0-9]*$/.test(e.target.value)) {
-                             setEditForm({
-                               ...editForm,
-                               phone_number: e.target.value,
-                             });
-                           } else {
-                             setEditForm((prev) => ({
-                               ...prev,
-                             }));
-                           }
-                         }}
-                         type="tel"
-                         className="text-body-sm pr-3!"
-                         prefix="+"
-                         width="w-40"
-                       />
+                        value={editForm.phone_number}
+                        onChange={(e) => {
+                          if (/^\+?[0-9]*$/.test(e.target.value)) {
+                            setEditForm({
+                              ...editForm,
+                              phone_number: e.target.value,
+                            });
+                          } else {
+                            setEditForm((prev) => ({
+                              ...prev,
+                            }));
+                          }
+                        }}
+                        type="tel"
+                        className="text-body-sm pr-3!"
+                        prefix="+"
+                        width="w-40"
+                      />
                     ) : (
                       <p className="text-body-md text-on-surface">
                         {profile.phone_number}+
@@ -252,7 +261,15 @@ export const ProfilesTable = ({
                         options={typeOptions}
                       />
                     ) : (
-                      <span className="px-3 py-1 rounded-full text-label-md font-label-md bg-surface-variant text-on-surface">
+                      <span
+                        className={`px-3 py-1 rounded-full text-label-md font-label-md ${
+                          profile.type === ProfileType.ADMIN
+                            ? "bg-primary text-on-primary"
+                            : profile.type === ProfileType.EMPLOYEE
+                              ? "bg-secondary-container text-on-primary"
+                              : "bg-surface-variant text-on-surface"
+                        }`}
+                      >
                         {getProfileTypeLabel(profile.type)}
                       </span>
                     )}
@@ -276,7 +293,8 @@ export const ProfilesTable = ({
                           profile.status === ProfileStatus.ACTIVE
                             ? "bg-primary-container text-on-primary"
                             : "bg-surface-variant text-on-surface"
-                        }`}
+                        }
+                        `}
                       >
                         {getProfileStatusLabel(profile.status)}
                       </span>
@@ -284,32 +302,37 @@ export const ProfilesTable = ({
                   </td>
 
                   <td className="p-4">
-                    {editingId === profile.id ? (
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => onOpenLink(profile)}
-                      >
-                        {profile.account_id ? "تغيير الحساب" : "ربط حساب"}
-                      </Button>
-                    ) : (
-                      <span
-                        className={`px-3 py-1 rounded-full text-label-md font-label-md ${
-                          profile.account_id
-                            ? "bg-secondary-container text-on-secondary"
-                            : "bg-surface-variant text-on-surface"
-                        }`}
-                      >
-                        {profile.account?.email || "غير مرتبط"}
-                      </span>
-                    )}
+                    <div className={`max-w-${editingId ? "50" : "70"} overflow-x-scroll py-1`}>
+                      {editingId === profile.id ? (
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => onOpenLink(profile)}
+                        >
+                          {profile.account_id ? "تغيير الحساب" : "ربط حساب"}
+                        </Button>
+                      ) : (
+                        <span
+                          className={`px-3 py-1 rounded-full text-label-md font-label-md ${
+                            profile.account_id
+                              ? "bg-primary-container text-on-primary"
+                              : "bg-surface-variant text-on-surface"
+                          }`}
+                        >
+                          {profile.account?.email || "غير مرتبط"}
+                        </span>
+                      )}
+                    </div>
                   </td>
 
                   <td className="p-4">
                     {editingId === profile.id ? (
                       <SearchableSelect
                         options={branchOptions}
-                        searchQuery={getBranchName(editForm.branch_id, branches)}
+                        searchQuery={getBranchName(
+                          editForm.branch_id,
+                          branches,
+                        )}
                         setSearchQuery={(v) => {
                           const branch = branches.find((b) => b.name === v);
                           setEditForm({
@@ -323,7 +346,9 @@ export const ProfilesTable = ({
                         hasClear
                       />
                     ) : (
-                      <span className="px-3 py-1 rounded-full text-label-md font-label-md bg-primary-container text-on-primary">
+                      <span
+                        className={`px-3 py-1 rounded-full text-label-md font-label-md ${profile.branch_id ? "bg-primary-container text-on-primary" : "bg-surface-variant text-on-surface"}`}
+                      >
                         {getBranchName(profile.branch_id, branches)}
                       </span>
                     )}
@@ -333,51 +358,36 @@ export const ProfilesTable = ({
                     {new Date(profile.created_at).toLocaleDateString("ar-SA")}
                   </td>
 
-                  <td className="p-4">
-                    <div className="flex gap-2">
-                      {editingId === profile.id ? (
-                        <>
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={onSaveEdit}
-                          >
-                            حفظ
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={onCancelEdit}
-                          >
-                            إلغاء
-                          </Button>
-                        </>
-                      ) : (
-                        <>
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => onEditClick(profile)}
-                          >
-                            تعديل
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => onOpenLink(profile)}
-                          >
-                            {profile.account_id ? "تغيير الحساب" : "ربط حساب"}
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => onDelete(profile.id)}
-                          >
-                            حذف
-                          </Button>
-                        </>
-                      )}
-                    </div>
+               <td className="p-4 w-28">
+                    {editingId === profile.id ? (
+                      <div className="flex space-x-2">
+                        <Button variant="primary" size="sm" onClick={onSaveEdit} fullWidth>
+                          حفظ
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => onNotify(profile)} className="px-2 py-1">
+                          🔔
+                        </Button>
+                        <div className="col-span-2" />
+                        <Button  size="sm" onClick={onCancelEdit} fullWidth className="px-2 py-1 bg-red-600 text-white hover:bg-red-700">
+                          إلغاء
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex space-x-2">
+                        <Button variant="secondary" size="sm" onClick={() => onEditClick(profile)} fullWidth>
+                          تعديل
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => onOpenLink(profile)} fullWidth>
+                          {profile.account_id ? "تغيير الحساب" : "ربط حساب"}
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => onNotify(profile)} className="px-2 py-1">
+                          🔔
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => onDelete(profile.id)} fullWidth>
+                          حذف
+                        </Button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}
