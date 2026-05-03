@@ -59,7 +59,6 @@ export const ProfilesLinkAccountModal = ({
 }: ProfilesLinkAccountModalProps) => {
   const [linkStep, setLinkStep] = useState<"search" | "create">("search");
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
   const [linkForm, setLinkForm] = useState<LinkedAccountForm>({
     email: "",
     password: "",
@@ -75,7 +74,6 @@ export const ProfilesLinkAccountModal = ({
   const handleSearchSelect = (account: ProfileAccount) => {
     setLinkedAccount(account);
     setSearchQuery(account.email);
-    setSearchDropdownOpen(false);
   };
 
   const handleCreateSelect = (account: ProfileAccount) => {
@@ -117,7 +115,6 @@ export const ProfilesLinkAccountModal = ({
   const handleClose = () => {
     setLinkStep("search");
     setSearchQuery("");
-    setSearchDropdownOpen(false);
     setCreateEmailDropdownOpen(false);
     setLinkForm({ email: "", password: "", role: "" });
     setLinkedAccount(null);
@@ -151,14 +148,12 @@ export const ProfilesLinkAccountModal = ({
               <div className="space-y-4">
                 <div>
                   <AccountSearchDropdown
-                    accounts={fakeAccounts}
-                    searchQuery={searchQuery}
-                    setSearchQuery={setSearchQuery}
-                    dropdownOpen={searchDropdownOpen}
-                    setDropdownOpen={setSearchDropdownOpen}
-                    onSelect={handleSearchSelect}
-                    selectedId={linkedAccount?.id || undefined}
-                  />
+                     accounts={fakeAccounts}
+                     searchQuery={searchQuery}
+                     setSearchQuery={setSearchQuery}
+                     onSelect={handleSearchSelect}
+                     selectedId={linkedAccount?.id || undefined}
+                   />
                 </div>
 
                 {linkError && (
