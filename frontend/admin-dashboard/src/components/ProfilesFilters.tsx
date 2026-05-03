@@ -45,7 +45,7 @@ export const ProfilesFilters = ({
     { value: "", label: "جميع الأنواع" },
     { value: ProfileType.EMPLOYEE, label: "موظف" },
     { value: ProfileType.COURIER, label: "سائق توصيل" },
-    { value: ProfileType.CUSTOMER, label: "عميل" },
+    { value: ProfileType.CUSTOMER, label: "تاجر" },
     { value: ProfileType.ADMIN, label: "مسؤول" },
   ];
 
@@ -85,9 +85,9 @@ export const ProfilesFilters = ({
 
       <div className="mb-6 space-y-4 p-4 bg-surface-container-low rounded-lg">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-          <div className="col-span-1 md:col-span-2">
+          <div className="col-span-1 md:col-span-3">
             <Input
-              label="البحث حسب الاسم"
+              label="البحث حسب الاسم , رقم الهاتف أو البريد الإلكتروني"
               type="text"
               placeholder="ابحث..."
               value={nameSearch}
@@ -100,9 +100,7 @@ export const ProfilesFilters = ({
               label="تصفية حسب النوع"
               value={typeFilter || ""}
               onChange={(e) =>
-                onTypeFilterChange(
-                  (e.target.value as ProfileType) || "",
-                )
+                onTypeFilterChange((e.target.value as ProfileType) || "")
               }
               options={typeOptions}
             />
@@ -113,16 +111,14 @@ export const ProfilesFilters = ({
               label="تصفية حسب الحالة"
               value={statusFilter || ""}
               onChange={(e) =>
-                onStatusFilterChange(
-                  (e.target.value as ProfileStatus) || "",
-                )
+                onStatusFilterChange((e.target.value as ProfileStatus) || "")
               }
               options={statusOptions}
             />
           </div>
 
           <div className="col-span-1 md:col-span-2">
-           <SearchableSelect
+            <SearchableSelect
               options={branchOptions}
               searchQuery={branchFilter}
               setSearchQuery={onBranchFilterChange}
