@@ -1,5 +1,7 @@
 package com.gotrack.support_and_notifications_service.notification.event;
 
+import java.util.List;
+
 import com.gotrack.support_and_notifications_service.notification.entity.NotificationChannel;
 
 import lombok.AllArgsConstructor;
@@ -16,6 +18,6 @@ public class ComplaintSubmit {
     private final String email;
     private final String subject;
     private final Long shipmentId;
-    private final NotificationChannel channel;
+    private final List<NotificationChannel> channel;
 
 }

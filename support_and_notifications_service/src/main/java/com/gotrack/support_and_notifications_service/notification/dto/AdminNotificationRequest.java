@@ -1,5 +1,7 @@
 package com.gotrack.support_and_notifications_service.notification.dto;
 
+import java.util.List;
+
 import com.gotrack.support_and_notifications_service.notification.entity.NotificationChannel;
 
 import jakarta.validation.constraints.NotBlank;
@@ -22,6 +24,9 @@ public class AdminNotificationRequest {
     private String message;
 
     @NotNull(message = "Notification channel is required")
-    private NotificationChannel channel;
+    private List<NotificationChannel> channel;
+
+    @NotBlank(message = "Email is required")
+    private String email;
 
 }

@@ -1,5 +1,7 @@
 package com.gotrack.support_and_notifications_service.notification.listeners;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -21,8 +23,12 @@ public class ComplaintListener {
     public void handleComplaintSubmitEvent(ComplaintSubmit event) {
         String message = String.format("New complaint submitted: %s (Shipment ID: %d)", event.getSubject(),
                 event.getShipmentId());
-        NotificationChannel channel = event.getChannel() != null ? event.getChannel() : NotificationChannel.IN_APP;
-        service.createNotification(event.getProfileId(), message, channel, event.getEmail());
+        List<NotificationChannel> channels = (event.getChannel() != null && !event.getChannel().isEmpty())
+                ? event.getChannel()
+                : List.of(NotificationChannel.IN_APP);
+        for (NotificationChannel channel : channels) {
+            service.createNotification(event.getProfileId(), message, channel, event.getEmail());
+        }
 
     }
 
@@ -33,8 +39,12 @@ public class ComplaintListener {
         if (event.getNote() != null && !event.getNote().isEmpty()) {
             message += ". Note: " + event.getNote();
         }
-        NotificationChannel channel = event.getChannel() != null ? event.getChannel() : NotificationChannel.IN_APP;
-        service.createNotification(event.getProfileId(), message, channel, event.getEmail());
+        List<NotificationChannel> channels = (event.getChannel() != null && !event.getChannel().isEmpty())
+                ? event.getChannel()
+                : List.of(NotificationChannel.IN_APP);
+        for (NotificationChannel channel : channels) {
+            service.createNotification(event.getProfileId(), message, channel, event.getEmail());
+        }
     }
 
 }

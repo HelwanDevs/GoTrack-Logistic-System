@@ -2,12 +2,12 @@ package com.gotrack.support_and_notifications_service.notification.service;
 
 import com.gotrack.support_and_notifications_service.user.CheckUser;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.gotrack.support_and_notifications_service.error.ResourceNotFoundException;
 import com.gotrack.support_and_notifications_service.eventWrapper.WEventPublisher;
 import com.gotrack.support_and_notifications_service.notification.entity.NotificationChannel;
 import com.gotrack.support_and_notifications_service.notification.entity.Notifications;
@@ -50,23 +50,38 @@ public class NotificationService {
         return repo.findByProfileIdOrderBySentAtDesc(profileId);
     }
 
-    public Notifications createAdminNotification(String profileId, String message, NotificationChannel channel) {
+    public List<Notifications> createAdminNotification(String profileId, String message,
+            List<NotificationChannel> channels, String email) {
 
         checkUser.checkUserExists(profileId);
-        Notifications notification = Notifications.builder()
-                .profileId(profileId)
-                .message(message)
-                .channel(channel)
-                .isRead(false)
-                .sentAt(Instant.now())
-                .build();
 
-        return repo.save(notification);
+        List<Notifications> noti = new ArrayList<>();
+        for (NotificationChannel channel : channels) {
+
+            Notifications notification = Notifications.builder()
+                    .profileId(profileId)
+                    .message(message)
+                    .channel(channel)
+                    .isRead(false)
+                    .sentAt(Instant.now())
+                    .build();
+
+            Notifications saved = repo.save(notification);
+            eventPublisher.publish(new NotificationCreated(
+                    saved.getId(),
+                    profileId,
+                    message,
+                    saved.getChannel(),
+                    email));
+            noti.add(saved);
+        }
+        return noti;
+
     }
 
     public List<Notifications> getUnreadNotificationsForProfile() {
         String profileId = user.getCurrentUserId();
-        return repo.findByProfileIdAndIsReadFalseOrderBySentAtDesc(profileId);
+        return repo.findByProfileIdAndIsReadFalseAndChannelOrderBySentAtDesc(profileId, NotificationChannel.IN_APP);
     }
 
     public void markAsRead(String notificationId, String profileId) {

@@ -1,5 +1,7 @@
 package com.gotrack.support_and_notifications_service.complaint.dto.request;
 
+import java.util.List;
+
 import com.gotrack.support_and_notifications_service.complaint.entity.ComplaintStatus;
 import com.gotrack.support_and_notifications_service.notification.entity.NotificationChannel;
 
@@ -24,5 +26,5 @@ public class UpdateComplaintStatus {
     @NotBlank(message = "Invalid status update")
     private String note;
 
-    private NotificationChannel channel;
+    private List<NotificationChannel> channel;
 }

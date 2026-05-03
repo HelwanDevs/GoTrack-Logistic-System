@@ -38,9 +38,10 @@ public class NotificationController {
 
     @PostMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Notifications> createAdminNotification(@Valid @RequestBody AdminNotificationRequest request) {
-        Notifications notification = service.createAdminNotification(request.getProfileId(), request.getMessage(),
-                request.getChannel());
+    public ResponseEntity<List<Notifications>> createAdminNotification(
+            @Valid @RequestBody AdminNotificationRequest request) {
+        List<Notifications> notification = service.createAdminNotification(request.getProfileId(), request.getMessage(),
+                request.getChannel(), request.getEmail());
         return ResponseEntity.ok(notification);
     }
 
