@@ -5,9 +5,10 @@ interface ModalProps {
   title: string;
   children: ReactNode;
   onClose: () => void;
+  size?: "sm" | "md" | "lg";
 }
 
-export const Modal = ({ isOpen, title, children, onClose }: ModalProps) => {
+export const Modal = ({ isOpen, title, children, onClose, size = "md" }: ModalProps) => {
   if (!isOpen) return null;
 
   return (
@@ -19,7 +20,7 @@ export const Modal = ({ isOpen, title, children, onClose }: ModalProps) => {
       />
 
       {/* Modal */}
-      <div className="relative bg-surface-container-low rounded-lg shadow-lg max-w-md w-full mx-4 z-50">
+      <div className={`relative bg-surface-container-low rounded-lg shadow-lg max-w-${size} w-full mx-4 z-50`}>
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-outline-variant">
           <h2 className="font-headline-md text-headline-md text-on-background">
