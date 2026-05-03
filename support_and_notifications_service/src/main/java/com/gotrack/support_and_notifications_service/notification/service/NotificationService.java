@@ -58,11 +58,7 @@ public class NotificationService {
 
         checkUser.checkUserExists(profileId);
 
-        System.out.println("email before: " + email);
-        if (email == null || email.isBlank()) {
-            email = checkUser.getUserEmailById(profileId);
-        }
-        System.out.println("email after: " + email);
+        email = checkUser.getUserEmailById(profileId);
 
         if (channels == null || channels.isEmpty()) {
             channels = List.of(NotificationChannel.IN_APP);
