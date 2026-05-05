@@ -9,6 +9,11 @@ import com.gotrack.user_service.exception.NotFoundException;
 import com.gotrack.user_service.mappers.imp.ProfileMapper;
 import com.gotrack.user_service.repository.ProfileRepository;
 import com.gotrack.user_service.service.ProfileService;
+import com.gotrack.user_service.domain.enums.ProfileType;
+import com.gotrack.user_service.domain.enums.ProfileStatus;
+import com.gotrack.user_service.domain.response.PageResponse;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.gotrack.user_service.domain.dto.ApiResponse;
@@ -37,7 +42,8 @@ public class ProfileServiceImp implements ProfileService {
         }
 
         // 409 — duplicate phone number check
-        if (profileRepository.findByPhoneNumber(dto.getPhoneNumber()).isPresent()) {
+        if (dto.getPhoneNumber() != null && !dto.getPhoneNumber().isBlank() &&
+                profileRepository.findByPhoneNumber(dto.getPhoneNumber().trim()).isPresent()) {
             throw new ConflictException("Phone number already in use");
         }
 
@@ -55,79 +61,119 @@ public class ProfileServiceImp implements ProfileService {
         return new ApiResponse("Profile created", saved.getId());
     }
 
-
     @Override
     public ApiResponse updateProfile(Long id, ProfileUpdateDTO dto) {
 
         // 404 — profile not found
         ProfileEntity entity = profileRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("Profile not found"));
+                .orElseThrow(() -> new NotFoundException("Profile not found"));
 
         // TODO: extract role and accountId from JWT
         // TODO: if role is SELF, check that token accountId matches entity.getAccountId()
         // TODO: if role is not ADMIN and not SELF, throw ForbiddenException
 
-        // 409 — duplicate phone number check (exclude current profile)
-        profileRepository.findByPhoneNumber(dto.getPhoneNumber())
-            .ifPresent(existing -> {
-                if (!existing.getId().equals(id)) {
-                    throw new ConflictException("Phone number already in use");
-                }
-            });
+        // FullName: updated when not null or blank 
+        if (dto.getFullName() != null && !dto.getFullName().isBlank()) {
+            entity.setFullName(dto.getFullName().trim());
+        }
 
-        profileMapper.updateEntity(dto, entity);
+        // PhoneNumber: updated when not null or blank, and must be unique (exclude current profile)
+        if (dto.getPhoneNumber() != null && !dto.getPhoneNumber().isBlank()) {
+            profileRepository.findByPhoneNumber(dto.getPhoneNumber().trim())
+                    .ifPresent(existing -> {
+                        // 409 — duplicate phone number check (exclude current profile)
+
+                        if (!existing.getId().equals(id)) {
+                            throw new ConflictException("Phone number already in use");
+                        }
+                    });
+            entity.setPhoneNumber(dto.getPhoneNumber().trim());
+        }
+
+        if (dto.getAccountId() != null)
+            entity.setAccountId(dto.getAccountId());
+        if (dto.getBranchId() != null)
+            entity.setBranchId(dto.getBranchId());
+        if (dto.getStatus() != null)
+            entity.setStatus(dto.getStatus());
+
         profileRepository.save(entity);
 
         return new ApiResponse("Profile updated successfully");
     }
 
     @Override
-    public List<ProfileResponseDTO> getAllProfiles() {
+    public PageResponse<ProfileResponseDTO> getAllProfiles(Pageable pageable) {
         // TODO: restrict to ADMIN and EMPLOYEE roles
-        return profileRepository.findAll()
-            .stream()
-            .map(profileMapper::toDto)
-            .toList();
+        Page<ProfileEntity> page = profileRepository.findAll(pageable);
+
+        List<ProfileResponseDTO> content = page.getContent()
+                .stream()
+                .map(profileMapper::toDto)
+                .toList();
+        return new PageResponse<>(
+                content,
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages());
     }
 
-@Override
-public List<ProfileResponseDTO> searchProfiles(String name, String phoneNumber, Long id) {
-    // TODO: restrict to ADMIN and EMPLOYEE roles once JWT is ready
+    @Override
+    public PageResponse<ProfileResponseDTO> searchProfiles(
+            String name, String phoneNumber, ProfileType type, Long branchId, ProfileStatus status, Pageable pageable) {
+        // TODO: restrict to ADMIN and EMPLOYEE roles once JWT is ready
 
-    Specification<ProfileEntity> spec = (root, query, criteriaBuilder) -> {
+        Specification<ProfileEntity> spec = (root, query, criteriaBuilder) -> {
 
-        List<Predicate> predicates = new ArrayList<>();
+            List<Predicate> predicates = new ArrayList<>();
 
-        // partial name search — case insensitive
-        if (name != null && !name.isEmpty()) {
-            predicates.add(criteriaBuilder.like(
-                criteriaBuilder.lower(root.get("fullName")),
-                "%" + name.toLowerCase() + "%"
-            ));
-        }
+            // partial name search — case insensitive
+            if (name != null && !name.isBlank()) {
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("fullName")),
+                        "%" + name.toLowerCase() + "%"));
+            }
 
-        // exact phone number match
-        if (phoneNumber != null && !phoneNumber.isEmpty()) {
-            predicates.add(criteriaBuilder.equal(
-                root.get("phoneNumber"), phoneNumber
-            ));
-        }
+            // exact phone number match
+            if (phoneNumber != null && !phoneNumber.isBlank()) {
+                predicates.add(criteriaBuilder.equal(
+                        root.get("phoneNumber"), phoneNumber));
+            }
 
-        // exact id match
-        if (id != null) {
-            predicates.add(criteriaBuilder.equal(
-                root.get("id"), id
-            ));
-        }
+            // exact type match — EMPLOYEE, COURIER, CUSTOMER, ADMIN
+            if (type != null) {
+                predicates.add(criteriaBuilder.equal(
+                        root.get("type"), type));
+            }
 
-        return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-    };
+            // exact branchId match
+            if (branchId != null) {
+                predicates.add(criteriaBuilder.equal(
+                        root.get("branchId"), branchId));
+            }
 
-    return profileRepository.findAll(spec)
-        .stream()
-        .map(profileMapper::toDto)
-        .toList();
-}
+            // exact status match — ACTIVE, INACTIVE
+            if (status != null) {
+                predicates.add(criteriaBuilder.equal(
+                        root.get("status"), status));
+            }
 
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
 
+        Page<ProfileEntity> page = profileRepository.findAll(spec, pageable);
+
+        List<ProfileResponseDTO> content = page.getContent()
+                .stream()
+                .map(profileMapper::toDto)
+                .toList();
+
+        return new PageResponse<>(
+                content,
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages());
+
+    }
 }
