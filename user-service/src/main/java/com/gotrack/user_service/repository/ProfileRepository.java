@@ -1,8 +1,9 @@
 package com.gotrack.user_service.repository;
 
 import com.gotrack.user_service.domain.entity.ProfileEntity;
-import com.gotrack.user_service.domain.entity.ProfileStatus;
-import com.gotrack.user_service.domain.entity.ProfileType;
+import com.gotrack.user_service.domain.enums.ProfileStatus;
+import com.gotrack.user_service.domain.enums.ProfileType;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
