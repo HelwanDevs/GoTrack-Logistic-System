@@ -28,6 +28,7 @@ public class BranchServiceImpl implements BranchService {
         if (branchRepository.existsByPhoneAndIsDeletedFalse(branchEntity.getPhone())) {
             throw new BranchConflictException("Phone already in use by another branch");
         }
+
         return branchRepository.save(branchEntity);
     }
 
@@ -37,20 +38,28 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public Page<BranchEntity> search(String name, String location, Boolean isDeleted, Pageable pageable) {
+    public Page<BranchEntity> search(String name, String location, Boolean isDeleted, String phone ,Pageable pageable) {
         boolean isDeletedReturnDefault = (isDeleted != null) ? isDeleted : false;
 
         Specification<BranchEntity> spec = (root, query, cb) -> {
             var predicates = cb.conjunction();
 
-            if (name != null) {
+            if (name != null && !name.isBlank()) {
+                String normalizedName = name.trim().toLowerCase();
                 predicates = cb.and(predicates,
-                        cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
+                        cb.like(cb.lower(root.get("name")), "%" + normalizedName + "%"));
             }
 
-            if (location != null) {
+            if (location != null && !location.isBlank()) {
+                String normalizedLocation = location.trim().toLowerCase();
                 predicates = cb.and(predicates,
-                        cb.like(cb.lower(root.get("location")), "%" + location.toLowerCase() + "%"));
+                        cb.like(cb.lower(root.get("location")), "%" + normalizedLocation + "%"));
+            }
+
+            if (phone != null && !phone.isBlank()) {
+                String normalizedPhone = phone.trim();
+                predicates = cb.and(predicates,
+                        cb.equal(root.get("phone"), normalizedPhone));
             }
             predicates = cb.and(predicates,
                     cb.equal(root.get("isDeleted"), isDeletedReturnDefault));

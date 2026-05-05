@@ -15,16 +15,17 @@ public class BranchEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false , length = 100)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false , length = 100)
     private String location;
 
-    @Column(nullable = false)
+    @Column(nullable = false , unique = true , length = 11)
     private String phone;
 
     @Builder.Default
+    @Column(nullable = false)
     private Boolean isDeleted = false;
 
 }
