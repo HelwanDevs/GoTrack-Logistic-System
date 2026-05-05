@@ -1,0 +1,18 @@
+{
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "sqltools.connections": [
+        {
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "PG Local",
+            "database": "profile_db",
+            "username": "postgres",
+            "password": "root",
+            "connectionTimeout": 30
+        }
+    ],
+    "java.compile.nullAnalysis.mode": "automatic"
+}
