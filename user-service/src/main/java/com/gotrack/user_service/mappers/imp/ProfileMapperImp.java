@@ -4,13 +4,13 @@ import com.gotrack.user_service.domain.dto.ProfileRequestDTO;
 import com.gotrack.user_service.domain.dto.ProfileResponseDTO;
 import com.gotrack.user_service.domain.dto.ProfileUpdateDTO;
 import com.gotrack.user_service.domain.entity.ProfileEntity;
-import com.gotrack.user_service.mappers.Mapper;
+import com.gotrack.user_service.mappers.ProfileMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProfileMapper implements Mapper<ProfileEntity, ProfileResponseDTO> {
+public class ProfileMapperImp implements ProfileMapper<ProfileEntity, ProfileResponseDTO> {
 
     @Autowired
     private ModelMapper modelMapper;

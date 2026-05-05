@@ -4,6 +4,10 @@ import com.gotrack.user_service.domain.dto.ProfileRequestDTO;
 import com.gotrack.user_service.domain.dto.ProfileResponseDTO;
 import com.gotrack.user_service.domain.dto.ProfileUpdateDTO;
 import com.gotrack.user_service.domain.dto.ApiResponse;
+import com.gotrack.user_service.domain.enums.ProfileType;
+import com.gotrack.user_service.domain.enums.ProfileStatus;
+import com.gotrack.user_service.domain.response.PageResponse;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -13,8 +17,9 @@ public interface ProfileService {
 
     ApiResponse updateProfile(Long id, ProfileUpdateDTO dto);
 
-    List<ProfileResponseDTO> getAllProfiles();
-
-    //Feature Addition: Add functionality to search for a profile by number, name, or ID
-    List<ProfileResponseDTO> searchProfiles(String name, String phoneNumber, Long id);
+    PageResponse<ProfileResponseDTO> getAllProfiles(Pageable pageable);
+      
+    //Feature Addition: Add functionality to search for a profile by number, type, status, name, or BranchID
+    PageResponse<ProfileResponseDTO> searchProfiles(
+            String name, String phoneNumber, ProfileType type, Long branchId, ProfileStatus status, Pageable pageable);
 }

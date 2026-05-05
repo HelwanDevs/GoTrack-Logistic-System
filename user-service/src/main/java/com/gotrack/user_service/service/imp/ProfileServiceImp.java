@@ -6,7 +6,7 @@ import com.gotrack.user_service.domain.dto.ProfileUpdateDTO;
 import com.gotrack.user_service.domain.entity.ProfileEntity;
 import com.gotrack.user_service.exception.ConflictException;
 import com.gotrack.user_service.exception.NotFoundException;
-import com.gotrack.user_service.mappers.imp.ProfileMapper;
+import com.gotrack.user_service.mappers.imp.ProfileMapperImp;
 import com.gotrack.user_service.repository.ProfileRepository;
 import com.gotrack.user_service.service.ProfileService;
 import com.gotrack.user_service.domain.enums.ProfileType;
@@ -30,7 +30,7 @@ public class ProfileServiceImp implements ProfileService {
     private ProfileRepository profileRepository;
 
     @Autowired
-    private ProfileMapper profileMapper;
+    private ProfileMapperImp profileMapper;
 
     @Override
     public ApiResponse createProfile(ProfileRequestDTO dto) {

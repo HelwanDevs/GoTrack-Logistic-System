@@ -1,7 +1,8 @@
 package com.gotrack.user_service.domain.dto;
 
-import com.gotrack.user_service.domain.entity.ProfileStatus;
-import com.gotrack.user_service.domain.entity.ProfileType;
+import com.gotrack.user_service.domain.enums.ProfileStatus;
+import com.gotrack.user_service.domain.enums.ProfileType;
+
 import lombok.Data;
 import java.time.LocalDateTime;
 

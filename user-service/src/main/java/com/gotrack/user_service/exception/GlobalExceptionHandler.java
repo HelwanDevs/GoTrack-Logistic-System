@@ -6,6 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import jakarta.validation.ConstraintViolationException;
+
+import com.gotrack.user_service.domain.dto.ApiResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -36,5 +39,15 @@ public class GlobalExceptionHandler {
                 "status", 409,
                 "error", "Conflict",
                 "message", exception.getMessage()));
+    }
+
+    // 400 — @Positive @PathVariable violation
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResponse> handleConstraintViolation(ConstraintViolationException ex) {
+        String message = ex.getConstraintViolations()
+            .iterator().next()
+            .getMessage();
+        return ResponseEntity.status(400)
+            .body(new ApiResponse(message));
     }
 }
