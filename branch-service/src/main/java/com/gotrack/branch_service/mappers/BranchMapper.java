@@ -1,6 +1,6 @@
 package com.gotrack.branch_service.mappers;
 
-public interface Mapper<A,B> {
+public interface BranchMapper<A,B> {
 
     B mapTo (A a);
 

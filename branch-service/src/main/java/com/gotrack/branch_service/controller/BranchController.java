@@ -4,7 +4,7 @@ package com.gotrack.branch_service.controller;
 import com.gotrack.branch_service.domain.dto.BranchDTO;
 import com.gotrack.branch_service.domain.entity.BranchEntity;
 import com.gotrack.branch_service.domain.response.PageResponse;
-import com.gotrack.branch_service.mappers.Mapper;
+import com.gotrack.branch_service.mappers.BranchMapper;
 import com.gotrack.branch_service.services.BranchService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -21,9 +21,9 @@ import java.util.Map;
 public class BranchController {
     private BranchService branchService;
 
-    private Mapper<BranchEntity, BranchDTO> branchMapper;
+    private BranchMapper<BranchEntity, BranchDTO> branchMapper;
 
-    public BranchController(BranchService branchService , Mapper<BranchEntity, BranchDTO> branchMapper){
+    public BranchController(BranchService branchService , BranchMapper<BranchEntity, BranchDTO> branchMapper){
 
         this.branchService = branchService;
         this.branchMapper= branchMapper;
