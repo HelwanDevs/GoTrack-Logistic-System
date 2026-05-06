@@ -48,18 +48,18 @@ export const Sidebar = () => {
       Roles: ["admin", "employee"],
     },
     {
+      id: "branches",
+      label: "إدارة الفروع",
+      icon: "🏢",
+      onClick: () => setActiveNav("branches"),
+      Roles: ["admin"],
+    },
+    {
       id: "shipments",
       label: "إدارة الشحنات",
       icon: "📦",
       onClick: () => setActiveNav("shipments"),
       badge: 5,
-      Roles: ["admin", "employee"],
-    },
-    {
-      id: "tracking",
-      label: "تتبع مباشر",
-      icon: "🗺️",
-      onClick: () => setActiveNav("tracking"),
       Roles: ["admin", "employee"],
     },
     {
@@ -82,7 +82,7 @@ export const Sidebar = () => {
   }, [activeNav]);
 
   return (
-    <nav className="fixed right-0 top-0 h-screen w-64 bg-primary-container flex-col z-40 border-l border-white/10 shadow-xl hidden md:flex">
+    <nav className="sticky right-0 top-0 h-screen w-64 min-w-64 bg-primary-container flex-col z-40 border-l border-white/10 shadow-xl hidden md:flex">
       {/* Logo Section */}
       <div className="p-6 flex flex-col items-center border-b  border-white/10 mb-10">
         <div className="flex items-center justify-center mb-4">
@@ -100,11 +100,11 @@ export const Sidebar = () => {
 
       <div className="flex-1 flex flex-col gap-2 pl-4 pr-2 font-sans text-right">
         {sidebarItems
-          .filter(
-            (item) =>
-              authState.data?.user?.role &&
-              item.Roles.includes(authState.data.user.role.toLocaleLowerCase()),
-          )
+          // .filter(
+          //   (item) =>
+          //     authState.data?.user?.role &&
+          //     item.Roles.includes(authState.data.user.role.toLocaleLowerCase()),
+          // )
           .map((item) => (
             <button
               key={item.id}

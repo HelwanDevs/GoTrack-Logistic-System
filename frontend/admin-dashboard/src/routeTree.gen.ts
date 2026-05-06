@@ -16,6 +16,8 @@ import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
+import { Route as DashboardBranchesRouteImport } from './routes/dashboard/branches'
+import { Route as DashboardProfilesRouteImport } from './routes/dashboard/profiles'
 import { Route as DashboardAccountsRouteImport } from './routes/dashboard/accounts'
 
 const LoginRoute = LoginRouteImport.update({
@@ -53,6 +55,14 @@ const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardBranchesRoute = DashboardBranchesRouteImport.update({
+  id: '/branches',
+  path: '/branches',
+const DashboardProfilesRoute = DashboardProfilesRouteImport.update({
+  id: '/profiles',
+  path: '/profiles',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardAccountsRoute = DashboardAccountsRouteImport.update({
   id: '/accounts',
   path: '/accounts',
@@ -66,6 +76,8 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/dashboard/accounts': typeof DashboardAccountsRoute
+  '/dashboard/branches': typeof DashboardBranchesRoute
+  '/dashboard/profiles': typeof DashboardProfilesRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
@@ -75,6 +87,8 @@ export interface FileRoutesByTo {
   '/404': typeof R404Route
   '/login': typeof LoginRoute
   '/dashboard/accounts': typeof DashboardAccountsRoute
+  '/dashboard/branches': typeof DashboardBranchesRoute
+  '/dashboard/profiles': typeof DashboardProfilesRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard': typeof DashboardIndexRoute
 }
@@ -86,6 +100,8 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/dashboard/accounts': typeof DashboardAccountsRoute
+  '/dashboard/branches': typeof DashboardBranchesRoute
+  '/dashboard/profiles': typeof DashboardProfilesRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
@@ -98,6 +114,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/dashboard/accounts'
+    | '/dashboard/branches'
+    | '/dashboard/profiles'
     | '/dashboard/settings'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
@@ -107,6 +125,8 @@ export interface FileRouteTypes {
     | '/404'
     | '/login'
     | '/dashboard/accounts'
+    | '/dashboard/branches'
+    | '/dashboard/profiles'
     | '/dashboard/settings'
     | '/dashboard'
   id:
@@ -117,6 +137,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/dashboard/accounts'
+    | '/dashboard/branches'
+    | '/dashboard/profiles'
     | '/dashboard/settings'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
@@ -180,6 +202,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/branches': {
+      id: '/dashboard/branches'
+      path: '/branches'
+      fullPath: '/dashboard/branches'
+      preLoaderRoute: typeof DashboardBranchesRouteImport
+    '/dashboard/profiles': {
+      id: '/dashboard/profiles'
+      path: '/profiles'
+      fullPath: '/dashboard/profiles'
+      preLoaderRoute: typeof DashboardProfilesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/accounts': {
       id: '/dashboard/accounts'
       path: '/accounts'
@@ -192,12 +226,16 @@ declare module '@tanstack/react-router' {
 
 interface DashboardRouteChildren {
   DashboardAccountsRoute: typeof DashboardAccountsRoute
+  DashboardBranchesRoute: typeof DashboardBranchesRoute
+  DashboardProfilesRoute: typeof DashboardProfilesRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAccountsRoute: DashboardAccountsRoute,
+  DashboardBranchesRoute: DashboardBranchesRoute,
+  DashboardProfilesRoute: DashboardProfilesRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }

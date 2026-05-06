@@ -6,9 +6,9 @@ import { checkIsAdmin } from "@/features/auth/utils";
 export const Route = createFileRoute("/dashboard/accounts")({
   beforeLoad: async () => { 
     // only addmin can access accounts page
-    if (!checkIsAuthenticated() || !checkIsAdmin()) {
-      throw redirect({ to: "/dashboard" });
-    }
+    // if (!checkIsAuthenticated() || !checkIsAdmin()) {
+    //   throw redirect({ to: "/dashboard" });
+    // }
   },
   component: () => <AccountsPage />,
 });
