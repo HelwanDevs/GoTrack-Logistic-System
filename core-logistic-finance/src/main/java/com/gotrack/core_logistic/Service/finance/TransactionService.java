@@ -22,6 +22,8 @@ import com.gotrack.core_logistic.model.entity.Wallet;
 import com.gotrack.core_logistic.repository.TransactionRepo;
 import com.gotrack.core_logistic.repository.WalletRepo;
 
+import jakarta.transaction.Transactional;
+
 
 @Service
 public class TransactionService {
@@ -38,7 +40,7 @@ public class TransactionService {
     
 
 
-
+   @Transactional
     public TransactionDTO createTransaction(TransactionDTO request){
 
     BigDecimal amount = request.getAmount();
