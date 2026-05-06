@@ -2,15 +2,18 @@ package com.gotrack.inventory_service.Service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.gotrack.inventory_service.Dto.InventoryItemRequest;
 import com.gotrack.inventory_service.Dto.InventoryItemResponse;
+import com.gotrack.inventory_service.Dto.inventoryFilter;
 import com.gotrack.inventory_service.Entity.InventoryItem;
 import com.gotrack.inventory_service.Entity.Product;
 import com.gotrack.inventory_service.Enums.InventoryStatus;
 import com.gotrack.inventory_service.Exception.ConflictException;
 import com.gotrack.inventory_service.Exception.NotFoundException;
+import com.gotrack.inventory_service.Specifications.inventorySpecifications;
 import com.gotrack.inventory_service.repository.InventoryRepository;
 import com.gotrack.inventory_service.repository.ProductRepository;
 
@@ -60,4 +63,20 @@ public class InventoryService {
                         .status(item.getStatus().name())
                         .build());
     }
+
+
+    public Page<InventoryItemResponse> getItems(inventoryFilter filter,Pageable pageable) {
+
+        Specification<InventoryItem> spec =inventorySpecifications.filterInventory(filter);
+
+     return inventoryRepository.findAll(spec, pageable)
+            .map(item -> InventoryItemResponse.builder()
+                    .id(item.getId())
+                    .productId(item.getProductId())
+                    .productName(item.getProductName())
+                    .branchId(item.getBranchId())
+                    .uniqueSku(item.getUniqueSku())
+                    .status(item.getStatus())
+                    .build());
+}
 }

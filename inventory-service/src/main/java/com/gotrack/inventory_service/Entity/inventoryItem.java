@@ -22,7 +22,7 @@ public class InventoryItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @NotNull(message = "Product is required")
     @ManyToOne

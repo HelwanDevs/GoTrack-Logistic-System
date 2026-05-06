@@ -1,15 +1,16 @@
 package com.gotrack.inventory_service.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.gotrack.inventory_service.Dto.ProductDTO;
 import com.gotrack.inventory_service.Dto.ProductResponseDTO;
 import com.gotrack.inventory_service.Entity.Product;
-import com.gotrack.inventory_service.Mapper.ProductMapper;
-import com.gotrack.inventory_service.repository.ProductRepository;
-
 import com.gotrack.inventory_service.Exception.ConflictException;
 import com.gotrack.inventory_service.Exception.NotFoundException;
+import com.gotrack.inventory_service.Mapper.ProductMapper;
+import com.gotrack.inventory_service.repository.ProductRepository;
 
 @Service
 public class ProductService {
@@ -54,4 +55,17 @@ public class ProductService {
 
     productRepository.save(product);
 }
+
+    public Page<ProductResponseDTO> getProducts(Long merchantId, Pageable pageable) {
+       Page<Product> products = productRepository.findByMerchantId(merchantId, pageable).orElseThrow(() -> new NotFoundException(
+                "Product with Merchant ID " + merchantId + " not found"));
+
+        return products.map(product -> ProductResponseDTO.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .merchantId(product.getMerchantId())
+                .baseSku(product.getBaseSku())
+                .build());
+    }
 }
+

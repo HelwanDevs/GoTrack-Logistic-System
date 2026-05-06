@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/gotrack2_db
+    url: jdbc:mysql://localhost:3306/core_logistic_finance
     username: root
-    password: root2552005
+    password: 2210
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

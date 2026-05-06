@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class InventoryItemResponse {
 
-    private int id;
+    private Long id;
     private Long productId;
     private String productName;
     private Integer branchId;
