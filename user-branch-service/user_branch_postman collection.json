@@ -8,7 +8,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:8080",
+      "value": "http://localhost:8082",
       "type": "string"
     },
     {
@@ -33,7 +33,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Downtown Branch\",\n  \"location\": \"123 Main St\",\n  \"phone\": \"+1234567890\"\n}"
+              "raw": "{\n  \"name\": \"Downtown Branch\",\n  \"location\": \"123 Main St\",\n  \"phone\": \"+201112345678\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/branches",
@@ -55,7 +55,7 @@
                   "pm.test('Fields match', () => {",
                   "  const json = pm.response.json();",
                   "  pm.expect(json.name).to.eql('Downtown Branch');",
-                  "  pm.expect(json.phone).to.eql('+1234567890');",
+                  "  pm.expect(json.phone).to.eql('+201112345678');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -100,7 +100,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Another Branch\",\n  \"location\": \"456 Oak Ave\",\n  \"phone\": \"+1234567890\"\n}"
+              "raw": "{\n  \"name\": \"Another Branch\",\n  \"location\": \"456 Oak Ave\",\n  \"phone\": \"+201112345678\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/branches",
@@ -197,10 +197,10 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/branches/search?phone=+1234567890",
+              "raw": "{{baseUrl}}/api/branches/search?phone=+201112345678",
               "host": ["{{baseUrl}}"],
               "path": ["api", "branches", "search"],
-              "query": [{ "key": "phone", "value": "+1234567890" }]
+              "query": [{ "key": "phone", "value": "+201112345678" }]
             }
           },
           "event": [
@@ -212,7 +212,7 @@
                   "pm.test('Exact phone match', () => {",
                   "  const json = pm.response.json();",
                   "  json.content.forEach(branch => {",
-                  "    pm.expect(branch.phone).to.eql('+1234567890');",
+                  "    pm.expect(branch.phone).to.eql('+201112345678');",
                   "  });",
                   "});"
                 ],
@@ -257,7 +257,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Downtown Branch - Updated\",\n  \"location\": \"123 Main St, Suite 100\",\n  \"phone\": \"+1234567890\"\n}"
+              "raw": "{\n  \"name\": \"Downtown Branch - Updated\",\n  \"location\": \"123 Main St, Suite 100\",\n  \"phone\": \"+201112345678\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/branches/{{branchId}}",
@@ -288,7 +288,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Test\",\n  \"location\": \"Test\",\n  \"phone\": \"+9999999999\"\n}"
+              "raw": "{\n  \"name\": \"Test\",\n  \"location\": \"Test\",\n  \"phone\": \"+201223456789\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/branches/999999",
@@ -319,7 +319,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Test\",\n  \"location\": \"Test\",\n  \"phone\": \"+8888888888\"\n}"
+              "raw": "{\n  \"name\": \"Test\",\n  \"location\": \"Test\",\n  \"phone\": \"+201001234567\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/branches/{{branchId}}",
@@ -421,7 +421,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"phoneNumber\": \"+1112223333\",\n  \"type\": \"EMPLOYEE\",\n  \"branchId\": {{branchId}},\n  \"accountId\": \"acc_12345\"\n}"
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"phoneNumber\": \"+201112345678\",\n  \"type\": \"EMPLOYEE\",\n  \"branchId\": {{branchId}},\n  \"accountId\": \"acc_12345\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/users/profiles",
@@ -457,7 +457,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"Jane Doe\",\n  \"phoneNumber\": \"+4445556666\",\n  \"type\": \"EMPLOYEE\",\n  \"branchId\": {{branchId}},\n  \"accountId\": \"acc_12345\"\n}"
+              "raw": "{\n  \"fullName\": \"Jane Doe\",\n  \"phoneNumber\": \"+201223456789\",\n  \"type\": \"EMPLOYEE\",\n  \"branchId\": {{branchId}},\n  \"accountId\": \"acc_12345\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/users/profiles",
@@ -488,7 +488,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"Bob Smith\",\n  \"phoneNumber\": \"+1112223333\",\n  \"type\": \"COURIER\",\n  \"branchId\": {{branchId}},\n  \"accountId\": \"acc_67890\"\n}"
+              "raw": "{\n  \"fullName\": \"Bob Smith\",\n  \"phoneNumber\": \"+201112345678\",\n  \"type\": \"COURIER\",\n  \"branchId\": {{branchId}},\n  \"accountId\": \"acc_67890\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/users/profiles",
@@ -519,7 +519,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"Alice Wonder\",\n  \"phoneNumber\": \"+7778889999\",\n  \"type\": \"EMPLOYEE\",\n  \"branchId\": 999999,\n  \"accountId\": \"acc_11111\"\n}"
+              "raw": "{\n  \"fullName\": \"Alice Wonder\",\n  \"phoneNumber\": \"+201009876543\",\n  \"type\": \"EMPLOYEE\",\n  \"branchId\": 999999,\n  \"accountId\": \"acc_11111\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/users/profiles",
@@ -550,7 +550,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"John Doe - Updated\",\n  \"phoneNumber\": \"+1112223333\",\n  \"status\": \"ACTIVE\"\n}"
+              "raw": "{\n  \"fullName\": \"John Doe - Updated\",\n  \"phoneNumber\": \"+201112345678\",\n  \"status\": \"ACTIVE\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/users/profiles/{{profileId}}",
@@ -807,12 +807,10 @@
               "name": "1. Create Test Branch",
               "request": {
                 "method": "POST",
-                "header": [
-                  { "key": "Content-Type", "value": "application/json" }
-                ],
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"Integration Test Branch\",\n  \"location\": \"Test Location\",\n  \"phone\": \"+9876543210\"\n}"
+                  "raw": "{\n  \"name\": \"Integration Test Branch\",\n  \"location\": \"Test Location\",\n  \"phone\": \"+201001112222\"\n}"
                 },
                 "url": "{{baseUrl}}/api/branches"
               },
@@ -833,12 +831,10 @@
               "name": "2. Create Profile in Branch",
               "request": {
                 "method": "POST",
-                "header": [
-                  { "key": "Content-Type", "value": "application/json" }
-                ],
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"fullName\": \"Integration User\",\n  \"phoneNumber\": \"+5551234567\",\n  \"type\": \"EMPLOYEE\",\n  \"branchId\": {{branchId}},\n  \"accountId\": \"acc_integration\"\n}"
+                  "raw": "{\n  \"fullName\": \"Integration User\",\n  \"phoneNumber\": \"+201003334444\",\n  \"type\": \"EMPLOYEE\",\n  \"branchId\": {{branchId}},\n  \"accountId\": \"acc_integration\"\n}"
                 },
                 "url": "{{baseUrl}}/api/users/profiles"
               },
@@ -888,9 +884,7 @@
               "name": "5. Verify Profile Cannot Update with Deleted Branch",
               "request": {
                 "method": "PUT",
-                "header": [
-                  { "key": "Content-Type", "value": "application/json" }
-                ],
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"branchId\": {{branchId}}\n}"
