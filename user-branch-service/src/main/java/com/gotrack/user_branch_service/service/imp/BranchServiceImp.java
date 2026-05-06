@@ -6,9 +6,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.gotrack.user_branch_service.domain.entity.BranchEntity;
-import com.gotrack.user_branch_service.exceptions.BranchBadRequestException;
-import com.gotrack.user_branch_service.exceptions.BranchConflictException;
-import com.gotrack.user_branch_service.exceptions.BranchNotFoundException;
+import com.gotrack.user_branch_service.exceptions.BadRequestException;
+import com.gotrack.user_branch_service.exceptions.ConflictException;
+import com.gotrack.user_branch_service.exceptions.NotFoundException;
 import com.gotrack.user_branch_service.repository.BranchRepository;
 import com.gotrack.user_branch_service.service.BranchService;
 
@@ -24,7 +24,7 @@ public class BranchServiceImp implements BranchService {
     @Override
     public BranchEntity createBranch(BranchEntity branchEntity) {
         if (branchRepository.existsByPhoneAndIsDeletedFalse(branchEntity.getPhone())) {
-            throw new BranchConflictException("Phone already in use by another branch");
+            throw new ConflictException("Phone already in use by another branch");
         }
 
         return branchRepository.save(branchEntity);
@@ -70,15 +70,15 @@ public class BranchServiceImp implements BranchService {
     public BranchEntity updateBranch(BranchEntity branchEntity) {
 
         BranchEntity existingBranch = branchRepository.findById(branchEntity.getId())
-                .orElseThrow(() -> new BranchNotFoundException("Branch not found"));
+                .orElseThrow(() -> new NotFoundException("Branch not found"));
         if (Boolean.TRUE.equals(existingBranch.getIsDeleted())) {
-            throw new BranchBadRequestException("Cannot update a deleted branch");
+            throw new BadRequestException("Cannot update a deleted branch");
         }
 
         if (branchRepository.existsByPhoneAndIdNotAndIsDeletedFalse(
                 branchEntity.getPhone(), branchEntity.getId())) {
 
-            throw new BranchConflictException("Phone already used by another branch");
+            throw new ConflictException("Phone already used by another branch");
         }
 
         applyUpdates(existingBranch, branchEntity);
@@ -94,9 +94,9 @@ public class BranchServiceImp implements BranchService {
     @Override
     public void delete(Long id) {
         BranchEntity branch = branchRepository.findById(id)
-                .orElseThrow(() -> new BranchNotFoundException("Branch not found"));
+                .orElseThrow(() -> new NotFoundException("Branch not found"));
         if (Boolean.TRUE.equals(branch.getIsDeleted())) {
-            throw new BranchBadRequestException("Branch already deleted");
+            throw new BadRequestException("Branch already deleted");
         }
         branch.setIsDeleted(true);
         branchRepository.save(branch);

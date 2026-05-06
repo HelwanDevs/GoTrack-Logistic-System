@@ -1,5 +1,7 @@
 package com.gotrack.user_branch_service.service.imp;
 
+import com.gotrack.user_branch_service.exceptions.ConflictException;
+import com.gotrack.user_branch_service.exceptions.NotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +16,6 @@ import com.gotrack.user_branch_service.domain.entity.ProfileEntity;
 import com.gotrack.user_branch_service.domain.enums.ProfileStatus;
 import com.gotrack.user_branch_service.domain.enums.ProfileType;
 import com.gotrack.user_branch_service.domain.response.PageResponse;
-import com.gotrack.user_branch_service.exception.ConflictException;
-import com.gotrack.user_branch_service.exception.NotFoundException;
 import com.gotrack.user_branch_service.mappers.imp.ProfileMapperImp;
 import com.gotrack.user_branch_service.repository.BranchRepository;
 import com.gotrack.user_branch_service.repository.ProfileRepository;

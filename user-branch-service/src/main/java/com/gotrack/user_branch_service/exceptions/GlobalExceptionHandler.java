@@ -1,5 +1,6 @@
 package com.gotrack.user_branch_service.exceptions;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class BranchGlobalExceptionHandler {
+public class GlobalExceptionHandler {
 
     //Validation Handling (400)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -28,9 +29,9 @@ public class BranchGlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
-
-    @ExceptionHandler(BranchBadRequestException.class)
-    public ResponseEntity<Map<String, Object>> handleBadRequest(BranchBadRequestException ex) {
+    //Bad request Handling (400)
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Map<String, Object>> handleBadRequest(BadRequestException ex) {
 
         Map<String, Object> response = new HashMap<>();
         response.put("status", 400);
@@ -40,8 +41,9 @@ public class BranchGlobalExceptionHandler {
         return ResponseEntity.status(400).body(response);
     }
 
-    @ExceptionHandler(BranchNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleNotFound(BranchNotFoundException ex) {
+    //Not found (404)
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleNotFound(NotFoundException ex) {
 
         Map<String, Object> response = new HashMap<>();
         response.put("status", 404);
@@ -51,8 +53,9 @@ public class BranchGlobalExceptionHandler {
         return ResponseEntity.status(404).body(response);
     }
 
-    @ExceptionHandler(BranchConflictException.class)
-    public ResponseEntity<Map<String, Object>> handleConflict(BranchConflictException ex) {
+    //Conflict Handling (409)
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Map<String, Object>> handleConflict(ConflictException ex) {
 
         Map<String, Object> response = new HashMap<>();
         response.put("status", 409);
@@ -64,15 +67,23 @@ public class BranchGlobalExceptionHandler {
 
 
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGeneral() {
+    // 400 — @Positive @PathVariable / @RequestParam validation
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleConstraintViolation(ConstraintViolationException ex) {
 
         Map<String, Object> response = new HashMap<>();
-        response.put("status", 500);
-        response.put("error", "Internal Server Error");
-        response.put("message", "Something went wrong");
+        String message = ex.getConstraintViolations()
+                .iterator()
+                .next()
+                .getMessage();
 
-        return ResponseEntity.status(500).body(response);
+        response.put("status", 400);
+        response.put("error", "Bad Request");
+        response.put("message", message);
+
+        return ResponseEntity.status(400).body(response);
     }
+
+
 
 }

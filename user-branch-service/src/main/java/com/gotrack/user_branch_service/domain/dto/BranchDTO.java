@@ -1,6 +1,6 @@
 package com.gotrack.user_branch_service.domain.dto;
 
-import jakarta.persistence.Column;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
