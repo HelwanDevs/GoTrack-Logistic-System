@@ -1,0 +1,21 @@
+
+spring:
+  application:
+    name: ${SPRING_APPLICATION_NAME:auth-service}
+  docker:
+    compose:
+      enabled: false
+  mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/auth_db}
+
+server:
+  port: ${SERVER_PORT:8081}
+  
+jwt:
+  secret: thisIsASecretKeyForJWTtokensThatWasMadeByMomoWithAnFathomaleAmountOfHate
+  
+eureka:
+  client:
+    enabled: false
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE}
