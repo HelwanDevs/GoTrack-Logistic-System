@@ -100,11 +100,11 @@ export const Sidebar = () => {
 
       <div className="flex-1 flex flex-col gap-2 pl-4 pr-2 font-sans text-right">
         {sidebarItems
-          .filter(
-            (item) =>
-              authState.data?.user?.role &&
-              item.Roles.includes(authState.data.user.role.toLocaleLowerCase()),
-          )
+          // .filter(
+          //   (item) =>
+          //     authState.data?.user?.role &&
+          //     item.Roles.includes(authState.data.user.role.toLocaleLowerCase()),
+          // )
           .map((item) => (
             <button
               key={item.id}
