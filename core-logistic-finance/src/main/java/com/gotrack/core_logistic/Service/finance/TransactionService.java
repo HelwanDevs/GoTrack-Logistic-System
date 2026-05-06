@@ -90,7 +90,7 @@ public class TransactionService {
 
        Long profileId = 1L; // temporary 
          return transactionRepo
-             .findByFromProfileIdOrToProfileId(profileId, profileId, pageable)
+             .findByTransacteFromOrTransacteTo(profileId, profileId, pageable)
              .map(transactionMapper::toDTO);
    }
 

@@ -31,7 +31,7 @@ public class FinanceService {
 
     LocalDate today = LocalDate.now();
 
-    return financeRepo.findByCreated_at(today)
+    return financeRepo.findByCreatedAt(today)
         .orElseGet(() -> {
             FinancialSummary newSummary = new FinancialSummary();
             newSummary.setCreatedAt(today);

@@ -10,7 +10,7 @@ import com.gotrack.core_logistic.model.entity.Transaction;
 
 public interface TransactionRepo extends JpaRepository<Transaction, Long> {
 
-    Page<Transaction> findByFromProfileIdOrToProfileId(Long fromId, Long toId, Pageable pageable);
+    Page<Transaction> findByTransacteFromOrTransacteTo(Long fromId, Long toId, Pageable pageable);
 
     Page<TransactionDTO> findAll(Specification<Transaction> spec, Pageable pageable);
     
