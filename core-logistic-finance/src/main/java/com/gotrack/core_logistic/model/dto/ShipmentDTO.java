@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ShipmentDTO {
 
 
-
-    @NotNull
-    @Positive(message = "Shipment ID must be positive")
     private Long id;
 
     @NotNull

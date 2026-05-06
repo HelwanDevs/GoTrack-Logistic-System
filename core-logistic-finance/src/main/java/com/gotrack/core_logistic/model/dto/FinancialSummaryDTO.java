@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class FinancialSummaryDTO {
     
-    @NotNull
+    
     private Long id;
     
     @NotNull

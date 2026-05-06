@@ -15,7 +15,7 @@ import lombok.Setter;
 public class TransactionDTO {
 
 
-    @NotNull
+    
     private Long id;
 
     

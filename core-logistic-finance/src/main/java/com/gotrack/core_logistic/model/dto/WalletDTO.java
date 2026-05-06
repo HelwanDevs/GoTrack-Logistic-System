@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class WalletDTO {
 
-    @NonNull
+    
     private Long id;
     
     @NonNull
