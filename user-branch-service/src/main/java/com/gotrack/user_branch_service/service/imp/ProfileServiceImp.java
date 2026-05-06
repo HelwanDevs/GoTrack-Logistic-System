@@ -9,6 +9,7 @@ import com.gotrack.user_branch_service.domain.dto.ApiResponse;
 import com.gotrack.user_branch_service.domain.dto.ProfileRequestDTO;
 import com.gotrack.user_branch_service.domain.dto.ProfileResponseDTO;
 import com.gotrack.user_branch_service.domain.dto.ProfileUpdateDTO;
+import com.gotrack.user_branch_service.domain.entity.BranchEntity;
 import com.gotrack.user_branch_service.domain.entity.ProfileEntity;
 import com.gotrack.user_branch_service.domain.enums.ProfileStatus;
 import com.gotrack.user_branch_service.domain.enums.ProfileType;
@@ -16,6 +17,7 @@ import com.gotrack.user_branch_service.domain.response.PageResponse;
 import com.gotrack.user_branch_service.exception.ConflictException;
 import com.gotrack.user_branch_service.exception.NotFoundException;
 import com.gotrack.user_branch_service.mappers.imp.ProfileMapperImp;
+import com.gotrack.user_branch_service.repository.BranchRepository;
 import com.gotrack.user_branch_service.repository.ProfileRepository;
 import com.gotrack.user_branch_service.service.ProfileService;
 
@@ -34,6 +36,9 @@ public class ProfileServiceImp implements ProfileService {
     @Autowired
     private ProfileMapperImp profileMapper;
 
+    @Autowired
+    private BranchRepository branchRepository;
+
     @Override
     public ApiResponse createProfile(ProfileRequestDTO dto) {
 
@@ -49,13 +54,16 @@ public class ProfileServiceImp implements ProfileService {
             throw new ConflictException("Phone number already in use");
         }
 
+        // 404 / 409 — validate branchId exists and is active
+        validateBranch(dto.getBranchId());
+
+
         ProfileEntity entity = profileMapper.toEntity(dto);
 
         // TODO: extract actual admin ID from JWT token via auth sercive
         // entity.setCreatedBy(jwtUtil.extractAccountId(token));
         entity.setCreatedBy("ADMIN");
 
-        // TODO: validate branchId exists via branch-service API
         // TODO: validate accountId exists via auth-service API
 
         ProfileEntity saved = profileRepository.save(entity);
@@ -92,6 +100,11 @@ public class ProfileServiceImp implements ProfileService {
             entity.setPhoneNumber(dto.getPhoneNumber().trim());
         }
 
+
+        if (dto.getBranchId() != null) {
+        validateBranch(dto.getBranchId()); 
+        entity.setBranchId(dto.getBranchId());
+    }
         if (dto.getAccountId() != null)
             entity.setAccountId(dto.getAccountId());
         if (dto.getBranchId() != null)
@@ -178,4 +191,18 @@ public class ProfileServiceImp implements ProfileService {
                 page.getTotalPages());
 
     }
+
+    private void validateBranch(Long branchId) {
+        if (branchId == null)
+            return;
+
+        BranchEntity branch = branchRepository.findById(branchId)
+                .orElseThrow(() -> new NotFoundException("Branch not found with ID: " + branchId));
+
+        if (Boolean.TRUE.equals(branch.getIsDeleted())) {
+            throw new ConflictException("Cannot assign profile to a deleted or inactive branch");
+        }
+    }
+    
+    
 }

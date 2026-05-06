@@ -1,4 +1,4 @@
-package com.gotrack.user_branch_service.mappers.impl;
+package com.gotrack.user_branch_service.mappers.imp;
 
 import com.gotrack.user_branch_service.domain.dto.BranchDTO;
 import com.gotrack.user_branch_service.domain.entity.BranchEntity;
