@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,13 +17,21 @@ import lombok.Setter;
 @Setter
 public class PickupRequestDTO {
     
+    @NotNull(message = "Pickup ID is required")
+    @Positive(message = "Pickup ID must be positive")
     private Long id;
     
-    
+    @NotNull(message = "Customer ID is required")
+    @Positive(message = "Customer ID must be positive")
     private Long customerId;
+    
+    @NotNull(message = "Courier ID is required")
     private Long courierId;
     
+    @NotBlank(message = "Pickup address is required")
     private String pickupAddress;
+
+
     private String notes;
 
     @Future(message = "Invalid date formatting")
@@ -40,6 +49,7 @@ public class PickupRequestDTO {
     @NotBlank(message = "Receiver address is required")
     private String receiverAddress;
 
+    @NotNull(message = "Pickup status is required")
     private PickupStatus Status;
     
     @NotNull(message = "Cost is required")
@@ -48,4 +58,5 @@ public class PickupRequestDTO {
     private LocalDateTime lastUpdate;
     private LocalDateTime createdAt;
     
+
 }

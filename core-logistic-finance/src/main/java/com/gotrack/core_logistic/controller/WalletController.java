@@ -9,8 +9,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gotrack.core_logistic.Service.finance.WalletService;
@@ -25,19 +25,20 @@ public class WalletController {
    @Autowired
    WalletService walletService ;
 
-  @GetMapping
-  public ResponseEntity<Page<WalletDTO>> getAllWallets(
+  @GetMapping("/search")
+  public ResponseEntity<Page<WalletDTO>> getWallet(
+        @RequestParam(required = false) Long id,
         @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)
         Pageable pageable) {
 
-    Page<WalletDTO> response = walletService.getAllWallets(pageable);
+    Page<WalletDTO> response = walletService.getWallets(id, pageable);
     return ResponseEntity.ok(response);
 }
    
-
    @GetMapping("/me")
-   public ResponseEntity<WalletDTO> GetMyWallets(@PathVariable Long id) {
+   public ResponseEntity<WalletDTO> GetMyWallets() {
            //TODO: get user id from JWT
+           long id = 1L; // temporary
            WalletDTO response = walletService.GetMyWallets(id);
            return ResponseEntity.ok(response);
    }

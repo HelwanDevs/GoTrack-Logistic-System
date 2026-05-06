@@ -1,4 +1,4 @@
-package com.gotrack.core_logistic.model.dto;
+package com.gotrack.core_logistic.model.dto.Filters;
 
 import lombok.Data;
 

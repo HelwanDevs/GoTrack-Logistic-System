@@ -18,6 +18,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -40,16 +42,17 @@ public class Shipment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull
     private Long id;
 
-    @Column(name = "customer_id")
+    @Column(name = "customer_id" , nullable = false)
     private Long customerId;
 
     @Column(name = "courier_id")
     private Long courierId;
     
 
-    @Column(name = "flyer_number" ,updatable=false )
+    @Column(name = "flyer_number" ,updatable=false  , nullable = false)
     private Long flyerNumber;
 
     private String note;
@@ -58,13 +61,16 @@ public class Shipment {
     @UpdateTimestamp
     private LocalDateTime lastUpDate;
 
+    @NotNull
     @Enumerated
     private ShipmentStatus status;
 
-    @Column(name = "total_price")
+    @Column(name = "total_price", nullable = false)
+    @Positive(message = "Total price must be greater than zero")
     private BigDecimal totalPrice;
 
-    @Column(name = "shipment_fee")
+    @Column(name = "shipment_fee", nullable = false)
+    @Positive(message = "Shipment fee must be greater than zero")
     private BigDecimal ShipmentFee;
 
     @Column(name = "delivery_date")

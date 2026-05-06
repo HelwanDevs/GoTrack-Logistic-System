@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gotrack.core_logistic.Service.PickupService;
-import com.gotrack.core_logistic.model.dto.PickupFilter;
 import com.gotrack.core_logistic.model.dto.PickupRequestDTO;
+import com.gotrack.core_logistic.model.dto.Filters.PickupFilter;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -4,21 +4,23 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class WalletDTO {
 
+    @NonNull
     private Long id;
-
-    private Long profileId;
-    private BigDecimal balance;
-
     
+    @NonNull
+    private Long profileId;
+
+    @NonNull
+    private BigDecimal balance = BigDecimal.ZERO;
+
     private List<TransactionDTO> transactions;
 
 

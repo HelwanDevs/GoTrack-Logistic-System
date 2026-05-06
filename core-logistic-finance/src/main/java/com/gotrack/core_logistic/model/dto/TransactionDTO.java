@@ -1,11 +1,12 @@
 package com.gotrack.core_logistic.model.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.gotrack.core_logistic.enums.TransactionType;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,19 +14,20 @@ import lombok.Setter;
 @Setter
 public class TransactionDTO {
 
+
+    @NotNull
     private Long id;
 
     
     @NotNull
+    @Positive(message = "Amount must be greater than zero")
     private BigDecimal amount;
 
     @NotNull
     private TransactionType type;
 
     @NotNull
-    private LocalDateTime CreatedAt;
-
-    private ShipmentDTO shipment;
+    private LocalDate CreatedAt;
     
     @NotNull
     private WalletDTO wallet;

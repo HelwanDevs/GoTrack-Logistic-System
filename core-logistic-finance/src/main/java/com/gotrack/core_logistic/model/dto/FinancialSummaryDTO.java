@@ -1,7 +1,9 @@
 package com.gotrack.core_logistic.model.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,26 +12,35 @@ import lombok.Setter;
 @Setter
 public class FinancialSummaryDTO {
     
+    @NotNull
+    private Long id;
+    
+    @NotNull
     private BigDecimal NetCash;
-
+    @NotNull
     private BigDecimal vendorDue; //المستحق للبائعين
+    
+    @NotNull
     private BigDecimal venderPaid;   //دفعات البائعين
-    private BigDecimal totalCollected; 
 
+    @NotNull
     private BigDecimal shippingCost;
 
+    @NotNull
     private BigDecimal  curierCommission ;
 
+    @NotNull
     private BigDecimal totalCommission ;
 
-    private  BigDecimal  managersBalance ;
-    
-    private  BigDecimal curierBalance ;
-
+    @NotNull
     private BigDecimal expenses ;
 
+    @NotNull
     private BigDecimal profitMargin ;
     
+    @NotNull
     private BigDecimal netProfit ;
 
+    @NotNull
+    private LocalDate createdAt;
 }

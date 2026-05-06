@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 
 import com.gotrack.core_logistic.enums.ShipmentStatus;
 
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,12 +15,18 @@ import lombok.Setter;
 @Setter
 public class ShipmentDTO {
 
+
+
+    @NotNull
+    @Positive(message = "Shipment ID must be positive")
     private Long id;
 
     @NotNull
+    @Positive(message = "Customer ID must be positive")
     private Long customerId;
 
     @NotNull
+    @Positive(message = "Courier ID must be positive")
     private Long courierId;
     
     @NotNull
@@ -29,12 +37,16 @@ public class ShipmentDTO {
     private ShipmentStatus status;
 
     @NotNull
+    @Positive(message = "Total price must be greater than zero")
     private BigDecimal totalPrice;
 
     @NotNull
+    @Positive(message = "Shipment fee must be greater than zero")
     private BigDecimal shipmentFee;
     
     private LocalDateTime lastUpDate;
+
+    @Future(message = "Invalid date formatting")
     private LocalDateTime deliveryDate;
 
     @NotNull

@@ -9,11 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.gotrack.core_logistic.ExceptionHandling.ConflictException;
 import com.gotrack.core_logistic.ExceptionHandling.ResourceNotFoundException;
+import com.gotrack.core_logistic.Service.finance.FinanceService;
 import com.gotrack.core_logistic.Specifications.ShipmentSpecification;
 import com.gotrack.core_logistic.enums.ShipmentStatus;
 import com.gotrack.core_logistic.mapper.shipmentMapper;
 import com.gotrack.core_logistic.model.dto.ShipmentDTO;
-import com.gotrack.core_logistic.model.dto.ShipmentFilter;
+import com.gotrack.core_logistic.model.dto.Filters.ShipmentFilter;
 import com.gotrack.core_logistic.model.entity.Shipment;
 import com.gotrack.core_logistic.repository.PickupRepo;
 import com.gotrack.core_logistic.repository.ShipmentRepo;
@@ -24,11 +25,13 @@ import com.gotrack.core_logistic.repository.ShipmentRepo;
 public class ShipmentService {
     
     @Autowired
-    private ShipmentRepo shipmentRepo;
+        private ShipmentRepo shipmentRepo;
     @Autowired
-    private PickupRepo pickupRepo;
+        private PickupRepo pickupRepo;
     @Autowired
-    private shipmentMapper ShipmentMapper;
+        private shipmentMapper ShipmentMapper;
+    @Autowired
+        private FinanceService financeService;
 
     
     public ShipmentDTO createShipment(ShipmentDTO shipmentRequest) {
@@ -37,7 +40,7 @@ public class ShipmentService {
 
         Shipment shipment = ShipmentMapper.toEntity(shipmentRequest);
 
-        //TODO: INtegrate with courier service to validate courierId
+        //TODO: INtegrate with Profile service to validate courierId
         shipment.setCourierId(shipmentRequest.getCourierId());
         shipment.setStatus(ShipmentStatus.PendingPickup);
         Shipment savedShipment = shipmentRepo.save(shipment);
@@ -62,7 +65,7 @@ public class ShipmentService {
         }
 
         if(newStatus == ShipmentStatus.DELIVERED){
-            //TODO:Add shipping profits and adjust financial accounts
+            financeService.shipmentCalculation(existingShipment.getShipmentFee(), existingShipment.getTotalPrice());
         }
 
         existingShipment.setStatus(newStatus);

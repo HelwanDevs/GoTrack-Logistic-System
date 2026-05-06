@@ -18,17 +18,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "pickup_requests")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Pickup {
     
     @OneToMany(mappedBy = "pickupRequest", cascade = CascadeType.ALL)
@@ -36,18 +33,21 @@ public class Pickup {
 
 
     @Id
+    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "customer_id", nullable = false)
+    @NotNull
     private Long customerId;
+
     @Column(name = "courier_id")
     private Long courierId;
 
     @Column(name = "pickup_address", nullable = false)
     private String pickupAddress;
-    private String notes;
 
+    private String notes;
 
 
     @CreationTimestamp
@@ -64,11 +64,13 @@ public class Pickup {
     @Enumerated
     private PickupStatus status;
     
-    @Column(name = "receiver_name")
+    @Column(name = "receiver_name", nullable = false)
     private String receiverName;
-    @Column(name = "receiver_contact")
+
+    @Column(name = "receiver_contact", nullable = false)
     private String receiverContact;
-    @Column(name = "receiver_address")
+    
+    @Column(name = "receiver_address", nullable = false)
     private String receiverAddress;
 
     @Column(name = "Shipment_cost", nullable = false)

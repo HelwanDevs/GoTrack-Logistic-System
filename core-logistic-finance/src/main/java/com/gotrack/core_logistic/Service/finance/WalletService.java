@@ -26,10 +26,18 @@ public class WalletService {
       @Autowired
       TransactionMapper transactionMapper;
 
+        
+      public Page<WalletDTO> getWallets(Long id, Pageable pageable) {
 
-        public Page<WalletDTO> getAllWallets(Pageable pageable) {
-         return walletRepo.findAll(pageable)
-              .map(walletMapper::toDto);
+         Page<Wallet> wallets;
+
+         if (id == null) 
+            wallets = walletRepo.findAll(pageable);
+         else 
+            wallets = walletRepo.findAllByProfileId(id, pageable)
+                .orElseThrow(() -> new ResourceNotFoundException("No wallets found for profile id: " + id));
+
+        return wallets.map(walletMapper::toDto);
 }
 
        

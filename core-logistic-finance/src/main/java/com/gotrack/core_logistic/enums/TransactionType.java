@@ -1,23 +1,32 @@
 package com.gotrack.core_logistic.enums;
 
-public enum TransactionType {
-    CASH,
-    FAWRY,
-    BANK_TRANSFER,
-    MOBILE_WALLET,
-    BANK_CHECK,
-    SALARIES_AND_WAGES,
-    COURIER_COMMISSIONS,
-    RENT,
-    UTILITIES,
-    OTHER_EXPENSES,
-    ADVANCES,
-    COMPANY_BANK_DEPOSIT,
-    OTHER_REVENUES,
-    FUEL, // gasoline & diesel
-    VEHICLE_MAINTENANCE,
-    PICKUP_COMMISSION_EXPENSES,
-    CASH_COLLECTION_CUSTODY,  //عهده توريد نقدية
-    CUSTODY_LIABILITY
+import lombok.Getter;
 
+@Getter
+public enum TransactionType {
+
+    CASH(TransactionCatg.REVENUE),
+    FAWRY(TransactionCatg.REVENUE),
+    BANK_TRANSFER(TransactionCatg.REVENUE),
+    MOBILE_WALLET(TransactionCatg.REVENUE),
+    BANK_CHECK(TransactionCatg.REVENUE),
+    SALARIES_AND_WAGES(TransactionCatg.EXPENSE),
+    COURIER_COMMISSIONS(TransactionCatg.COURIER_COMMISSIONS),
+    RENT(TransactionCatg.EXPENSE),
+    UTILITIES(TransactionCatg.EXPENSE),
+    OTHER_EXPENSES(TransactionCatg.EXPENSE),
+    ADVANCES(TransactionCatg.EXPENSE),
+    COMPANY_BANK_DEPOSIT(TransactionCatg.REVENUE),
+    OTHER_REVENUES(TransactionCatg.REVENUE),
+    FUEL(TransactionCatg.EXPENSE),
+    VEHICLE_MAINTENANCE(TransactionCatg.EXPENSE),
+    PICKUP_COMMISSION_EXPENSES(TransactionCatg.PICKUP_COMMISSION_EXPENSES),
+    CASH_COLLECTION_CUSTODY(TransactionCatg.CASH_COLLECTION_CUSTODY),
+    CUSTODY_LIABILITY(TransactionCatg.CUSTODY_LIABILITY);
+
+    private final TransactionCatg catg;
+
+    TransactionType(TransactionCatg catg) {
+        this.catg = catg;
+    }
 }

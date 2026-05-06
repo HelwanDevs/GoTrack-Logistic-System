@@ -2,19 +2,23 @@ package com.gotrack.core_logistic.Service.finance;
 
 import java.math.BigDecimal;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.gotrack.core_logistic.ExceptionHandling.ConflictException;
 import com.gotrack.core_logistic.ExceptionHandling.ResourceNotFoundException;
-import com.gotrack.core_logistic.mapper.FinancialSummaryMapper;
+import com.gotrack.core_logistic.Specifications.TransactionSpecification;
+import com.gotrack.core_logistic.enums.ReportPeriod;
 import com.gotrack.core_logistic.mapper.TransactionMapper;
 import com.gotrack.core_logistic.model.dto.FinancialSummaryDTO;
 import com.gotrack.core_logistic.model.dto.TransactionDTO;
-import com.gotrack.core_logistic.model.entity.FinancialSummary;
+import com.gotrack.core_logistic.model.dto.Filters.TransactionFilter;
 import com.gotrack.core_logistic.model.entity.Transaction;
 import com.gotrack.core_logistic.model.entity.Wallet;
-import com.gotrack.core_logistic.repository.FinanceRepo;
 import com.gotrack.core_logistic.repository.TransactionRepo;
 import com.gotrack.core_logistic.repository.WalletRepo;
 
@@ -31,10 +35,7 @@ public class TransactionService {
     FinanceService financeService;
     @Autowired 
     WalletRepo walletRepo;
-    @Autowired
-    FinanceRepo financeRepo;
-    @Autowired
-    FinancialSummaryMapper financialMapper;
+    
 
 
 
@@ -69,14 +70,29 @@ public class TransactionService {
 
 
    
-    public  FinancialSummaryDTO ReportTransaction(){
+    public  FinancialSummaryDTO ReportTransaction(ReportPeriod period){
 
-    FinancialSummary finance = financeRepo.findTopByOrderByIdDesc()
-        .orElseThrow(() -> new ResourceNotFoundException("No Financial Summary Found"));
+    return financeService.buildSummary(period);
 
-    return financialMapper.toDTO(finance);
 }
+
+
+   public Page<TransactionDTO> getTransactions(TransactionFilter filter, Pageable pageable){
+       Specification<Transaction> spec = TransactionSpecification.filterTransactions(filter);
+       return transactionRepo.findAll(spec, pageable);
+       
+   }
     
+
+
+   public Page<TransactionDTO> GetMyTransactions(Pageable pageable){
+    //TODO: integrate with profile service to validate ProfileId
+
+       Long profileId = 1L; // temporary 
+         return transactionRepo
+             .findByFromProfileIdOrToProfileId(profileId, profileId, pageable)
+             .map(transactionMapper::toDTO);
+   }
 
 
 }

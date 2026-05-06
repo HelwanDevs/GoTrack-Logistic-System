@@ -13,8 +13,8 @@ import com.gotrack.core_logistic.ExceptionHandling.ResourceNotFoundException;
 import com.gotrack.core_logistic.Specifications.PickupSpecification;
 import com.gotrack.core_logistic.enums.PickupStatus;
 import com.gotrack.core_logistic.mapper.PickupRequestMapper;
-import com.gotrack.core_logistic.model.dto.PickupFilter;
 import com.gotrack.core_logistic.model.dto.PickupRequestDTO;
+import com.gotrack.core_logistic.model.dto.Filters.PickupFilter;
 import com.gotrack.core_logistic.model.entity.Pickup;
 import com.gotrack.core_logistic.repository.PickupRepo;
 
@@ -24,7 +24,7 @@ import com.gotrack.core_logistic.repository.PickupRepo;
 public class PickupService {
 
         @Autowired
-        private PickupRepo pickupRepository;
+         private PickupRepo pickupRepository;
         @Autowired
         private PickupRequestMapper pickupMapper;
         
@@ -34,8 +34,7 @@ public class PickupService {
         public PickupRequestDTO createPickup(PickupRequestDTO pickupRequest) {
              Pickup pickup = pickupMapper.toEntity(pickupRequest);
 
-             //TODO: integrate with customer service to validate customerId
-             pickup.setStatus(PickupStatus.Pending);
+             //TODO: integrate with profile service to validate customerId
              pickup.setStatus(PickupStatus.Pending);
              Pickup savedPickup = pickupRepository.save(pickup);
              return pickupMapper.toDTO(savedPickup);
@@ -46,7 +45,7 @@ public class PickupService {
 
         public PickupRequestDTO updatePickup(Long id, PickupRequestDTO pickupRequest) {
                    Pickup existingPickup = pickupRepository.findById(id)
-                         .orElseThrow(() -> new RuntimeException("Pickup not found with id: " + id));
+                         .orElseThrow(() -> new ResourceNotFoundException("Pickup not found with id: " + id));
 
                    PickupStatus currentStatus = existingPickup.getStatus();   
                    PickupStatus newStatus = pickupRequest.getStatus();      
@@ -74,7 +73,7 @@ public class PickupService {
         public PickupRequestDTO assignCourier(Long id, Long courierId) {
                 Pickup existingPickup = pickupRepository.findById(id)
                         .orElseThrow(() -> new ResourceNotFoundException("Pickup not found with id: " + id));
-                //TODO: integrate with courier service to validate courierId and check availability
+                //TODO: integrate with Profile service to validate courierId and check availability
                 existingPickup.setCourierId(courierId);
                 existingPickup.setStatus(PickupStatus.CurierAssigned);
 

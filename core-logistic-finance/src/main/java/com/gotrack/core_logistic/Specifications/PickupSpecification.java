@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.gotrack.core_logistic.model.dto.PickupFilter;
+import com.gotrack.core_logistic.model.dto.Filters.PickupFilter;
 import com.gotrack.core_logistic.model.entity.Pickup;
 
 import jakarta.persistence.criteria.Predicate;

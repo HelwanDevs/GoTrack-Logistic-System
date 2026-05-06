@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gotrack.core_logistic.Service.ShipmentService;
 import com.gotrack.core_logistic.model.dto.ShipmentDTO;
-import com.gotrack.core_logistic.model.dto.ShipmentFilter;
+import com.gotrack.core_logistic.model.dto.Filters.ShipmentFilter;
 
 import jakarta.validation.Valid;
 
@@ -37,15 +37,11 @@ public class ShipmentController {
        return ResponseEntity.ok(response);
    }
    
-
-
    @PutMapping("/{id}/status")
    public ResponseEntity<ShipmentDTO> updateShipmentStatus(@PathVariable Long id, @Valid @RequestBody ShipmentDTO request) {
        ShipmentDTO response = shipmentService.updateShipmentStatus(id, request);
        return ResponseEntity.ok(response);
    }
-
-
 
    @GetMapping("/search")
     public ResponseEntity<Page<ShipmentDTO>> searchShipments(

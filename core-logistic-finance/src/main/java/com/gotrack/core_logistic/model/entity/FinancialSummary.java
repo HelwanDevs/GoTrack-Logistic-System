@@ -1,6 +1,9 @@
 package com.gotrack.core_logistic.model.entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,9 +34,6 @@ public class FinancialSummary {
     private BigDecimal venderPaid= BigDecimal.ZERO;   //دفعات البائعين
 
     @Column(columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-    private BigDecimal totalCollected = BigDecimal.ZERO; 
-
-    @Column(columnDefinition = "DECIMAL(10,2) DEFAULT 0")
     private BigDecimal shippingCost = BigDecimal.ZERO;
 
     @Column(columnDefinition = "DECIMAL(10,2) DEFAULT 0")
@@ -43,18 +43,16 @@ public class FinancialSummary {
     private BigDecimal totalCommission = BigDecimal.ZERO;
 
     @Column(columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-    private  BigDecimal  managersBalance = BigDecimal.ZERO;
-    
-    @Column(columnDefinition = "DECIMAL(10,2) DEFAULT 0")
-    private  BigDecimal curierBalance  = BigDecimal.ZERO;
-
-    @Column(columnDefinition = "DECIMAL(10,2) DEFAULT 0")
     private BigDecimal expenses = BigDecimal.ZERO;
 
     @Column(columnDefinition = "DECIMAL(10,2) DEFAULT 0")
     private BigDecimal profitMargin = BigDecimal.ZERO;
     
     private BigDecimal netProfit = BigDecimal.ZERO;
+    
+    
+    @CreationTimestamp
+    private LocalDate createdAt;
 
 
 }
