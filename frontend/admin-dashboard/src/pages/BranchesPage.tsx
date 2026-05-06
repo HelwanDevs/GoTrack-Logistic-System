@@ -51,18 +51,7 @@ export const BranchesPage = () =>{
 
 
 
-                    //backup display table        
-                    /* {testData.map((row,) => (
-                       <tr key={index}>
-                            {headers.map((header,index)=>{
-                                return(
-                                    <td key ={index}>
-                                        {row[header.KEY]}
-                                    </td>
-                                )
-                            })}
-                       </tr> 
-                        ))} */
+                 
 
 
     const [testData,setTestData] =useState([
@@ -106,6 +95,8 @@ export const BranchesPage = () =>{
         
 
     }
+    // new branch functions
+
     let deleteOptions =["yes","no"];
     function handleNameChange (event){
         setBranchName (event.target.value);
@@ -126,6 +117,8 @@ export const BranchesPage = () =>{
     const hideFormFun = (e) =>{
         setShowForm(false)
     }
+
+    // filter functions
     const handleHideDel= (e) =>{
         if(deletedFilter){
             setDeletedFilter(false)
@@ -289,15 +282,15 @@ useEffect(()=>{
               
               </form>
              </Card>}
-             {/* add the filter here */}
+             {/* filter branches */}
              <Card>
                 <div className = "mb-6">
                     <h3 className="font-headline-md text-headline-md text-on-background mb-1">
                         Filter Branches
                     </h3>
                      <p className="text-body-sm text-on-surface-variant">
-            Number of branches : {listBranches.length}
-          </p>
+                      Number of branches : {listBranches.length}
+                    </p>
                 </div>
                 <div className="mb-6 space-y-4 p-4 bg-surface-container-low rounded-lg">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
@@ -315,29 +308,29 @@ useEffect(()=>{
                          </div>
                          <div className= "col-span-1 md:col-span-2 flex items-center">
                              <Checkbox
-                label="تضمين المحذوف"
-                checked={deletedFilter}
-                size="3xl"
-                onChange={(e) => {
-                  handleHideDel(e);
-                }}
-              />
+                                label="تضمين المحذوف"
+                                checked={deletedFilter}
+                                size="3xl"
+                                onChange={(e) => {
+                                  handleHideDel(e);
+                                }}
+                              />
                          </div>
 
                           <div className="col-span-1 md:col-span-2 flex items-end">
-              <Button
-                variant="outline"
-                size="md"
-                fullWidth
-                onClick={() => {
-                  setBranchSearch("");
-                //   setRoleFilter("");
-                //   setPage(0);
-                }}
-              >
-                إعادة تعيين الفلاتر
-              </Button>
-            </div>
+                            <Button
+                              variant="outline"
+                              size="md"
+                              fullWidth
+                              onClick={() => {
+                                setBranchSearch("");
+                              //   setRoleFilter("");
+                              //   setPage(0);
+                              }}
+                            >
+                              إعادة تعيين الفلاتر
+                            </Button>
+                        </div>
                     </div>
                 </div>
              </Card>
@@ -359,19 +352,19 @@ useEffect(()=>{
 
                             <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
                                 Name
-                           </th>
-                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                    location
-                  </th>
-                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                    Phone number
-                  </th>
-                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                    محذوف
-                  </th>
-                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                    Edit
-                  </th>
+                            </th>
+                            <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                              location
+                            </th>
+                            <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                              Phone number
+                            </th>
+                            <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                              محذوف
+                            </th>
+                            <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                              Edit
+                            </th>
                         </tr>
                      </thead>
                      <tbody>
@@ -387,61 +380,61 @@ useEffect(()=>{
                                     
                                 
                                 <td className="p-4">
-                                      {editingId === data.id ? (
-                        <Input
-                          type="email"
-                          value={editForm.NAME}
-                          onChange={(e) =>
-                            setEditForm({
-                              ...editForm,
-                              NAME: e.target.value,
-                            })
-                          }
-                          className="text-body-sm"
-                        />
-                      ) : (
-                        <p className="text-body-md text-on-surface">
-                          {data.NAME}
-                        </p>
-                      )}
+                                   {editingId === data.id ? (
+                                    <Input
+                                      type="email"
+                                      value={editForm.NAME}
+                                      onChange={(e) =>
+                                        setEditForm({
+                                          ...editForm,
+                                          NAME: e.target.value,
+                                        })
+                                      }
+                                      className="text-body-sm"
+                                    />
+                                  ) : (
+                                    <p className="text-body-md text-on-surface">
+                                      {data.NAME}
+                                    </p>
+                                  )}
                                 </td>
 
-                                 <td className="p-4">
-                                      {editingId === data.id ? (
-                        <Input
-                          type="text"
-                          value={editForm.LOCATION}
-                          onChange={(e) =>
-                            setEditForm({
-                              ...editForm,
-                              LOCATION: e.target.value,
-                            })
-                          }
-                          className="text-body-sm"
-                        />
-                      ) : (
-                        <p className="text-body-md text-on-surface">
-                          {data.LOCATION}
-                        </p>
-                      )}
+                                <td className="p-4">
+                                   {editingId === data.id ? (
+                                      <Input
+                                        type="text"
+                                        value={editForm.LOCATION}
+                                        onChange={(e) =>
+                                          setEditForm({
+                                            ...editForm,
+                                            LOCATION: e.target.value,
+                                          })
+                                        }
+                                        className="text-body-sm"
+                                      />
+                                    ) : (
+                                      <p className="text-body-md text-on-surface">
+                                        {data.LOCATION}
+                                      </p>
+                                    )}
                                 </td>
 
                                      <td className="p-4">
                                       {editingId === data.id ? (
-                        <Input
-                          type="text"
-                          value={editForm.PHONE}
-                          onChange={(e) =>
-                            setEditForm({
-                              ...editForm,
-                              PHONE: e.target.value,
-                            })
-                          }
-                          className="text-body-sm"
-                        />
-                      ) : (
-                       <span className= " p-2 rounded-full bg-secondary-container text-on-primary">{data.PHONE} </span>
-                      )}
+                                    <Input
+                                      type="text"
+                                      value={editForm.PHONE}
+                                      onChange={(e) =>
+                                        setEditForm({
+                                          ...editForm,
+                                          PHONE: e.target.value,
+                                        })
+                                      }
+                                      className="text-body-sm"
+                                    />
+                                  ) : (
+                                  <span className= " p-2 rounded-full bg-secondary-container text-on-primary">{data.PHONE} </span>
+                                  )}
                                 </td>
                                 <td
                                  className="p-4">
@@ -493,39 +486,9 @@ useEffect(()=>{
                               </tr>
                         ))}
 
-{/* 
-                                    <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={()=> handleRemoveItem(data.id)}>delete</Button>
 
- <Button
-                                    variant="secondary"
-                                    size="sm"
-                                     onClick={() => handleEditClick(data)}>Edit</Button> */}
                      </tbody>
-                     {/* <tbody>
-                        <tr className="border-b border-surface-variant hover:bg-surface-container-low transition">
-                            <td className="p-4">test name</td>
-                            <td className="p-4">Helwan</td>
-                            <td className="p-4 ">
-                                <span className= " p-2 rounded-full bg-secondary-container text-on-primary">   123456789   
-                                    </span>
-                                </td>
-                            <td className={`p-6 text-body-sm`}>
-                                <span className="px-4 py-1 rounded-full bg-surface-variant text-on-surface-variant"
->                                   no
-                                  
-                                </span>
-                            </td>
-                            <td>
-                               <div className="flex gap-2"> <Button variant="secondary"
-                              size="sm"> edit</Button>
-                                <Button variant="outline"
-                              size="sm"> delete</Button> </div>
-                            </td>
-                        </tr>
-                     </tbody> */}
+                   
                  </table>
              </Card>
         </main>
