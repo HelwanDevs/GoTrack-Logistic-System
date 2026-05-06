@@ -51,9 +51,9 @@ public class TransactionService {
     Wallet toWallet = walletRepo.findByProfileId(request.getTransacteTo())
         .orElseThrow(() -> new ResourceNotFoundException("Receiver not found"));
 
-    // if(fromWallet.getBalance().compareTo(amount) < 0){
-    //     throw new ConflictException("Insufficient balance");
-    // }
+    if(fromWallet.getBalance().compareTo(amount) < 0){
+        throw new ConflictException("Insufficient balance");
+    }
     
     fromWallet.setBalance(fromWallet.getBalance().subtract(amount));
     toWallet.setBalance(toWallet.getBalance().add(amount));
