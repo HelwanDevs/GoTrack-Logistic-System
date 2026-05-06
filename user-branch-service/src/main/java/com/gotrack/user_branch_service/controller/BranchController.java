@@ -5,7 +5,8 @@ import com.gotrack.user_branch_service.domain.dto.BranchDTO;
 import com.gotrack.user_branch_service.domain.entity.BranchEntity;
 import com.gotrack.user_branch_service.domain.response.PageResponse;
 import com.gotrack.user_branch_service.mappers.BranchMapper;
-import com.gotrack.user_branch_service.services.BranchService;
+import com.gotrack.user_branch_service.service.BranchService;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.data.domain.Page;
