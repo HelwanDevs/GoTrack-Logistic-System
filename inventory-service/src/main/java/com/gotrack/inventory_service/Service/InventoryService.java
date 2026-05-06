@@ -1,19 +1,18 @@
 package com.gotrack.inventory_service.Service;
 
-import java.util.List;
-import java.util.Map;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.gotrack.inventory_service.Dto.inventoryItemDto;
+import com.gotrack.inventory_service.Dto.InventoryItemRequest;
+import com.gotrack.inventory_service.Dto.InventoryItemResponse;
 import com.gotrack.inventory_service.Entity.InventoryItem;
 import com.gotrack.inventory_service.Entity.Product;
-import com.gotrack.inventory_service.Entity.inventoryStatus;
+import com.gotrack.inventory_service.Enums.InventoryStatus;
 import com.gotrack.inventory_service.Exception.ConflictException;
 import com.gotrack.inventory_service.Exception.NotFoundException;
 import com.gotrack.inventory_service.repository.InventoryRepository;
 import com.gotrack.inventory_service.repository.ProductRepository;
-
-
 
 @Service
 public class InventoryService {
@@ -27,32 +26,38 @@ public class InventoryService {
         this.productRepository = productRepository;
     }
 
-    public Map<String, String> receiveItems(inventoryItemDto dto) {
-       
-        // TODO: validate branchId exists in database (requires BranchRepository from user-service)
-        // Example: "Branch with ID " + dto.getBranchId() + " not found"
-    Product product = productRepository.findById(dto.getProductId())
-            .orElseThrow(() -> new NotFoundException( "Product with ID " + dto.getProductId() + " not found"));
+    // TODO: Cross-service validation - verify branchId exists via user-service
+    public void receiveItems(InventoryItemRequest dto) {
 
-    for (String sku : dto.getUniqueSkus()) {
+        Product product = productRepository.findById(dto.getProductId())
+                .orElseThrow(() -> new NotFoundException(
+                    "Product with ID " + dto.getProductId() + " not found"));
 
-        if (inventoryRepository.existsByUniqueSku(sku)) {
-            throw new ConflictException("One or more Unique SKUs already exist in the inventory");
+        for (String sku : dto.getUniqueSkus()) {
+            if (inventoryRepository.existsByUniqueSku(sku)) {
+                throw new ConflictException("One or more Unique SKUs already exist in the inventory");
+            }
+
+            InventoryItem item = new InventoryItem();
+            item.setProduct(product);
+            item.setBranchId(dto.getBranchId());
+            item.setUniqueSku(sku);
+            item.setStatus(InventoryStatus.IN_STOCK);
+            item.setPickupRequestId(dto.getPickupRequestId());
+
+            inventoryRepository.save(item);
         }
-
-        InventoryItem item = new InventoryItem();
-        item.setProduct(product);
-        item.setBranchId(dto.getBranchId());
-        item.setUniqueSku(sku);
-        item.setStatus(inventoryStatus.IN_STOCK);
-        item.setPickupRequestId(dto.getPickupRequestId());
-
-        inventoryRepository.save(item);
     }
 
-    return Map.of("message", "Items received into inventory successfully");
-    }
-public List<InventoryItem> getAllItems() {
-        return inventoryRepository.findAll();
+    public Page<InventoryItemResponse> getAllItems(Pageable pageable) {
+        return inventoryRepository.findAll(pageable)
+                .map(item -> InventoryItemResponse.builder()
+                        .id(item.getId())
+                        .productId(item.getProduct().getId())
+                        .productName(item.getProduct().getName())
+                        .branchId(item.getBranchId())
+                        .uniqueSku(item.getUniqueSku())
+                        .status(item.getStatus().name())
+                        .build());
     }
 }

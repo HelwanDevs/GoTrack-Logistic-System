@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 
 public class ProductDTO {
-    private Long id;
+    
 
     @NotBlank(message = "Product name is required")
     private String name;

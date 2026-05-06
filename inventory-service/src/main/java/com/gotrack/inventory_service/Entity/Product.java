@@ -26,9 +26,10 @@ public class Product {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
    
-    @NotNull(message = "Product name is required")
+    @NotBlank(message = "Product name is required")
     private String name;
 
+    @NotNull(message = "Merchant ID is required")
     @Column(name = "merchant_id" ,nullable = false)
      private Long merchantId;
 
@@ -37,5 +38,6 @@ public class Product {
     private List<InventoryItem> inventoryItems;
 
     @NotBlank(message = "Base SKU is required")
+    @Column(unique = true, nullable = false)
     private String baseSku;
 }

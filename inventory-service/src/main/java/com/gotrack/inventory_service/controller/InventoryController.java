@@ -1,51 +1,74 @@
 package com.gotrack.inventory_service.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import com.gotrack.inventory_service.Dto.inventoryItemDto;
-import com.gotrack.inventory_service.Entity.InventoryItem;
+import com.gotrack.inventory_service.Dto.ApiResponse;
+import com.gotrack.inventory_service.Dto.InventoryItemRequest;
+import com.gotrack.inventory_service.Dto.InventoryItemResponse;
 import com.gotrack.inventory_service.Exception.ForbiddenException;
 import com.gotrack.inventory_service.Service.InventoryService;
 
 import java.util.List;
-import java.util.Map;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/inventory/items")
 public class InventoryController {
 
-
     @Autowired
-private InventoryService inventoryService;
+    private InventoryService inventoryService;
 
-     @PostMapping("/receive")
-    public ResponseEntity<Map<String, String>> receiveItems(@Valid @RequestBody inventoryItemDto dto) {
+
+    @PostMapping("/receive")
+    public ResponseEntity<ApiResponse<Void>> receiveItems(
+            @RequestHeader("role") String role,
+            @Valid @RequestBody InventoryItemRequest dto) {
+
+        if (!"ADMIN".equals(role) && !"EMPLOYEE".equals(role)) {
+            throw new ForbiddenException("Unauthorized");
+        }
+
+        inventoryService.receiveItems(dto);
+
         return ResponseEntity.status(201).body(
-                inventoryService.receiveItems(dto)
+            ApiResponse.<Void>builder()
+                .status(201)
+                .message("Items received into inventory successfully")
+                .data(null)
+                .build()
         );
-    }
+}
 
     @GetMapping
-public ResponseEntity<List<InventoryItem>> getAllItems(
-        @RequestHeader("role") String role) {
+    public ResponseEntity<ApiResponse<Page<InventoryItemResponse>>> getAllItems(
+            @RequestHeader("role") String role,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-    // TODO: role should be extracted from JWT token via API Gateway
-    List<String> allowedRoles = List.of("ADMIN", "EMPLOYEE", "MERCHANT", "COURIER");
-    if (!allowedRoles.contains(role)) {
-        throw new ForbiddenException("Unauthorized");
+        List<String> allowedRoles = List.of("ADMIN", "EMPLOYEE", "MERCHANT", "COURIER");
+        if (!allowedRoles.contains(role)) {
+            throw new ForbiddenException("Unauthorized");
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ResponseEntity.ok(
+            ApiResponse.<Page<InventoryItemResponse>>builder()
+                .status(200)
+                .message("Items fetched successfully")
+                .data(inventoryService.getAllItems(pageable))
+                .build()
+        );
     }
-
-    return ResponseEntity.status(200).body(
-            inventoryService.getAllItems()
-    );
-}
-    
-}
+}    
