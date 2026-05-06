@@ -133,6 +133,7 @@ export const BranchesPage = () =>{
 
    const handleRemoveItem= (index) =>{
     setListBrances(b=>b.filter((element,i)=> i !==index));
+    console.log("this should work")
 
    };
 
