@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,8 +24,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Set;
+
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+
+    private final JwtKeyService jwtKeyService;
 
     @Autowired
     private JwtService jwtService;
@@ -35,13 +43,94 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    JwtFilter(JwtKeyService jwtKeyService) {
+        this.jwtKeyService = jwtKeyService;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        String path = request.getServletPath();
+
+        // Skip internal validation endpoints
+        // if (path.startsWith("/api/auth/internal/")) {
+        //     filterChain.doFilter(request, response);
+        //     return;
+        // }
+
+        // Check for internal token from gateway first
+        String internalToken = request.getHeader("X-Internal-Token");
+        System.out.println("Filter (internal): public key: " + jwtKeyService.getGatewayPublicKey());
+        System.out.println("Filter (internal): received internal token: " + internalToken);
+
         String authHeader = request.getHeader("Authorization");
+        if (internalToken != null) {
+            try {
+                if (!jwtService.validateInternalToken(internalToken)) {
+                    sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid internal token 1");
+                    return;
+                }
+
+                Claims claims = jwtService.extractInternalClaims(internalToken);
+                String email = claims.getSubject();
+                String role = claims.get("role", String.class);
+
+                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
+
+                    if (!jwtService.isGatewayTokenValid(internalToken)) {
+                        sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid internal token 3");
+                        return;
+                    }
+
+                    if (!userDetails.isEnabled()) {
+                        sendErrorResponse(response, HttpServletResponse.SC_FORBIDDEN,
+                                "This account is disabled or deleted");
+                        return;
+                    }
+
+                    RefreshToken userRefreshToken = refreshTokenService.findByUsername(email);
+                    if (userRefreshToken == null) {
+                        sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED,
+                                "No valid refresh token found for user");
+                        return;
+                    }
+
+                    Set<GrantedAuthority> authorities = new java.util.HashSet<>(
+                            userDetails.getAuthorities());
+                    if (role != null && !role.isEmpty()) {
+                        authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+                    }
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            authorities);
+                    authToken.setDetails(email);
+
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+
+            } catch (JwtException e) {
+                sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid internal token 2");
+                return;
+            } catch (Exception e) {
+                sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                        "An error occurred during authentication");
+                return;
+            }
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // Original client JWT flow
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
+            return;
+        }
+        if (authHeader != null && internalToken == null) {
+            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized way to access the API");
             return;
         }
 
@@ -67,7 +156,6 @@ public class JwtFilter extends OncePerRequestFilter {
                     return;
                 }
 
-                // check if user has a refresh token
                 RefreshToken userRefreshToken = refreshTokenService.findByUsername(email);
                 if (userRefreshToken == null) {
                     sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED,
@@ -88,7 +176,6 @@ public class JwtFilter extends OncePerRequestFilter {
             sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "User no longer exists");
             return;
         } catch (ExpiredJwtException e) {
-            String path = request.getServletPath();
             if (path.equals("/api/auth/refresh-token")) {
                 filterChain.doFilter(request, response);
             } else

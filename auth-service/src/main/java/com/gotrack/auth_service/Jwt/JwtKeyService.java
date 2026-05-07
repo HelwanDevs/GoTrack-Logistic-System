@@ -11,34 +11,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import io.jsonwebtoken.security.Keys;
+import lombok.Setter;
 
 @ConfigurationProperties(prefix = "jwt")
 @Component
+@Setter
 public class JwtKeyService {
 
     private String privateKey;
     private String publicKey;
+    private String gatewayPublicKey;
     private String secret;
     private boolean useHmac;
 
-    public void setPrivateKey(String privateKey) {
-        this.privateKey = privateKey;
-    }
-
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
-
     public boolean isUseHmac() {
         return Boolean.TRUE.equals(useHmac);
-    }
-
-    public void setUseHmac(boolean useHmac) {
-        this.useHmac = useHmac;
     }
 
     public boolean isRsaMode() {
@@ -49,14 +36,21 @@ public class JwtKeyService {
 
     public byte[] decodePem(String pem) {
         String base64 = pem.replaceAll(
-                        "-----BEGIN (RSA )?PRIVATE KEY-----|-----END (RSA )?PRIVATE KEY-----|-----BEGIN RSA PRIVATE KEY-----",
-                        "")
+                "-----BEGIN (RSA )?PRIVATE KEY-----|-----END (RSA )?PRIVATE KEY-----|-----BEGIN RSA PRIVATE KEY-----",
+                "")
                 .replaceAll(
                         "-----BEGIN (RSA )?PUBLIC KEY-----|-----END (RSA )?PUBLIC KEY-----|-----BEGIN PUBLIC KEY-----",
                         "")
                 .trim()
                 .replaceAll("\\s", "");
         return Base64.getDecoder().decode(base64);
+    }
+
+    public String getPublicKeyBase64() {
+        if (!isRsaMode())
+            return null;
+        byte[] keyBytes = decodePem(publicKey);
+        return Base64.getEncoder().encodeToString(keyBytes);
     }
 
     public PrivateKey getPrivateKey() {
@@ -87,5 +81,15 @@ public class JwtKeyService {
         if (!Boolean.TRUE.equals(useHmac))
             return null;
         return Keys.hmacShaKeyFor(secret.getBytes());
+    }
+
+    public PublicKey getGatewayPublicKey() {
+        try {
+            byte[] keyBytes = decodePem(gatewayPublicKey);
+            return java.security.KeyFactory.getInstance("RSA")
+                    .generatePublic(new java.security.spec.X509EncodedKeySpec(keyBytes));
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse gateway RSA public key", e);
+        }
     }
 }

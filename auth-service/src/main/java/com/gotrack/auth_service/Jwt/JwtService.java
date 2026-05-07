@@ -62,6 +62,14 @@ public class JwtService {
         }
     }
 
+    public Claims extractAllInternalClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(jwtKeyService.getGatewayPublicKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
@@ -77,7 +85,52 @@ public class JwtService {
         }
     }
 
+    public boolean isGatewayTokenValid(String token) {
+        try {
+            Claims claims = extractAllInternalClaims(token);
+            return claims.getExpiration().after(new Date()) && claims.get("role", String.class) != null;
+        } catch (JwtException e) {
+            return false;
+        }
+    }
+
     public boolean isTokenExpired(String token) {
         return extractAllClaims(token).getExpiration().after(new Date());
+    }
+
+    public boolean validateInternalToken(String token) {
+        try {
+            Claims claims = extractInternalClaims(token);
+            if (claims.getExpiration().before(new Date())) {
+                return false;
+            }
+            String role = claims.get("role", String.class);
+            return role != null;
+        } catch (JwtException e) {
+            return false;
+        }
+    }
+
+    public Claims extractInternalClaims(String token) {
+        return extractAllInternalClaims(token);
+    }
+
+    public String extractRoleFromToken(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("role", String.class);
+    }
+
+    public String extractRoleFromInternalToken(String token) {
+        Claims claims = extractAllInternalClaims(token);
+        return claims.get("role", String.class);
+    }
+
+    public String extractSubjectFromToken(String token) {
+        return extractAllClaims(token).getSubject();
+    }
+
+    public String extractUserIdFromInternalToken(String token) {
+        Claims claims = extractAllInternalClaims(token);
+        return claims.getSubject();
     }
 }

@@ -68,7 +68,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/logout").permitAll()
-                        .requestMatchers("/api/auth/refresh-token").permitAll()
+                        .requestMatchers("/api/auth/refresh-token").hasAnyRole("ADMIN", "EMPLOYEE", "MERCHANT")
                         .requestMatchers(HttpMethod.GET, "/api/auth/accounts").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/auth/accounts/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/auth/accounts").hasRole("ADMIN")
@@ -76,7 +76,8 @@ public class SecurityConfig {
                         .hasAnyRole("ADMIN", "EMPLOYEE", "MERCHANT")
                         .requestMatchers(HttpMethod.GET, "/api/auth/accounts/**")
                         .hasAnyRole("ADMIN", "EMPLOYEE", "MERCHANT")
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+                      )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
