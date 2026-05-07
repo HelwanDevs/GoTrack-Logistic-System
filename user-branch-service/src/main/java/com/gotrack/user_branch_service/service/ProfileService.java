@@ -10,7 +10,6 @@ import com.gotrack.user_branch_service.domain.enums.ProfileStatus;
 import com.gotrack.user_branch_service.domain.enums.ProfileType;
 import com.gotrack.user_branch_service.domain.response.PageResponse;
 
-import java.util.List;
 
 public interface ProfileService {
 
