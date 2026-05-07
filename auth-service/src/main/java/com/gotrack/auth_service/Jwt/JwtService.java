@@ -8,28 +8,38 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret}")
-    private String secretKeyStr;
+    @Autowired
+    private JwtKeyService jwtKeyService;
 
     public String generateToken(Account account) {
         long EXPIRATION = 15 * 60 * 1000;
 
         try {
-            return Jwts.builder()
-                    .setSubject(account.getEmail().trim())
-                    .claim("accountId", account.getId().toString())
-                    .claim("role", account.getRole())
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                    .signWith(Keys.hmacShaKeyFor(secretKeyStr.getBytes()), SignatureAlgorithm.HS256)
-                    .compact();
+            if (jwtKeyService.isRsaMode()) {
+                return Jwts.builder()
+                        .setSubject(account.getEmail().trim())
+                        .claim("accountId", account.getId().toString())
+                        .claim("role", account.getRole())
+                        .setIssuedAt(new Date())
+                        .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                        .signWith(jwtKeyService.getPrivateKey())
+                        .compact();
+            } else {
+                return Jwts.builder()
+                        .setSubject(account.getEmail().trim())
+                        .claim("accountId", account.getId().toString())
+                        .claim("role", account.getRole())
+                        .setIssuedAt(new Date())
+                        .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                        .signWith(jwtKeyService.getSecretKey())
+                        .compact();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Token generation failed: " + e.getMessage());
@@ -37,11 +47,19 @@ public class JwtService {
     }
 
     public Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(secretKeyStr.getBytes()))
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        if (jwtKeyService.isRsaMode()) {
+            return Jwts.parserBuilder()
+                    .setSigningKey(jwtKeyService.getPublicKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } else {
+            return Jwts.parserBuilder()
+                    .setSigningKey(jwtKeyService.getSecretKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        }
     }
 
     public String extractUsername(String token) {
@@ -57,7 +75,6 @@ public class JwtService {
         } catch (JwtException e) {
             return false;
         }
-        // }
     }
 
     public boolean isTokenExpired(String token) {
