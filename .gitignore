@@ -6,6 +6,7 @@
 .project
 .classpath
 .settings/
+.opencode/
 .DS_Store
 Thumbs.db
 
