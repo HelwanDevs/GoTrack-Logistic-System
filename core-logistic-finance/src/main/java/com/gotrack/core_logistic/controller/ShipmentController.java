@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gotrack.core_logistic.Service.ShipmentService;
-import com.gotrack.core_logistic.model.dto.ShipmentDTO;
 import com.gotrack.core_logistic.model.dto.Filters.ShipmentFilter;
+import com.gotrack.core_logistic.model.dto.ShipmentDTO;
 
 import jakarta.validation.Valid;
 
@@ -38,7 +38,7 @@ public class ShipmentController {
    }
    
    @PutMapping("/{id}/status")
-   public ResponseEntity<ShipmentDTO> updateShipmentStatus(@PathVariable Long id, @Valid @RequestBody ShipmentDTO request) {
+   public ResponseEntity<ShipmentDTO> updateShipmentStatus(@PathVariable Long id, @RequestBody ShipmentDTO request) {
        ShipmentDTO response = shipmentService.updateShipmentStatus(id, request);
        return ResponseEntity.ok(response);
    }
@@ -46,7 +46,7 @@ public class ShipmentController {
    @GetMapping("/search")
     public ResponseEntity<Page<ShipmentDTO>> searchShipments(
         ShipmentFilter filter,
-        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)
+        @PageableDefault(size = 10, direction = Sort.Direction.DESC)
         Pageable pageable
 ) {
 

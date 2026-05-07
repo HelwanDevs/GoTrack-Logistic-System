@@ -31,7 +31,7 @@ public class Wallet {
     private Long profileId;
 
     @NotNull
-    private BigDecimal balance;
+    private BigDecimal balance= BigDecimal.ZERO;
 
 
     
