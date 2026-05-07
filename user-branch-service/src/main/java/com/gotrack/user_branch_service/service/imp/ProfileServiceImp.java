@@ -55,10 +55,13 @@ public class ProfileServiceImp implements ProfileService {
         }
 
         // 404 / 409 — validate branchId exists and is active
-        validateBranch(dto.getBranchId());
-
+        BranchEntity branch = null;
+        if (dto.getBranchId() != null) {
+            branch = validateBranch(dto.getBranchId());
+        }
 
         ProfileEntity entity = profileMapper.toEntity(dto);
+        entity.setBranch(branch);
 
         // TODO: extract actual admin ID from JWT token via auth sercive
         // entity.setCreatedBy(jwtUtil.extractAccountId(token));
@@ -72,6 +75,13 @@ public class ProfileServiceImp implements ProfileService {
     }
 
     @Override
+    public ProfileResponseDTO findById(Long id) {
+        ProfileEntity entity = profileRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Profile not found"));
+        return profileMapper.toDto(entity);
+    }
+
+    @Override
     public ApiResponse updateProfile(Long id, ProfileUpdateDTO dto) {
 
         // 404 — profile not found
@@ -79,15 +89,17 @@ public class ProfileServiceImp implements ProfileService {
                 .orElseThrow(() -> new NotFoundException("Profile not found"));
 
         // TODO: extract role and accountId from JWT
-        // TODO: if role is SELF, check that token accountId matches entity.getAccountId()
+        // TODO: if role is SELF, check that token accountId matches
+        // entity.getAccountId()
         // TODO: if role is not ADMIN and not SELF, throw ForbiddenException
 
-        // FullName: updated when not null or blank 
+        // FullName: updated when not null or blank
         if (dto.getFullName() != null && !dto.getFullName().isBlank()) {
             entity.setFullName(dto.getFullName().trim());
         }
 
-        // PhoneNumber: updated when not null or blank, and must be unique (exclude current profile)
+        // PhoneNumber: updated when not null or blank, and must be unique (exclude
+        // current profile)
         if (dto.getPhoneNumber() != null && !dto.getPhoneNumber().isBlank()) {
             profileRepository.findByPhoneNumber(dto.getPhoneNumber().trim())
                     .ifPresent(existing -> {
@@ -100,15 +112,14 @@ public class ProfileServiceImp implements ProfileService {
             entity.setPhoneNumber(dto.getPhoneNumber().trim());
         }
 
-
         if (dto.getBranchId() != null) {
-        validateBranch(dto.getBranchId()); 
-        entity.setBranchId(dto.getBranchId());
-    }
+            BranchEntity branch = validateBranch(dto.getBranchId());
+            entity.setBranch(branch);
+        }
         if (dto.getAccountId() != null)
             entity.setAccountId(dto.getAccountId());
         if (dto.getBranchId() != null)
-            entity.setBranchId(dto.getBranchId());
+            entity.setBranch(validateBranch(dto.getBranchId()));
         if (dto.getStatus() != null)
             entity.setStatus(dto.getStatus());
 
@@ -164,7 +175,7 @@ public class ProfileServiceImp implements ProfileService {
             // exact branchId match
             if (branchId != null) {
                 predicates.add(criteriaBuilder.equal(
-                        root.get("branchId"), branchId));
+                        root.get("branch").get("id"), branchId));
             }
 
             // exact status match — ACTIVE, INACTIVE
@@ -192,9 +203,9 @@ public class ProfileServiceImp implements ProfileService {
 
     }
 
-    private void validateBranch(Long branchId) {
+    private BranchEntity validateBranch(Long branchId) {
         if (branchId == null)
-            return;
+            return null;
 
         BranchEntity branch = branchRepository.findById(branchId)
                 .orElseThrow(() -> new NotFoundException("Branch not found with ID: " + branchId));
@@ -202,7 +213,7 @@ public class ProfileServiceImp implements ProfileService {
         if (Boolean.TRUE.equals(branch.getIsDeleted())) {
             throw new ConflictException("Cannot assign profile to a deleted or inactive branch");
         }
+        return branch;
     }
-    
-    
+
 }

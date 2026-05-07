@@ -17,9 +17,9 @@ public class ProfileResponseDTO {
     private ProfileType type;
 
     private Long accountId;
-    private Long branchId;
+    private BranchDTO branch;
 
     private ProfileStatus status;
-    
+
     private LocalDateTime createdAt;
 }

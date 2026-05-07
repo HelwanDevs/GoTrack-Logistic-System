@@ -12,6 +12,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -51,12 +54,13 @@ public class ProfileEntity {
     @Column(name = "account_id")
     private Long accountId; // Nullable, Couriers have no account
 
-    @Column(name = "branch_id")
-    private Long branchId; // Nullable
+    @ManyToOne
+    @JoinColumn(name = "branch_id", foreignKey = @ForeignKey(name = "fk_profile_branch"))
+    private BranchEntity branch; // Nullable
 
     @Enumerated(EnumType.STRING)
     private ProfileStatus status;
-    
+
     @Column(name = "created_by")
     private String createdBy;
 
@@ -76,6 +80,6 @@ public class ProfileEntity {
 
     @PreUpdate
     public void preUpdate() {
-      this.updatedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 }
