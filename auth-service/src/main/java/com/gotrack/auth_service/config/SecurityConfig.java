@@ -2,7 +2,6 @@ package com.gotrack.auth_service.config;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
@@ -10,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -18,7 +18,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.gotrack.auth_service.Jwt.JwtFilter;
+import com.gotrack.auth_service.Jwt.JwtFilterImpl;
+import com.gotrack.auth_service.Jwt.JwtKeyService;
+import com.gotrack.auth_service.Jwt.JwtService;
+import com.gotrack.auth_service.Jwt.RefreshTokenService;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -26,11 +29,15 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 @EnableMongoAuditing
 public class SecurityConfig {
-    @Autowired
-    JwtFilter jwtFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public JwtFilterImpl jwtFilter(JwtKeyService jwtKeyService, JwtService jwtService,
+            RefreshTokenService refreshTokenService, UserDetailsService userDetailsService) {
+        return new JwtFilterImpl(jwtKeyService, jwtService, refreshTokenService, userDetailsService);
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtFilterImpl jwtFilter) throws Exception {
 
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -76,8 +83,7 @@ public class SecurityConfig {
                         .hasAnyRole("ADMIN", "EMPLOYEE", "MERCHANT")
                         .requestMatchers(HttpMethod.GET, "/api/auth/accounts/**")
                         .hasAnyRole("ADMIN", "EMPLOYEE", "MERCHANT")
-                        .anyRequest().authenticated()
-                      )
+                        .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

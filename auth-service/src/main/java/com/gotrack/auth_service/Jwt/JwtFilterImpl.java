@@ -2,16 +2,11 @@ package com.gotrack.auth_service.Jwt;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.gotrack.auth_service.Exceptions.InvalidTokenException;
 import com.gotrack.auth_service.entity.RefreshToken;
@@ -19,8 +14,11 @@ import com.gotrack.auth_service.entity.RefreshToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -29,46 +27,38 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Set;
 
-@Component
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtFilterImpl implements Filter {
 
     private final JwtKeyService jwtKeyService;
+    private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
+    private final UserDetailsService userDetailsService;
 
-    @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    RefreshTokenService refreshTokenService;
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    JwtFilter(JwtKeyService jwtKeyService) {
+    public JwtFilterImpl(JwtKeyService jwtKeyService, JwtService jwtService, RefreshTokenService refreshTokenService,
+            UserDetailsService userDetailsService) {
         this.jwtKeyService = jwtKeyService;
+        this.jwtService = jwtService;
+        this.refreshTokenService = refreshTokenService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
+            throws IOException, ServletException {
 
-        String path = request.getServletPath();
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        // Skip internal validation endpoints
-        // if (path.startsWith("/api/auth/internal/")) {
-        //     filterChain.doFilter(request, response);
-        //     return;
-        // }
+        String path = httpRequest.getServletPath();
 
         // Check for internal token from gateway first
-        String internalToken = request.getHeader("X-Internal-Token");
-        System.out.println("Filter (internal): public key: " + jwtKeyService.getGatewayPublicKey());
-        System.out.println("Filter (internal): received internal token: " + internalToken);
+        String internalToken = httpRequest.getHeader("X-Internal-Token");
 
-        String authHeader = request.getHeader("Authorization");
+        String authHeader = httpRequest.getHeader("Authorization");
         if (internalToken != null) {
             try {
                 if (!jwtService.validateInternalToken(internalToken)) {
-                    sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid internal token 1");
+                    sendErrorResponse(httpResponse, HttpServletResponse.SC_UNAUTHORIZED, "Invalid internal token 1");
                     return;
                 }
 
@@ -80,19 +70,20 @@ public class JwtFilter extends OncePerRequestFilter {
                     UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
 
                     if (!jwtService.isGatewayTokenValid(internalToken)) {
-                        sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid internal token 3");
+                        sendErrorResponse(httpResponse, HttpServletResponse.SC_UNAUTHORIZED,
+                                "Invalid internal token 3");
                         return;
                     }
 
                     if (!userDetails.isEnabled()) {
-                        sendErrorResponse(response, HttpServletResponse.SC_FORBIDDEN,
+                        sendErrorResponse(httpResponse, HttpServletResponse.SC_FORBIDDEN,
                                 "This account is disabled or deleted");
                         return;
                     }
 
                     RefreshToken userRefreshToken = refreshTokenService.findByUsername(email);
                     if (userRefreshToken == null) {
-                        sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED,
+                        sendErrorResponse(httpResponse, HttpServletResponse.SC_UNAUTHORIZED,
                                 "No valid refresh token found for user");
                         return;
                     }
@@ -112,10 +103,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
 
             } catch (JwtException e) {
-                sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid internal token 2");
+                sendErrorResponse(httpResponse, HttpServletResponse.SC_UNAUTHORIZED, "Invalid internal token 2");
                 return;
             } catch (Exception e) {
-                sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                sendErrorResponse(httpResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                         "An error occurred during authentication");
                 return;
             }
@@ -130,7 +121,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
         if (authHeader != null && internalToken == null) {
-            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized way to access the API");
+            sendErrorResponse(httpResponse, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized way to access the API");
             return;
         }
 
@@ -146,19 +137,19 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
                 if (!jwtService.isTokenValid(token, userDetails.getUsername())) {
-                    sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+                    sendErrorResponse(httpResponse, HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
                     return;
                 }
 
                 if (!userDetails.isEnabled()) {
-                    sendErrorResponse(response, HttpServletResponse.SC_FORBIDDEN,
+                    sendErrorResponse(httpResponse, HttpServletResponse.SC_FORBIDDEN,
                             "This account is disabled or deleted");
                     return;
                 }
 
                 RefreshToken userRefreshToken = refreshTokenService.findByUsername(email);
                 if (userRefreshToken == null) {
-                    sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED,
+                    sendErrorResponse(httpResponse, HttpServletResponse.SC_UNAUTHORIZED,
                             "No valid refresh token found for user");
                     return;
                 }
@@ -173,24 +164,24 @@ public class JwtFilter extends OncePerRequestFilter {
 
             }
         } catch (UsernameNotFoundException e) {
-            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "User no longer exists");
+            sendErrorResponse(httpResponse, HttpServletResponse.SC_UNAUTHORIZED, "User no longer exists");
             return;
         } catch (ExpiredJwtException e) {
             if (path.equals("/api/auth/refresh-token")) {
                 filterChain.doFilter(request, response);
             } else
-                sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Token has expired");
+                sendErrorResponse(httpResponse, HttpServletResponse.SC_UNAUTHORIZED, "Token has expired");
 
             return;
         } catch (JwtException e) {
-            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Invalid, tampered, or expired token");
+            sendErrorResponse(httpResponse, HttpServletResponse.SC_UNAUTHORIZED, "Invalid, tampered, or expired token");
             return;
         } catch (InvalidTokenException e) {
-            sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED,
+            sendErrorResponse(httpResponse, HttpServletResponse.SC_UNAUTHORIZED,
                     "No valid refresh token found for user");
             return;
         } catch (Exception e) {
-            sendErrorResponse(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+            sendErrorResponse(httpResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "An error occurred during authentication");
             return;
         }
