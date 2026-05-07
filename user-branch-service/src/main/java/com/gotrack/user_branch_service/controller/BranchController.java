@@ -1,6 +1,5 @@
 package com.gotrack.user_branch_service.controller;
 
-
 import com.gotrack.user_branch_service.domain.dto.BranchDTO;
 import com.gotrack.user_branch_service.domain.entity.BranchEntity;
 import com.gotrack.user_branch_service.domain.response.PageResponse;
@@ -22,87 +21,88 @@ import java.util.Map;
 @Validated
 @RestController
 public class BranchController {
-    private BranchService branchService;
+        private BranchService branchService;
 
-    private BranchMapper<BranchEntity, BranchDTO> branchMapper;
+        private BranchMapper<BranchEntity, BranchDTO> branchMapper;
 
-    public BranchController(BranchService branchService , BranchMapper<BranchEntity, BranchDTO> branchMapper){
+        public BranchController(BranchService branchService, BranchMapper<BranchEntity, BranchDTO> branchMapper) {
 
-        this.branchService = branchService;
-        this.branchMapper= branchMapper;
-    }
+                this.branchService = branchService;
+                this.branchMapper = branchMapper;
+        }
 
-    @PostMapping(path = "/api/branches")
-    public BranchDTO createBranch(@Valid @RequestBody BranchDTO branch){
-        BranchEntity branchEntity = branchMapper.mapFrom(branch);
-        BranchEntity savedBranchEntity = branchService.createBranch(branchEntity);
-        return branchMapper.mapTo(savedBranchEntity);
+        @PostMapping(path = "/api/branches")
+        public BranchDTO createBranch(@Valid @RequestBody BranchDTO branch) {
+                BranchEntity branchEntity = branchMapper.mapFrom(branch);
+                BranchEntity savedBranchEntity = branchService.createBranch(branchEntity);
+                return branchMapper.mapTo(savedBranchEntity);
 
-    }
+        }
 
-    @GetMapping(path= "/api/branches")
-    public ResponseEntity<?> listBranches(@PageableDefault(size = 5, sort = "id")
-                                              Pageable pageable) {
+        @GetMapping(path = "/api/branches/{id}")
+        public ResponseEntity<BranchDTO> getBranchById(
+                        @PathVariable @Positive(message = "Id must be positive") Long id) {
+                BranchEntity branchEntity = branchService.findById(id);
+                return ResponseEntity.ok(branchMapper.mapTo(branchEntity));
+        }
 
-        Page<BranchEntity> page = branchService.findAll(pageable);
+        @GetMapping(path = "/api/branches")
+        public ResponseEntity<?> listBranches(@PageableDefault(size = 5, sort = "id") Pageable pageable) {
 
-        List<BranchDTO> dto = page.getContent()
-                .stream()
-                .map(branchMapper::mapTo)
-                .toList();
-        return ResponseEntity.ok(
-                new PageResponse<>(
-                        dto,
-                        page.getNumber(),
-                        page.getSize(),
-                        page.getTotalElements(),
-                        page.getTotalPages()
-                )
-        );
-    }
+                Page<BranchEntity> page = branchService.findAll(pageable);
 
-    @GetMapping(path= "/api/branches/search")
-    public ResponseEntity<?> searchBranches(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String location,
-            @RequestParam(required = false) Boolean isDeleted,
-            @RequestParam(required = false) String phone,
-            @PageableDefault(size = 5, sort = "id")
-            Pageable pageable
-    ){
-        Page<BranchEntity> page = branchService.search(name, location,isDeleted, phone, pageable);
+                List<BranchDTO> dto = page.getContent()
+                                .stream()
+                                .map(branchMapper::mapTo)
+                                .toList();
+                return ResponseEntity.ok(
+                                new PageResponse<>(
+                                                dto,
+                                                page.getNumber(),
+                                                page.getSize(),
+                                                page.getTotalElements(),
+                                                page.getTotalPages()));
+        }
 
-        List<BranchDTO> dto = page.getContent()
-                .stream()
-                .map(branchMapper::mapTo)
-                .toList();
-        return ResponseEntity.ok(
-                new PageResponse<>(
-                        dto,
-                        page.getNumber(),
-                        page.getSize(),
-                        page.getTotalElements(),
-                        page.getTotalPages()
-                )
-        );
-    }
+        @GetMapping(path = "/api/branches/search")
+        public ResponseEntity<?> searchBranches(
+                        @RequestParam(required = false) String name,
+                        @RequestParam(required = false) String location,
+                        @RequestParam(required = false) Boolean isDeleted,
+                        @RequestParam(required = false) String phone,
+                        @PageableDefault(size = 5, sort = "id") Pageable pageable) {
+                Page<BranchEntity> page = branchService.search(name, location, isDeleted, phone, pageable);
 
-    @PutMapping(path = "/api/branches/{id}")
-    public ResponseEntity<BranchDTO> fullUpdateBranch(@PathVariable @Positive(message = "Id must be positive") Long id ,
-                                                      @Valid @RequestBody BranchDTO branchDto){
-        branchDto.setId(id);
-        BranchEntity branchEntity= branchMapper.mapFrom(branchDto);
-        BranchEntity updatedBranchEntity = branchService.updateBranch(branchEntity);
-        return ResponseEntity.ok(branchMapper.mapTo(updatedBranchEntity));
-    }
-    @DeleteMapping(path = "/api/branches/{id}")
-    public ResponseEntity<?> softDeleteBranch(@PathVariable @Positive(message = "Id must be Positive") Long id){
+                List<BranchDTO> dto = page.getContent()
+                                .stream()
+                                .map(branchMapper::mapTo)
+                                .toList();
+                return ResponseEntity.ok(
+                                new PageResponse<>(
+                                                dto,
+                                                page.getNumber(),
+                                                page.getSize(),
+                                                page.getTotalElements(),
+                                                page.getTotalPages()));
+        }
 
-        branchService.delete(id);
-        return ResponseEntity.ok(
-                Map.of("message", "Branch deactivated successfully"));
+        @PutMapping(path = "/api/branches/{id}")
+        public ResponseEntity<BranchDTO> fullUpdateBranch(
+                        @PathVariable @Positive(message = "Id must be positive") Long id,
+                        @Valid @RequestBody BranchDTO branchDto) {
+                branchDto.setId(id);
+                BranchEntity branchEntity = branchMapper.mapFrom(branchDto);
+                BranchEntity updatedBranchEntity = branchService.updateBranch(branchEntity);
+                return ResponseEntity.ok(branchMapper.mapTo(updatedBranchEntity));
+        }
 
-    }
+        @DeleteMapping(path = "/api/branches/{id}")
+        public ResponseEntity<?> softDeleteBranch(@PathVariable @Positive(message = "Id must be Positive") Long id) {
 
+                branchService.delete(id);
+                return ResponseEntity.ok(
+                                Map.of("message", "Branch deactivated successfully"));
+
+        }
 
 }

@@ -12,10 +12,11 @@ public interface BranchService {
 
     Page<BranchEntity> findAll(Pageable pageable);
 
-    Page<BranchEntity> search(String name, String location, Boolean isDeleted, String phone ,Pageable pageable);
+    Page<BranchEntity> search(String name, String location, Boolean isDeleted, String phone, Pageable pageable);
 
     BranchEntity updateBranch(BranchEntity branchEntity);
 
+    BranchEntity findById(Long id);
+
     void delete(Long id);
 }
-

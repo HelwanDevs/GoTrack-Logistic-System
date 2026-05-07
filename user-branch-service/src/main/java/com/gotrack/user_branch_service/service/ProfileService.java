@@ -19,7 +19,7 @@ public interface ProfileService {
     ApiResponse updateProfile(Long id, ProfileUpdateDTO dto);
 
     PageResponse<ProfileResponseDTO> getAllProfiles(Pageable pageable);
-      
+    ProfileResponseDTO findById(Long id);
     //Feature Addition: Add functionality to search for a profile by number, type, status, name, or BranchID
     PageResponse<ProfileResponseDTO> searchProfiles(
             String name, String phoneNumber, ProfileType type, Long branchId, ProfileStatus status, Pageable pageable);

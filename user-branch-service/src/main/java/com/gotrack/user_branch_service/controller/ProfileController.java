@@ -21,16 +21,12 @@ import com.gotrack.user_branch_service.domain.enums.ProfileType;
 import com.gotrack.user_branch_service.domain.response.PageResponse;
 import com.gotrack.user_branch_service.service.ProfileService;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-
-import java.util.List;
 
 @Validated
 @RestController
@@ -40,14 +36,19 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
-    //TODO: Restrict this endpoint to admin users only
+    // TODO: Restrict this endpoint to admin users only
     @PostMapping
     public ResponseEntity<ApiResponse> createProfile(@RequestBody @Valid ProfileRequestDTO dto) {
         return ResponseEntity.status(201)
                 .body(profileService.createProfile(dto));
     }
 
-    //TODO: Restrict this endpoint to admin or the profile owner only
+    @GetMapping("/{id}")
+    public ResponseEntity<ProfileResponseDTO> getProfileById(@PathVariable Long id) {
+        return ResponseEntity.ok(profileService.findById(id));
+    }
+
+    // TODO: Restrict this endpoint to admin or the profile owner only
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateProfile(
             @PathVariable @Positive(message = "ID must be a positive number") Long id,
@@ -55,32 +56,31 @@ public class ProfileController {
         return ResponseEntity.ok(profileService.updateProfile(id, dto));
     }
 
-    //TODO: Restrict this endpoint to admin or employee users only
-@GetMapping
-public ResponseEntity<PageResponse<ProfileResponseDTO>> getAllProfiles(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
-        @RequestParam(defaultValue = "fullName") String sortBy) {
+    // TODO: Restrict this endpoint to admin or employee users only
+    @GetMapping
+    public ResponseEntity<PageResponse<ProfileResponseDTO>> getAllProfiles(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "fullName") String sortBy) {
 
-    Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-    return ResponseEntity.ok(profileService.getAllProfiles(pageable));
-}
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return ResponseEntity.ok(profileService.getAllProfiles(pageable));
+    }
 
-    //TODO: Restrict this endpoint to admin or employee users only
-@GetMapping("/search")
-public ResponseEntity<PageResponse<ProfileResponseDTO>> searchProfiles(
-        @RequestParam(required = false) String name,
-        @RequestParam(required = false) String phoneNumber,
-        @RequestParam(required = false) ProfileType type,
-        @RequestParam(required = false) Long branchId,
-        @RequestParam(required = false) ProfileStatus status,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
-        @RequestParam(defaultValue = "fullName") String sortBy) {
+    // TODO: Restrict this endpoint to admin or employee users only
+    @GetMapping("/search")
+    public ResponseEntity<PageResponse<ProfileResponseDTO>> searchProfiles(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String phoneNumber,
+            @RequestParam(required = false) ProfileType type,
+            @RequestParam(required = false) Long branchId,
+            @RequestParam(required = false) ProfileStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "fullName") String sortBy) {
 
-    Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-    return ResponseEntity.ok(
-        profileService.searchProfiles(name, phoneNumber, type, branchId, status, pageable)
-    );
-}
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return ResponseEntity.ok(
+                profileService.searchProfiles(name, phoneNumber, type, branchId, status, pageable));
+    }
 }
