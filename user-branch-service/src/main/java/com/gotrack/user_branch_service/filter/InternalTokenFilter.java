@@ -59,13 +59,8 @@ public class InternalTokenFilter extends OncePerRequestFilter {
             }
             String email = claims.getSubject();
             String role = claims.get("role", String.class);
-            String requestId = claims.get("requestId", String.class);
             String accountId = claims.get("accountId", String.class);
-            request.setAttribute("X-Email", email);
-            request.setAttribute("X-User-Role", role);
-            request.setAttribute("X-Request-Id", requestId);
-            request.setAttribute("X-Gateway-Token", internalToken);
-            request.setAttribute("X-Account-Id", accountId);
+
 
             Set<GrantedAuthority> authorities = new HashSet<>();
             if (role != null && !role.isEmpty()) {
