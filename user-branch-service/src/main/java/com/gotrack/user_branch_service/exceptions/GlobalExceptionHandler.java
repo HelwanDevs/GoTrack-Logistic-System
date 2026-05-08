@@ -13,6 +13,9 @@ import com.gotrack.user_branch_service.domain.dto.ApiResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -117,6 +120,15 @@ public class GlobalExceptionHandler {
                 "Invalid data type for '" + fieldName + "'. Expected " + requiredType + " but got: " + providedValue);
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler({ AuthorizationDeniedException.class, AccessDeniedException.class })
+    public ResponseEntity<Map<String, Object>> handleAccessDenied(Exception ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", 403);
+        response.put("error", "Forbidden");
+        response.put("message", "User lacks necessary permissions / role to access this Api");
+        return ResponseEntity.status(403).body(response);
     }
 
     @ExceptionHandler(Exception.class)

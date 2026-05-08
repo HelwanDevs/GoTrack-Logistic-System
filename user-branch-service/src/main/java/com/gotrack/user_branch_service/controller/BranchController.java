@@ -6,12 +6,15 @@ import com.gotrack.user_branch_service.domain.response.PageResponse;
 import com.gotrack.user_branch_service.mappers.BranchMapper;
 import com.gotrack.user_branch_service.service.BranchService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,14 +35,16 @@ public class BranchController {
         }
 
         @PostMapping(path = "/api/branches")
-        public BranchDTO createBranch(@Valid @RequestBody BranchDTO branch) {
+        @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+        public ResponseEntity<BranchDTO> createBranch(@Valid @RequestBody BranchDTO branch,
+                        HttpServletRequest request) {
                 BranchEntity branchEntity = branchMapper.mapFrom(branch);
                 BranchEntity savedBranchEntity = branchService.createBranch(branchEntity);
-                return branchMapper.mapTo(savedBranchEntity);
-
+                return ResponseEntity.ok(branchMapper.mapTo(savedBranchEntity));
         }
 
         @GetMapping(path = "/api/branches/{id}")
+        @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MERCHANT')")
         public ResponseEntity<BranchDTO> getBranchById(
                         @PathVariable @Positive(message = "Id must be positive") Long id) {
                 BranchEntity branchEntity = branchService.findById(id);
@@ -47,7 +52,9 @@ public class BranchController {
         }
 
         @GetMapping(path = "/api/branches")
-        public ResponseEntity<?> listBranches(@PageableDefault(size = 5, sort = "id") Pageable pageable) {
+        @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MERCHANT')")
+        public ResponseEntity<?> listBranches(
+                        @PageableDefault(size = 5, sort = "id") Pageable pageable) {
 
                 Page<BranchEntity> page = branchService.findAll(pageable);
 
@@ -65,6 +72,7 @@ public class BranchController {
         }
 
         @GetMapping(path = "/api/branches/search")
+        @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MERCHANT')")
         public ResponseEntity<?> searchBranches(
                         @RequestParam(required = false) String name,
                         @RequestParam(required = false) String location,
@@ -87,9 +95,11 @@ public class BranchController {
         }
 
         @PutMapping(path = "/api/branches/{id}")
+        @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
         public ResponseEntity<BranchDTO> fullUpdateBranch(
                         @PathVariable @Positive(message = "Id must be positive") Long id,
-                        @Valid @RequestBody BranchDTO branchDto) {
+                        @Valid @RequestBody BranchDTO branchDto,
+                        HttpServletRequest request) {
                 branchDto.setId(id);
                 BranchEntity branchEntity = branchMapper.mapFrom(branchDto);
                 BranchEntity updatedBranchEntity = branchService.updateBranch(branchEntity);
@@ -97,8 +107,10 @@ public class BranchController {
         }
 
         @DeleteMapping(path = "/api/branches/{id}")
-        public ResponseEntity<?> softDeleteBranch(@PathVariable @Positive(message = "Id must be Positive") Long id) {
-
+        @PreAuthorize("hasAnyRole('ADMIN')")
+        public ResponseEntity<?> softDeleteBranch(
+                        @PathVariable @Positive(message = "Id must be Positive") Long id,
+                        HttpServletRequest request) {
                 branchService.delete(id);
                 return ResponseEntity.ok(
                                 Map.of("message", "Branch deactivated successfully"));
