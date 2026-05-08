@@ -26,10 +26,8 @@ public class TransactionDTO {
     @NotNull
     private TransactionType type;
 
-    @NotNull
     private LocalDate CreatedAt;
     
-    @NotNull
     private WalletDTO wallet;
 
     @NotNull

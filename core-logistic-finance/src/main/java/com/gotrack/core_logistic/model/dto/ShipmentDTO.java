@@ -30,7 +30,7 @@ public class ShipmentDTO {
     private Long flyerNumber;
 
     private String note;
-    @NotNull
+    
     private ShipmentStatus status;
 
     @NotNull

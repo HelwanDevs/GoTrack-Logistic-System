@@ -41,6 +41,5 @@ public class FinancialSummaryDTO {
     @NotNull
     private BigDecimal netProfit ;
 
-    @NotNull
     private LocalDate createdAt;
 }

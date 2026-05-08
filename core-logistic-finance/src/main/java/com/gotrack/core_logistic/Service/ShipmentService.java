@@ -11,10 +11,12 @@ import com.gotrack.core_logistic.ExceptionHandling.ConflictException;
 import com.gotrack.core_logistic.ExceptionHandling.ResourceNotFoundException;
 import com.gotrack.core_logistic.Service.finance.FinanceService;
 import com.gotrack.core_logistic.Specifications.ShipmentSpecification;
+import com.gotrack.core_logistic.enums.PickupStatus;
 import com.gotrack.core_logistic.enums.ShipmentStatus;
 import com.gotrack.core_logistic.mapper.shipmentMapper;
-import com.gotrack.core_logistic.model.dto.ShipmentDTO;
 import com.gotrack.core_logistic.model.dto.Filters.ShipmentFilter;
+import com.gotrack.core_logistic.model.dto.ShipmentDTO;
+import com.gotrack.core_logistic.model.entity.Pickup;
 import com.gotrack.core_logistic.model.entity.Shipment;
 import com.gotrack.core_logistic.repository.PickupRepo;
 import com.gotrack.core_logistic.repository.ShipmentRepo;
@@ -35,14 +37,21 @@ public class ShipmentService {
 
     
     public ShipmentDTO createShipment(ShipmentDTO shipmentRequest) {
-        pickupRepo.findById(shipmentRequest.getPickupRequest().getId())
+        Pickup pickup = pickupRepo.findById(shipmentRequest.getPickupRequest().getId())
             .orElseThrow(() -> new ResourceNotFoundException("Pickup request not found with id: " + shipmentRequest.getPickupRequest().getId()));
+        
+        if(pickup.getStatus() != PickupStatus.Pending){
+            throw new ConflictException("Pickup request is not in pending status , it should be in pending status to create a shipment");
+        }
 
         Shipment shipment = ShipmentMapper.toEntity(shipmentRequest);
-
+        
         //TODO: INtegrate with Profile service to validate courierId
         shipment.setCourierId(shipmentRequest.getCourierId());
+        pickup.setStatus(PickupStatus.Accepted);
         shipment.setStatus(ShipmentStatus.PendingPickup);
+
+        pickupRepo.save(pickup);
         Shipment savedShipment = shipmentRepo.save(shipment);
         return ShipmentMapper.toDto(savedShipment);
 

@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gotrack.core_logistic.Service.PickupService;
-import com.gotrack.core_logistic.model.dto.PickupRequestDTO;
 import com.gotrack.core_logistic.model.dto.Filters.PickupFilter;
+import com.gotrack.core_logistic.model.dto.PickupRequestDTO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class PickupController {
        }
 
        @PutMapping("/{id}")
-       public ResponseEntity<PickupRequestDTO> updatePickup(@PathVariable Long id, @Valid @RequestBody PickupRequestDTO Request) {
+       public ResponseEntity<PickupRequestDTO> updatePickup(@PathVariable Long id, @RequestBody PickupRequestDTO Request) {
               PickupRequestDTO response = pickupService.updatePickup(id, Request);
               return ResponseEntity.ok(response);
        }
