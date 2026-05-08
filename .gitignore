@@ -6,6 +6,7 @@
 .project
 .classpath
 .settings/
+.opencode/
 .DS_Store
 Thumbs.db
 
@@ -60,3 +61,9 @@ core
 .settings
 .springBeans
 .sts4-cache
+
+
+## spring boot application configuration files development ##
+application-dev.yml
+application-dev.yaml
+application-dev.properties

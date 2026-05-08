@@ -3,6 +3,7 @@ package com.gotrack.user_branch_service.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,16 +22,14 @@ import com.gotrack.user_branch_service.domain.enums.ProfileType;
 import com.gotrack.user_branch_service.domain.response.PageResponse;
 import com.gotrack.user_branch_service.service.ProfileService;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Pageable;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 
-import java.util.List;
+
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.validation.annotation.Validated;
 
 @Validated
 @RestController
@@ -40,47 +39,60 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
-    //TODO: Restrict this endpoint to admin users only
     @PostMapping
-    public ResponseEntity<ApiResponse> createProfile(@RequestBody @Valid ProfileRequestDTO dto) {
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+    public ResponseEntity<ApiResponse> createProfile(
+            @RequestBody @Valid ProfileRequestDTO dto,
+            HttpServletRequest request) {
+
         return ResponseEntity.status(201)
                 .body(profileService.createProfile(dto));
     }
 
-    //TODO: Restrict this endpoint to admin or the profile owner only
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE' , 'MERCHANT')")
+    public ResponseEntity<ProfileResponseDTO> getProfileById(
+            @PathVariable Long id,
+            HttpServletRequest request) {
+        ProfileResponseDTO profile = profileService.findById(id);
+
+        return ResponseEntity.ok(profile);
+    }
+
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MERCHANT')")
     public ResponseEntity<ApiResponse> updateProfile(
             @PathVariable @Positive(message = "ID must be a positive number") Long id,
-            @RequestBody @Valid ProfileUpdateDTO dto) {
+            @RequestBody @Valid ProfileUpdateDTO dto,
+            HttpServletRequest request) {
         return ResponseEntity.ok(profileService.updateProfile(id, dto));
     }
 
-    //TODO: Restrict this endpoint to admin or employee users only
-@GetMapping
-public ResponseEntity<PageResponse<ProfileResponseDTO>> getAllProfiles(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
-        @RequestParam(defaultValue = "fullName") String sortBy) {
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+    public ResponseEntity<PageResponse<ProfileResponseDTO>> getAllProfiles(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "fullName") String sortBy,
+            HttpServletRequest request) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return ResponseEntity.ok(profileService.getAllProfiles(pageable));
+    }
 
-    Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-    return ResponseEntity.ok(profileService.getAllProfiles(pageable));
-}
-
-    //TODO: Restrict this endpoint to admin or employee users only
-@GetMapping("/search")
-public ResponseEntity<PageResponse<ProfileResponseDTO>> searchProfiles(
-        @RequestParam(required = false) String name,
-        @RequestParam(required = false) String phoneNumber,
-        @RequestParam(required = false) ProfileType type,
-        @RequestParam(required = false) Long branchId,
-        @RequestParam(required = false) ProfileStatus status,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size,
-        @RequestParam(defaultValue = "fullName") String sortBy) {
-
-    Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-    return ResponseEntity.ok(
-        profileService.searchProfiles(name, phoneNumber, type, branchId, status, pageable)
-    );
-}
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+    public ResponseEntity<PageResponse<ProfileResponseDTO>> searchProfiles(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String phoneNumber,
+            @RequestParam(required = false) ProfileType type,
+            @RequestParam(required = false) Long branchId,
+            @RequestParam(required = false) ProfileStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "fullName") String sortBy,
+            HttpServletRequest request) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return ResponseEntity.ok(
+                profileService.searchProfiles(name, phoneNumber, type, branchId, status, pageable));
+    }
 }

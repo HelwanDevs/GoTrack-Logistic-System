@@ -7,7 +7,6 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import com.gotrack.auth_service.Exceptions.AccountInactiveException;
 import com.gotrack.auth_service.Jwt.JwtService;
 import com.gotrack.auth_service.Jwt.RefreshTokenService;
 import com.gotrack.auth_service.dto.AuthResponse;

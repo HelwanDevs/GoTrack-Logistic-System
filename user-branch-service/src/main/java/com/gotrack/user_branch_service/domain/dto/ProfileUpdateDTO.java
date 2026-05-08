@@ -19,6 +19,6 @@ public class ProfileUpdateDTO {
     @Positive(message = "Branch ID must be a positive number")
     private Long branchId; // Nullable
 
-    @Positive(message = "Account ID must be a positive number")
-    private Long accountId; // Nullable, Couriers have no account
+    @Pattern(regexp = "^[a-fA-F0-9]{24}$", message = "Invalid Account ID format")
+    private String accountId; // Nullable, Couriers have no account
 }

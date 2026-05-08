@@ -31,12 +31,19 @@ public class BranchServiceImp implements BranchService {
     }
 
     @Override
+    public BranchEntity findById(Long id) {
+        BranchEntity branch = branchRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Branch not found"));
+        return branch;
+    }
+
+    @Override
     public Page<BranchEntity> findAll(Pageable pageable) {
         return branchRepository.findAll(pageable);
     }
 
     @Override
-    public Page<BranchEntity> search(String name, String location, Boolean isDeleted, String phone ,Pageable pageable) {
+    public Page<BranchEntity> search(String name, String location, Boolean isDeleted, String phone, Pageable pageable) {
         boolean isDeletedReturnDefault = (isDeleted != null) ? isDeleted : false;
 
         Specification<BranchEntity> spec = (root, query, cb) -> {
@@ -85,6 +92,7 @@ public class BranchServiceImp implements BranchService {
 
         return branchRepository.save(existingBranch);
     }
+
     private void applyUpdates(BranchEntity existingBranch, BranchEntity newData) {
         existingBranch.setName(newData.getName());
         existingBranch.setLocation(newData.getLocation());
@@ -101,6 +109,5 @@ public class BranchServiceImp implements BranchService {
         branch.setIsDeleted(true);
         branchRepository.save(branch);
     }
-
 
 }

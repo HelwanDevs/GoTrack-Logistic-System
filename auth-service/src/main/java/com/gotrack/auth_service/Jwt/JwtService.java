@@ -7,29 +7,38 @@ import com.gotrack.auth_service.entity.Account;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret}")
-    private String secretKeyStr;
+    @Autowired
+    private JwtKeyService jwtKeyService;
 
     public String generateToken(Account account) {
-        long EXPIRATION = 15 * 60 * 1000;
+        long EXPIRATION = 60 * 60 * 1000;
 
         try {
-            return Jwts.builder()
-                    .setSubject(account.getEmail().trim())
-                    .claim("accountId", account.getId().toString())
-                    .claim("role", account.getRole())
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                    .signWith(Keys.hmacShaKeyFor(secretKeyStr.getBytes()), SignatureAlgorithm.HS256)
-                    .compact();
+            if (jwtKeyService.isRsaMode()) {
+                return Jwts.builder()
+                        .setSubject(account.getEmail().trim())
+                        .claim("accountId", account.getId().toString())
+                        .claim("role", account.getRole())
+                        .setIssuedAt(new Date())
+                        .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                        .signWith(jwtKeyService.getPrivateKey())
+                        .compact();
+            } else {
+                return Jwts.builder()
+                        .setSubject(account.getEmail().trim())
+                        .claim("accountId", account.getId().toString())
+                        .claim("role", account.getRole())
+                        .setIssuedAt(new Date())
+                        .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                        .signWith(jwtKeyService.getSecretKey())
+                        .compact();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Token generation failed: " + e.getMessage());
@@ -37,8 +46,24 @@ public class JwtService {
     }
 
     public Claims extractAllClaims(String token) {
+        if (jwtKeyService.isRsaMode()) {
+            return Jwts.parserBuilder()
+                    .setSigningKey(jwtKeyService.getPublicKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } else {
+            return Jwts.parserBuilder()
+                    .setSigningKey(jwtKeyService.getSecretKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        }
+    }
+
+    public Claims extractAllInternalClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(secretKeyStr.getBytes()))
+                .setSigningKey(jwtKeyService.getGatewayPublicKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -57,10 +82,54 @@ public class JwtService {
         } catch (JwtException e) {
             return false;
         }
-        // }
+    }
+
+    public boolean isGatewayTokenValid(String token) {
+        try {
+            Claims claims = extractAllInternalClaims(token);
+            return claims.getExpiration().after(new Date()) && claims.get("role", String.class) != null;
+        } catch (JwtException e) {
+            return false;
+        }
     }
 
     public boolean isTokenExpired(String token) {
         return extractAllClaims(token).getExpiration().after(new Date());
+    }
+
+    public boolean validateInternalToken(String token) {
+        try {
+            Claims claims = extractInternalClaims(token);
+            if (claims.getExpiration().before(new Date())) {
+                return false;
+            }
+            String role = claims.get("role", String.class);
+            return role != null;
+        } catch (JwtException e) {
+            return false;
+        }
+    }
+
+    public Claims extractInternalClaims(String token) {
+        return extractAllInternalClaims(token);
+    }
+
+    public String extractRoleFromToken(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("role", String.class);
+    }
+
+    public String extractRoleFromInternalToken(String token) {
+        Claims claims = extractAllInternalClaims(token);
+        return claims.get("role", String.class);
+    }
+
+    public String extractSubjectFromToken(String token) {
+        return extractAllClaims(token).getSubject();
+    }
+
+    public String extractUserIdFromInternalToken(String token) {
+        Claims claims = extractAllInternalClaims(token);
+        return claims.getSubject();
     }
 }

@@ -14,4 +14,8 @@ public class ApiResponse {
     public ApiResponse(String message) {
         this.message = message;
     }
+
+    public static ApiResponse error(String message) {
+        return new ApiResponse(message);
+    }
 }

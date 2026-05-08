@@ -75,4 +75,10 @@ public class AccountController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/accounts/super-admin/{id}")
+    public ResponseEntity<Boolean> isSuperAdmin(@PathVariable String id) {
+        boolean isSuperAdmin = accountService.isSuperAdmin(id);
+        return ResponseEntity.ok(isSuperAdmin);
+    }
+
 }

@@ -199,6 +199,12 @@ public class AccountService {
                 request.getSize());
     }
 
+    public boolean isSuperAdmin(String id) {
+        Account account = accRepository.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+        return account.getSuperAdmin();
+    }
+
     private void validateAuthorization(Account currentUser, Account targetAccount, Role requestedRole) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
