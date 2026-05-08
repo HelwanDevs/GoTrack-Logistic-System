@@ -29,14 +29,12 @@ import java.util.Set;
 
 public class JwtFilterImpl implements Filter {
 
-    private final JwtKeyService jwtKeyService;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final UserDetailsService userDetailsService;
 
-    public JwtFilterImpl(JwtKeyService jwtKeyService, JwtService jwtService, RefreshTokenService refreshTokenService,
+    public JwtFilterImpl( JwtService jwtService, RefreshTokenService refreshTokenService,
             UserDetailsService userDetailsService) {
-        this.jwtKeyService = jwtKeyService;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
         this.userDetailsService = userDetailsService;
