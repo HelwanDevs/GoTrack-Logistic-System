@@ -17,7 +17,6 @@ import com.gotrack.api_gateway.config.JwtKeyConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -71,12 +70,14 @@ public class GlobalFilter extends OncePerRequestFilter implements Ordered {
                     .getBody();
 
             String email = claims.getSubject();
+            String accountId = claims.get("accountId", String.class);
             String role = claims.get("role", String.class);
             String requestId = UUID.randomUUID().toString();
 
             String internalToken = Jwts.builder()
                     .setSubject(email)
                     .claim("role", role)
+                    .claim("accountId", accountId)
                     .claim("requestId", requestId)
                     .setIssuedAt(new java.util.Date())
                     .setExpiration(new java.util.Date(System.currentTimeMillis() + EXPIRATION))
@@ -91,6 +92,7 @@ public class GlobalFilter extends OncePerRequestFilter implements Ordered {
                         case "x-email" -> email;
                         case "x-user-role" -> role;
                         case "x-request-id" -> requestId;
+                        case "x-account-id" -> accountId;
                         default -> super.getHeader(name);
                     };
                 }
@@ -109,7 +111,7 @@ public class GlobalFilter extends OncePerRequestFilter implements Ordered {
                 public Enumeration<String> getHeaderNames() {
                     Set<String> names = new HashSet<>();
                     Collections.list(super.getHeaderNames()).forEach(n -> names.add(n.toLowerCase()));
-                    names.addAll(List.of("x-internal-token", "x-email", "x-user-role", "x-request-id"));
+                    names.addAll(List.of("x-internal-token", "x-email", "x-user-role", "x-request-id", "x-account-id"));
                     return Collections.enumeration(names);
                 }
             };
