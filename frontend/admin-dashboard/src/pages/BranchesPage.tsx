@@ -505,11 +505,7 @@ import wallet from "../assets/wallet icon.png";
 export const BranchesPage = () =>{
 
 
-  const shipmentHeader=[
-    {
-      
-    }
-  ]
+ 
 
 
   const transactionHeader=[
@@ -559,6 +555,88 @@ const InventoryHeaders =[
     label:"Branch"
   }
 ]
+
+ const shipmentHeader=[
+    {
+      id:1,
+      key: "SHIPMENT_ID",
+      label: "ShipmentId"
+    },
+    {
+      id:2,
+      key: "NOTES",
+      label: "Notes"
+    },
+    {
+      id:3,
+      key: "LAST_UPDATE",
+      label: "Last_Update"
+    },
+    {
+      id:4,
+      key: "STATUS",
+      label: "Status"
+    },
+    {
+      id:5,
+      key: "TOTAL_PRICE",
+      label: "Total_Price"
+    },
+    {
+      id:6,
+      key: "SHIPPING_FEE",
+      label: "Shipping_Fee"
+    },
+    {
+      id:7,
+      key: "DATE_DELIVERED",
+      label: "Date_Delivered"
+    }
+  ]
+
+
+const [shipments,setShipments] = useState([
+  {
+    id:"1",
+    SHIPMENT_ID:"132",
+    NOTES: "no notes",
+    LAST_UPDATE: "10:10 20/2/2022",
+    STATUS: "Delivered",
+    TOTAL_PRICE: "100$",
+    SHIPPING_FEE:"20$",
+    DATE_DELIVERED:"20/2/2022"
+  },
+  {
+    id:"2",
+    SHIPMENT_ID:"465",
+    NOTES: "Handle with care",
+    LAST_UPDATE: "10:10 20/3/2022",
+    STATUS: "pending pickup",
+    TOTAL_PRICE: "109$",
+    SHIPPING_FEE:"24$",
+    DATE_DELIVERED:""
+  },
+  {
+    id:"3",
+    SHIPMENT_ID:"159",
+    NOTES: "Do not bend",
+    LAST_UPDATE: "10:10 15/2/2022",
+    STATUS: "arrived at warehouse",
+    TOTAL_PRICE: "300$",
+    SHIPPING_FEE:"30$",
+    DATE_DELIVERED:""
+  },
+  {
+    id:"4",
+    SHIPMENT_ID:"753",
+    NOTES: "Fragile",
+    LAST_UPDATE: "10:10 20/2/2022",
+    STATUS: "Delivered",
+    TOTAL_PRICE: "1020$",
+    SHIPPING_FEE:"200$",
+    DATE_DELIVERED:"20/2/2022"
+  },
+])
 
  const [transactions,setTransactions] = useState([
     {
@@ -619,6 +697,62 @@ const InventoryHeaders =[
   }
 ])
 
+const [merchantId,setMerchantId] = useState("")
+const [merchantName,setMerchantName] = useState("")
+const [merchantEmail,setMerchantEmail] = useState("")
+const [merchantBranch,setMerchantBranch] = useState("")
+const [merchantPhone,setMerchantPhone] = useState("")
+const [merchantInfo,setMerchantInfo] = useState([
+  {
+    id:"1",
+    MERCHANT_ID: "1222333",
+    NAME:"",
+    EMAIL:"",
+    MERCHANT_BRANCH:"",
+    MERCHANT_PHONE:""
+  }
+])
+const [showMerchantForm,setShowMerchantForm] =useState(false)
+
+function handleMerchantBranchChange (event){
+  setMerchantBranch(event.target.value);
+}
+
+function handleMerchantNameChange (event){
+         setMerchantName (event.target.value);
+     }
+
+
+function handleMerchantEmailChange (event){
+         setMerchantEmail (event.target.value);
+     }     
+     
+function handleMerchantPhoneChange (event){
+         setMerchantPhone (event.target.value);
+     }
+
+const showMerchantFormFun = (e) => {
+         setShowMerchantForm(true)
+     }
+
+ const hideMerchantFormFun = (e) =>{
+         setShowMerchantForm(false)
+    }
+
+function handleUpdateMerchantInfo(){
+  const oldMerchant = merchantInfo
+  const tempMerchant={
+    id:"1",
+    MERCHANT_ID:`${oldMerchant[1]}`,
+    NAME: merchantName,
+    MERCHANTBRANCH: merchantBranch,
+    MERCHANTPHONE: merchantPhone
+  }
+
+  setMerchantInfo(tempMerchant)
+}
+
+     
 
   // return(
 
@@ -801,13 +935,128 @@ const InventoryHeaders =[
 
        <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
        <div className="flex">
-        <Button className="bg-primary-container p-10 mt-3 mr-4 mb-9">return to merchant profile</Button>
+        <Button onClick={showMerchantFormFun} className="bg-primary-container p-10 mt-3 mr-4 mb-9">return to merchant profile</Button>
          <div><p className="mr-100 text-2xl">MERCHANT NAME</p></div>
          <div> <p className="mr-30 mt-10">merchant id;123465 </p></div>
          <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
        </div>
         
       </span></Card>
+
+
+      <div className="flex mr-160 font-semibold text-3xl mb-3 mt-3">Shipments</div>
+
+
+
+      {showMerchantForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+                 <Header className="font-headline-md text-headline-md text-on-background mb-6" title="Update Merchant Info"></Header>
+                 <form>
+                     <div>
+                         <label>Merchant name</label>
+                         <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Branch Name"
+               placeholder="example name" value={merchantInfo.NAME} onChange={handleMerchantNameChange} type ="text"></input></div>
+                
+                 <div>
+                     <label>Merchant Email</label>
+                     <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="example email"
+                  type ="text" value={merchantInfo.EMAIL} onChange={handleMerchantEmailChange}></input></div>
+
+                <div> <label>Branch location</label>
+                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="example branch"
+               type ="text" value={merchantInfo.MERCHANT_BRANCH} onChange={handleMerchantBranchChange}></input></div>
+
+                <div> <label>Phone number</label>
+                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="PhoneNum"
+               type ="text" value={merchantInfo.MERCHANT_PHONE} onChange={handleMerchantPhoneChange}></input></div>
+              
+                <div className="flex gap-3 pt-2">
+                  <Button
+                 type="submit"
+                 variant="primary"
+                 size="md"
+                 onClick={handleUpdateMerchantInfo}>change info</Button>
+                 <Button
+                 type="button"
+                 variant="outline"
+                 size="md"
+                 onClick={hideMerchantFormFun}>Cancle</Button>
+                </div>
+                </form>
+                </Card>}
+
+
+      <Card className="mr-6">
+      <table className="w-full mr-6 ml-6">
+          <thead>
+            <tr className="border-b border-outline-variant">                       
+                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                      Shipment Id
+                </th>
+                 
+                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  Notes
+                </th>
+
+                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  Last Updated
+                </th> 
+
+                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  Status
+                </th>
+                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  Total Price
+                </th>
+                
+                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  Shipping Fee
+                </th> 
+                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  Date Delivred
+                </th> 
+                
+
+                <Button className="">New Shipment</Button>
+            </tr>
+          </thead>
+          <tbody>
+            {shipments.map((data)=>(
+
+               <tr 
+                            
+                key={data.id}
+                className={`border-b border-surface-variant hover:bg-surface-container-low transition`}>
+                  
+
+                  <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.SHIPMENT_ID}
+                                     </p></td>
+                  <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.NOTES}
+                                     </p></td>
+                  <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.LAST_UPDATE}
+                                     </p></td>
+                  <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.STATUS}
+                                     </p></td>
+                  <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.TOTAL_PRICE}
+                                     </p></td>
+                  <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.SHIPPING_FEE}
+                                     </p></td>
+                  <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.DATE_DELIVERED}
+                                     </p></td>
+               </tr>
+              
+            ))}
+            
+          </tbody>
+      </table>
+      </Card> 
+
 
     </main>
 
