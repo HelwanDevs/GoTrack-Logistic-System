@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,7 +71,7 @@ public class BranchController {
         }
 
         @GetMapping(path = "/api/branches/search")
-        @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MERCHANT')")
+        @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
         public ResponseEntity<?> searchBranches(
                         @RequestParam(required = false) String name,
                         @RequestParam(required = false) String location,
