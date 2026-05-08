@@ -11,10 +11,10 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.stereotype.Component;
+// import org.springframework.stereotype.Component;
 
 @Aspect
-@Component
+// @Component
 public class LoggingAspect {
     private static final Logger log = LoggerFactory.getLogger(LoggingAspect.class);
 
@@ -23,7 +23,7 @@ public class LoggingAspect {
     private static final String APPLICATION_PACKAGE = "within(" + BASE_PACKAGE + "..*)";
 
     private static final String EXCLUDED_PACKAGES = "!within(" + BASE_PACKAGE + "..config..*) " +
-            "&& !within(" + BASE_PACKAGE + "..security..*)" + "&& !within(" + BASE_PACKAGE + "..logging..*)";
+            "&& !within(" + BASE_PACKAGE + "..logging..*)" + "&& !within(" + BASE_PACKAGE + "..filter..*)";
 
     @Pointcut(APPLICATION_PACKAGE + " && " + EXCLUDED_PACKAGES)
     public void app() {
@@ -67,7 +67,7 @@ public class LoggingAspect {
 
     @AfterThrowing(pointcut = "app()", throwing = "ex")
     public void logException(JoinPoint jpoint, Throwable ex) {
-        log.error( "[EXCEPTION] " + "IN {}.{}() | cause={} | message={}",
+        log.error("[EXCEPTION] " + "IN {}.{}() | cause={} | message={}",
                 jpoint.getTarget().getClass().getSimpleName(),
                 jpoint.getSignature().getName(),
                 (ex.getCause() != null ? ex.getCause() : "NULL"),
