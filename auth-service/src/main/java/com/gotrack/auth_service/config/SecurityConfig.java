@@ -19,7 +19,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.gotrack.auth_service.Jwt.JwtFilterImpl;
-import com.gotrack.auth_service.Jwt.JwtKeyService;
 import com.gotrack.auth_service.Jwt.JwtService;
 import com.gotrack.auth_service.Jwt.RefreshTokenService;
 
@@ -31,9 +30,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityConfig {
 
     @Bean
-    public JwtFilterImpl jwtFilter(JwtKeyService jwtKeyService, JwtService jwtService,
+    public JwtFilterImpl jwtFilter(JwtService jwtService,
             RefreshTokenService refreshTokenService, UserDetailsService userDetailsService) {
-        return new JwtFilterImpl(jwtKeyService, jwtService, refreshTokenService, userDetailsService);
+        return new JwtFilterImpl(jwtService, refreshTokenService, userDetailsService);
     }
 
     @Bean
