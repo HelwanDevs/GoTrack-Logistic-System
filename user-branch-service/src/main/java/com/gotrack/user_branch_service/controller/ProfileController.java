@@ -20,15 +20,12 @@ import com.gotrack.user_branch_service.domain.dto.ProfileUpdateDTO;
 import com.gotrack.user_branch_service.domain.enums.ProfileStatus;
 import com.gotrack.user_branch_service.domain.enums.ProfileType;
 import com.gotrack.user_branch_service.domain.response.PageResponse;
-import com.gotrack.user_branch_service.filter.AuthenticationDetails;
-import com.gotrack.user_branch_service.service.AccountService;
 import com.gotrack.user_branch_service.service.ProfileService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 
-import java.util.Map;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Pageable;
@@ -42,20 +39,11 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
-    // @Autowired
-    // private AccountService accountService;
-
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<ApiResponse> createProfile(
             @RequestBody @Valid ProfileRequestDTO dto,
             HttpServletRequest request) {
-        // if (dto.getAccountId() != null) {
-        //     Map<String, Object> account = accountService.getAccountById(dto.getAccountId().toString());
-        //     if (account == null || account.isEmpty()) {
-        //         return ResponseEntity.status(404).body(ApiResponse.error("Account not found"));
-        //     }
-        // }
 
         return ResponseEntity.status(201)
                 .body(profileService.createProfile(dto));
@@ -67,10 +55,7 @@ public class ProfileController {
             @PathVariable Long id,
             HttpServletRequest request) {
         ProfileResponseDTO profile = profileService.findById(id);
-        // String accountId = profile.getAccountId() != null ? profile.getAccountId().toString() : null;
-        // if (accountId != null) {
-        //     accountService.getAccountById(accountId);
-        // }
+
         return ResponseEntity.ok(profile);
     }
 
