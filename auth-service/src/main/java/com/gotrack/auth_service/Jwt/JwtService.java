@@ -7,7 +7,6 @@ import com.gotrack.auth_service.entity.Account;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ public class JwtService {
     private JwtKeyService jwtKeyService;
 
     public String generateToken(Account account) {
-        long EXPIRATION = 15 * 60 * 1000;
+        long EXPIRATION = 60 * 60 * 1000;
 
         try {
             if (jwtKeyService.isRsaMode()) {
