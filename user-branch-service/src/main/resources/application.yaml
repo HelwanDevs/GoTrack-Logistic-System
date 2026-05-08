@@ -1,19 +1,6 @@
 spring:
   application:
     name: user-branch-service
-
-  datasource:
-    url: jdbc:postgresql://localhost:5432/user_branch_db
-    username: postgres
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-
-server:
-  port: 8082
-
-eureka:
-  client:
-    enabled: false
+  profiles:
+    active:
+    - ${SPRING_PROFILES_ACTIVE:dev}
