@@ -2,6 +2,8 @@ package com.gotrack.user_branch_service.service.imp;
 
 import com.gotrack.user_branch_service.exceptions.ConflictException;
 import com.gotrack.user_branch_service.exceptions.NotFoundException;
+import com.gotrack.user_branch_service.filter.AuthenticationDetails;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ import com.gotrack.user_branch_service.repository.ProfileRepository;
 import com.gotrack.user_branch_service.service.ProfileService;
 
 import jakarta.persistence.criteria.Predicate;
+import jakarta.ws.rs.ForbiddenException;
+
 import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 
@@ -39,13 +43,16 @@ public class ProfileServiceImp implements ProfileService {
     @Autowired
     private BranchRepository branchRepository;
 
+    @Autowired
+    private AccountServiceImp accountService;
+
     @Override
     public ApiResponse createProfile(ProfileRequestDTO dto) {
 
         // 409 — duplicate accountId check
         if (dto.getAccountId() != null &&
                 profileRepository.findByAccountId(dto.getAccountId()).isPresent()) {
-            throw new ConflictException("Profile already exists");
+            throw new ConflictException("Account already linked to a profile");
         }
 
         // 409 — duplicate phone number check
@@ -63,11 +70,16 @@ public class ProfileServiceImp implements ProfileService {
         ProfileEntity entity = profileMapper.toEntity(dto);
         entity.setBranch(branch);
 
-        // TODO: extract actual admin ID from JWT token via auth sercive
-        // entity.setCreatedBy(jwtUtil.extractAccountId(token));
-        entity.setCreatedBy("ADMIN");
+        AuthenticationDetails authDetails = new AuthenticationDetails();
 
-        // TODO: validate accountId exists via auth-service API
+        entity.setCreatedBy(authDetails.getAccountId());
+
+        if (dto.getAccountId() != null) {
+            if (!accountService.isAccountValid(dto.getAccountId())) {
+                throw new NotFoundException("Account not found with ID: " + dto.getAccountId());
+            }
+            entity.setAccountId(dto.getAccountId());
+        }
 
         ProfileEntity saved = profileRepository.save(entity);
 
@@ -87,11 +99,20 @@ public class ProfileServiceImp implements ProfileService {
         // 404 — profile not found
         ProfileEntity entity = profileRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Profile not found"));
+        AuthenticationDetails authDetails = new AuthenticationDetails();
+        if (entity.getAccountId() != null && !entity.getAccountId().equals(authDetails.getAccountId())) {
+            Boolean isSuperAdmin = accountService.isSuperAdmin(authDetails.getAccountId());
+            // check if user is super admin to allow updating ADmIN and EMPLOYEE profiles,
+            // otherwise only allow updating MERCHANT, COURIER, CUSTOMER profiles 
+            // if user is ADMIN or EMPLOYEE
+            if (List.of("ADMIN", "EMPLOYEE").contains(entity.getType().toString()) && !isSuperAdmin) {
+                throw new ForbiddenException("You are not authorized to update this profile");
+            } else if (List.of("MERCHANT", "COURIER", "CUSTOMER").contains(entity.getType().toString()) &&
+                    !List.of("ADMIN", "EMPLOYEE").contains(authDetails.getRole())) {
+                throw new ForbiddenException("You are not authorized to update this profile");
+            }
+        }
 
-        // TODO: extract role and accountId from JWT
-        // TODO: if role is SELF, check that token accountId matches
-        // entity.getAccountId()
-        // TODO: if role is not ADMIN and not SELF, throw ForbiddenException
 
         // FullName: updated when not null or blank
         if (dto.getFullName() != null && !dto.getFullName().isBlank()) {
@@ -116,8 +137,16 @@ public class ProfileServiceImp implements ProfileService {
             BranchEntity branch = validateBranch(dto.getBranchId());
             entity.setBranch(branch);
         }
-        if (dto.getAccountId() != null)
+        if (dto.getAccountId() != null && !dto.getAccountId().isBlank() && !dto.getAccountId().equals(entity.getAccountId()))
+        {
+            if (  profileRepository.findByAccountId(dto.getAccountId()).isPresent() ) {
+                throw new ConflictException("Account already linked to another profile");
+            }
+            if (!accountService.isAccountValid(dto.getAccountId())) {
+                throw new NotFoundException("Account not found with ID: " + dto.getAccountId());
+            }
             entity.setAccountId(dto.getAccountId());
+        }
         if (dto.getBranchId() != null)
             entity.setBranch(validateBranch(dto.getBranchId()));
         if (dto.getStatus() != null)
@@ -130,7 +159,6 @@ public class ProfileServiceImp implements ProfileService {
 
     @Override
     public PageResponse<ProfileResponseDTO> getAllProfiles(Pageable pageable) {
-        // TODO: restrict to ADMIN and EMPLOYEE roles
         Page<ProfileEntity> page = profileRepository.findAll(pageable);
 
         List<ProfileResponseDTO> content = page.getContent()
@@ -148,7 +176,6 @@ public class ProfileServiceImp implements ProfileService {
     @Override
     public PageResponse<ProfileResponseDTO> searchProfiles(
             String name, String phoneNumber, ProfileType type, Long branchId, ProfileStatus status, Pageable pageable) {
-        // TODO: restrict to ADMIN and EMPLOYEE roles once JWT is ready
 
         Specification<ProfileEntity> spec = (root, query, criteriaBuilder) -> {
 
