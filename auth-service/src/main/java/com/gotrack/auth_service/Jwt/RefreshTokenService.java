@@ -1,6 +1,5 @@
 package com.gotrack.auth_service.Jwt;
 
-import java.sql.Ref;
 import java.util.Date;
 import java.util.UUID;
 
