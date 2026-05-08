@@ -52,7 +52,8 @@ public class ProfileEntity {
     private ProfileType type;
 
     @Column(name = "account_id")
-    private Long accountId; // Nullable, Couriers have no account
+    @Pattern(regexp = "^[a-fA-F0-9]{24}$", message = "Invalid Account ID format")
+    private String accountId; // Nullable, Couriers have no account
 
     @ManyToOne
     @JoinColumn(name = "branch_id", foreignKey = @ForeignKey(name = "fk_profile_branch"))

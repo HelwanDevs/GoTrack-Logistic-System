@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface ProfileRepository extends JpaRepository<ProfileEntity, Long>,
         JpaSpecificationExecutor<ProfileEntity> { 
 
-    Optional<ProfileEntity> findByAccountId(Long accountId);
+    Optional<ProfileEntity> findByAccountId(String accountId);
     Optional<ProfileEntity> findByPhoneNumber(String phoneNumber);
     List<ProfileEntity> findByType(ProfileType type);
     List<ProfileEntity> findByStatus(ProfileStatus status);
