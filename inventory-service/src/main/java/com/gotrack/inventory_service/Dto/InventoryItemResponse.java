@@ -14,7 +14,8 @@ public class InventoryItemResponse {
     private Long id;
     private Long productId;
     private String productName;
-    private Integer branchId;
+    private Long branchId;
     private String uniqueSku;
     private String status;
+    private Long MerchantId;
 }

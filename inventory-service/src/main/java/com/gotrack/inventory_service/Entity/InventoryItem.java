@@ -32,7 +32,7 @@ public class InventoryItem {
     @NotNull(message = "Branch ID is required")
     @Min(value = 1, message = "Branch ID must be a positive number")
     @Column(name = "branch_id", nullable = false)
-    private Integer branchId;
+    private Long branchId;
 
     @NotBlank(message = "Unique SKU is required")
     @Column(unique = true, nullable = false)
