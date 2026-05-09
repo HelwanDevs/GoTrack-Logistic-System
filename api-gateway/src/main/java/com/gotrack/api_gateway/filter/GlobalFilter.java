@@ -124,6 +124,7 @@ public class GlobalFilter extends OncePerRequestFilter implements Ordered {
             response.getWriter()
                     .write("{\"status\":401,\"error\":\"Unauthorized\",\"message\":\"Invalid or expired token\"}");
         } catch (Exception e) {
+            logger.error("Error processing JWT: " + e.getMessage(), e);
             response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("application/json");
             response.getWriter().write("{\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"\"}");
