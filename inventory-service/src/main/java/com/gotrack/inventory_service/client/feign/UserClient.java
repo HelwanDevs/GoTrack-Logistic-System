@@ -6,11 +6,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.gotrack.inventory_service.Dto.ProfileResponseDTO;
 
-import java.util.Map;
-
-@FeignClient(name = "user-branch-service")
+@FeignClient(name = "user-branch-service", contextId = "userClient")
 public interface UserClient {
 
+    @GetMapping("/api/users/profiles/account/{accountId}")
+    ProfileResponseDTO getProfileByAccountId(@PathVariable("accountId") String accountId);
+
     @GetMapping("/api/users/profiles/{id}")
-    Map<String, ProfileResponseDTO> getProfileById(@PathVariable("id") String id);
+    ProfileResponseDTO getProfileById(@PathVariable("id") Long id);
 }
