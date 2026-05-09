@@ -46,6 +46,16 @@ public class ShipmentController {
        return ResponseEntity.ok(response);
    }
 
+   @GetMapping("/me")
+   @PreAuthorize("hasAnyRole('MERCHANT')")
+   public ResponseEntity<Page<ShipmentDTO>> GetMyShipments(
+        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)
+        Pageable pageable
+) {
+    Page<ShipmentDTO> response = shipmentService.GetMyShipments( pageable);
+    return ResponseEntity.ok(response);
+}
+
    @GetMapping("/search")
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<Page<ShipmentDTO>> searchShipments(

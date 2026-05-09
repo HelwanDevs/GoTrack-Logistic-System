@@ -13,6 +13,7 @@ import com.gotrack.core_logistic.Service.finance.FinanceService;
 import com.gotrack.core_logistic.Specifications.ShipmentSpecification;
 import com.gotrack.core_logistic.enums.PickupStatus;
 import com.gotrack.core_logistic.enums.ShipmentStatus;
+import com.gotrack.core_logistic.filter.AuthenticationDetails;
 import com.gotrack.core_logistic.mapper.shipmentMapper;
 import com.gotrack.core_logistic.model.dto.ProfileResponse;
 import com.gotrack.core_logistic.model.dto.ShipmentDTO;
@@ -37,7 +38,7 @@ public class ShipmentService {
         private FinanceService financeService;
     @Autowired
         private ProfileBranchService profileBranchService;
-
+    
     
     public ShipmentDTO createShipment(ShipmentDTO shipmentRequest) {
         Pickup pickup = pickupRepo.findById(shipmentRequest.getPickupRequest().getId())
@@ -104,7 +105,18 @@ public class ShipmentService {
      return shipmentRepo.findAll(spec, pageable)
                 .map(ShipmentMapper::toDto);
 }
-
+    
+    public Page<ShipmentDTO> GetMyShipments(Pageable pageable){
+        
+         
+        AuthenticationDetails authDetails = new AuthenticationDetails();
+        String accountId = authDetails.getAccountId();
+        ProfileResponse profile = profileBranchService.getProfileByAccountId(accountId);
+        
+         return shipmentRepo
+             .findByMERCHANTId(profile.getId(), pageable)
+             .map(ShipmentMapper::toDto);
+   }
     
     
 

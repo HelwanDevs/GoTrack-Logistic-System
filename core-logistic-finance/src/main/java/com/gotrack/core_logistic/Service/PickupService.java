@@ -27,13 +27,13 @@ public class PickupService {
         private PickupRequestMapper pickupMapper;
         @Autowired
         private ProfileBranchService profileBranchService;
-        @Autowired
-        private AuthenticationDetails AuthenticationDetails;
+        
 
         public PickupRequestDTO createPickup(PickupRequestDTO pickupRequest) {
                 Pickup pickup = pickupMapper.toEntity(pickupRequest);
-
-                String accountId = AuthenticationDetails.getAccountId();
+                
+                AuthenticationDetails authDetails = new AuthenticationDetails();
+                String accountId = authDetails.getAccountId();
                 ProfileResponse profile = profileBranchService.getProfileByAccountId(accountId);
 
                 pickup.setMERCHANTId(profile.getId());
@@ -84,7 +84,9 @@ public class PickupService {
 
         public Page<PickupRequestDTO> searchPickups(PickupFilter filter, Pageable pageable) {
 
-                String accountId = AuthenticationDetails.getAccountId();
+                  
+                AuthenticationDetails authDetails = new AuthenticationDetails();
+                String accountId = authDetails.getAccountId();
                 ProfileResponse profile = profileBranchService.getProfileByAccountId(accountId);
 
                 if (filter.getMERCHANTId() != null && filter.getMERCHANTId() != profile.getId()
@@ -100,4 +102,12 @@ public class PickupService {
                                 .map(pickupMapper::toDTO);
         }
 
+
+
+        public PickupRequestDTO getPickup(Long id) {
+                Pickup pickup = pickupRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException("Pickup not found with id: " + id));
+
+                return pickupMapper.toDTO(pickup);
+        }
 }

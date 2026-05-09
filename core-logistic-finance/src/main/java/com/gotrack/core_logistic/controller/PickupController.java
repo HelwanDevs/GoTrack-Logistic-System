@@ -70,5 +70,12 @@ public class PickupController {
     Page<PickupRequestDTO> response = pickupService.searchPickups(filter, pageable);
     return ResponseEntity.ok(response);
 }
+       @GetMapping("/{id}")
+       @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MERCHANT')")
+       public ResponseEntity<PickupRequestDTO> getPickup(@PathVariable Long id) {
+
+           PickupRequestDTO response = pickupService.getPickup(id);
+           return ResponseEntity.ok(response);
+       }
        
 }
