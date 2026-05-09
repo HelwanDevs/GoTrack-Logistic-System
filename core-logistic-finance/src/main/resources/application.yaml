@@ -1,21 +1,6 @@
 spring:
   application:
     name: core-logistic-finance-service
-
-
-  datasource:
-    url: jdbc:mysql://localhost:3306/core_logistic_finance
-    username: root
-    password: 2210
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-
-server:
-  port: 9091
+  profiles:
+    active:
+    - ${SPRING_PROFILES_ACTIVE:dev}

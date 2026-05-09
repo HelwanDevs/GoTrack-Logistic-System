@@ -22,6 +22,10 @@ spring:
               - Path=/api/users/**,/api/branches/**
             filters:
               - AddRequestHeader=X-Gateway, Dynamic
+          - id: core-logistic-finance-service
+            uri: lb://core-logistic-finance-service
+            predicates:
+              - Path=/api/finance/**,/api/pickups/**,/api/shipments/**
           - id: inventory-service
             uri: lb://inventory-service
             predicates:

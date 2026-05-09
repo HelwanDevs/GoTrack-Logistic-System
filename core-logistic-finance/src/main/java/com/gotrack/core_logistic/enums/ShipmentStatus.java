@@ -8,20 +8,17 @@ public enum ShipmentStatus {
     InTransitToMERCHANT,
     DELIVERED;
 
-    public boolean canTransitionToS(ShipmentStatus newStatus) {
-        switch (this) {
-            case PendingPickup:
-                return newStatus == InTransitToWarehouse;
-            case InTransitToWarehouse:
-                return newStatus == ArrivedAtWarehouse;
-            case ArrivedAtWarehouse:
-                return newStatus == OutForDelivery;
-            case OutForDelivery:
-                return newStatus == InTransitToMERCHANT;
-            case InTransitToMERCHANT:
-                return newStatus == DELIVERED;
-            default:
-                return false;
-        }
-    }
+
+
+
+      public boolean canTransitionToS(ShipmentStatus newStatus) {
+          return switch (this) {
+              case PendingPickup -> newStatus == InTransitToWarehouse;
+              case InTransitToWarehouse -> newStatus == ArrivedAtWarehouse;
+              case ArrivedAtWarehouse -> newStatus == OutForDelivery;
+              case OutForDelivery -> newStatus == InTransitToMERCHANT;
+              case InTransitToMERCHANT -> newStatus == DELIVERED;
+              default -> false;
+          };
+}
 }

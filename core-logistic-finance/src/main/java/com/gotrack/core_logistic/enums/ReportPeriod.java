@@ -11,18 +11,13 @@ public enum ReportPeriod {
 
 
         public LocalDate getStartDate(LocalDate now) {
-        switch (this) {
-            case DAILY:
-                return now;
-            case WEEKLY:
-                return now.minusWeeks(1);
-            case MONTHLY:
-                return now.minusMonths(1);
-            case YEARLY:
-                return now.minusYears(1);
-            default:
-                return now;
-        }
+        return switch (this) {
+            case DAILY -> now;
+            case WEEKLY -> now.minusWeeks(1);
+            case MONTHLY -> now.minusMonths(1);
+            case YEARLY -> now.minusYears(1);
+            default -> now;
+        };
     }
 
 }

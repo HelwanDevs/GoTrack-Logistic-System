@@ -13,9 +13,11 @@ import com.gotrack.core_logistic.Service.finance.FinanceService;
 import com.gotrack.core_logistic.Specifications.ShipmentSpecification;
 import com.gotrack.core_logistic.enums.PickupStatus;
 import com.gotrack.core_logistic.enums.ShipmentStatus;
+import com.gotrack.core_logistic.filter.AuthenticationDetails;
 import com.gotrack.core_logistic.mapper.shipmentMapper;
-import com.gotrack.core_logistic.model.dto.Filters.ShipmentFilter;
+import com.gotrack.core_logistic.model.dto.ProfileResponse;
 import com.gotrack.core_logistic.model.dto.ShipmentDTO;
+import com.gotrack.core_logistic.model.dto.DTOFilters.ShipmentFilter;
 import com.gotrack.core_logistic.model.entity.Pickup;
 import com.gotrack.core_logistic.model.entity.Shipment;
 import com.gotrack.core_logistic.repository.PickupRepo;
@@ -34,7 +36,9 @@ public class ShipmentService {
         private shipmentMapper ShipmentMapper;
     @Autowired
         private FinanceService financeService;
-
+    @Autowired
+        private ProfileBranchService profileBranchService;
+    
     
     public ShipmentDTO createShipment(ShipmentDTO shipmentRequest) {
         Pickup pickup = pickupRepo.findById(shipmentRequest.getPickupRequest().getId())
@@ -46,7 +50,11 @@ public class ShipmentService {
 
         Shipment shipment = ShipmentMapper.toEntity(shipmentRequest);
         
-        //TODO: INtegrate with Profile service to validate courierId
+          ProfileResponse profile = profileBranchService.getProfileById(shipmentRequest.getCourierId());
+                if(profile.getType().toString() != "COURIER")
+                    throw new ConflictException("This is not a courier profile");
+
+        
         shipment.setCourierId(shipmentRequest.getCourierId());
         pickup.setStatus(PickupStatus.Accepted);
         shipment.setStatus(ShipmentStatus.PendingPickup);
@@ -77,6 +85,13 @@ public class ShipmentService {
             financeService.shipmentCalculation(existingShipment.getShipmentFee(), existingShipment.getTotalPrice());
         }
 
+        if(currentStatus == ShipmentStatus.PendingPickup ){
+              ProfileResponse profile = profileBranchService.getProfileById(shipmentRequest.getCourierId());
+                if(profile.getType().toString() != "COURIER")
+                    throw new ConflictException("This is not a courier profile");
+                existingShipment.setCourierId(shipmentRequest.getCourierId());
+}
+
         existingShipment.setStatus(newStatus);
         Shipment updatedShipment = shipmentRepo.save(existingShipment);
         return ShipmentMapper.toDto(updatedShipment);
@@ -84,13 +99,24 @@ public class ShipmentService {
     
     
     public Page<ShipmentDTO> searchShipments(ShipmentFilter filter, Pageable pageable) {
-
+    
      Specification<Shipment> spec = ShipmentSpecification.filterShipments(filter);
 
      return shipmentRepo.findAll(spec, pageable)
                 .map(ShipmentMapper::toDto);
 }
-
+    
+    public Page<ShipmentDTO> GetMyShipments(Pageable pageable){
+        
+         
+        AuthenticationDetails authDetails = new AuthenticationDetails();
+        String accountId = authDetails.getAccountId();
+        ProfileResponse profile = profileBranchService.getProfileByAccountId(accountId);
+        
+         return shipmentRepo
+             .findByMERCHANTId(profile.getId(), pageable)
+             .map(ShipmentMapper::toDto);
+   }
     
     
 

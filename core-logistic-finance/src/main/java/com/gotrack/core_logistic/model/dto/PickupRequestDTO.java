@@ -18,12 +18,11 @@ import lombok.Setter;
 public class PickupRequestDTO {
 
     private Long id;
-
-    @NotNull(message = "MERCHANT ID is required")
-    @Positive(message = "MERCHANT ID must be positive")
+    
+    
+    @Positive(message = "Merchant id is required")
     private Long MERCHANTId;
-
-    @NotNull(message = "Courier ID is required")
+    
     private Long courierId;
 
     @NotBlank(message = "Pickup address is required")

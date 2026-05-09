@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.gotrack.inventory_service.Dto.InventoryItemRequest;
 import com.gotrack.inventory_service.Dto.InventoryItemResponse;
+import com.gotrack.inventory_service.Dto.PickupResponceDTO;
 import com.gotrack.inventory_service.Dto.inventoryFilter;
 import com.gotrack.inventory_service.Entity.InventoryItem;
 import com.gotrack.inventory_service.Entity.Product;
@@ -22,7 +23,7 @@ import com.gotrack.inventory_service.repository.ProductRepository;
 
 @Service
 public class InventoryService {
-
+    private final PickupService pickupService;
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
     private final BranchServices branchServices;
@@ -31,12 +32,13 @@ public class InventoryService {
 
     public InventoryService(InventoryRepository inventoryRepository,
             ProductRepository productRepository, BranchServices branchServices, UserServices userServices,
-            ProductService productService) {
+            ProductService productService, PickupService pickupService) {
         this.inventoryRepository = inventoryRepository;
         this.productRepository = productRepository;
         this.branchServices = branchServices;
         this.userServices = userServices;
         this.productService = productService;
+        this.pickupService = pickupService;
     }
 
     public void receiveItems(InventoryItemRequest dto) {
@@ -61,7 +63,13 @@ public class InventoryService {
             throw new ConflictException(
                     "The following Unique SKUs already exist in the inventory: " + existingSkus.toString());
         }
-        // TODO check if the pickup request ID is valid and belongs to the same merchant as the product
+        
+        PickupResponceDTO pickup = pickupService.getPickup(dto.getPickupRequestId());
+
+        if( pickup == null ||  !pickup.getStatus().equals("Completed") )
+            throw new ConflictException("Pickup is not completed or does not exist");
+
+
 
         for (String sku : dto.getUniqueSkus()) {
             InventoryItem item = new InventoryItem();

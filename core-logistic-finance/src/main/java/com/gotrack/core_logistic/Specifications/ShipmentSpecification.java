@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.gotrack.core_logistic.model.dto.Filters.ShipmentFilter;
+import com.gotrack.core_logistic.model.dto.DTOFilters.ShipmentFilter;
 import com.gotrack.core_logistic.model.entity.Shipment;
 
 import jakarta.persistence.criteria.Predicate;

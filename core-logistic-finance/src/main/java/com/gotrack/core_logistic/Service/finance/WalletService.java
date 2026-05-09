@@ -11,10 +11,13 @@ import org.springframework.stereotype.Service;
 import com.gotrack.core_logistic.ExceptionHandling.ResourceNotFoundException;
 import com.gotrack.core_logistic.mapper.TransactionMapper;
 import com.gotrack.core_logistic.mapper.WalletMapper;
+import com.gotrack.core_logistic.model.dto.ProfileResponse;
 import com.gotrack.core_logistic.model.dto.TransactionDTO;
 import com.gotrack.core_logistic.model.dto.WalletDTO;
 import com.gotrack.core_logistic.model.entity.Wallet;
 import com.gotrack.core_logistic.repository.WalletRepo;
+import com.gotrack.core_logistic.Service.ProfileBranchService;
+
 
 @Service
 public class WalletService {
@@ -25,6 +28,9 @@ public class WalletService {
          WalletMapper walletMapper;   
       @Autowired
       TransactionMapper transactionMapper;
+      @Autowired
+      ProfileBranchService profileBranchService;
+      
 
         
       public Page<WalletDTO> getWallets(Long id, Pageable pageable) {
@@ -41,9 +47,11 @@ public class WalletService {
 }
 
        
-        public WalletDTO GetMyWallets(Long id) {
-            Wallet wallet = walletRepo.findByProfileId(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found for profile id: " + id));
+        public WalletDTO GetMyWallets(String accountId) {
+            ProfileResponse profile = profileBranchService.getProfileByAccountId(accountId);
+            
+            Wallet wallet = walletRepo.findByProfileId(profile.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found for profile id: " + profile.getId()));
                 
                 List<TransactionDTO> transactions = wallet.getTransactions().stream()
                     .map(transactionMapper :: toDTO)

@@ -97,7 +97,7 @@ public class ProfileController {
 
 
     @GetMapping("/account/{accountId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE' , 'MERCHANT')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<ProfileResponseDTO> getProfileByAccountId(
             @PathVariable String accountId) {
         ProfileResponseDTO profile = profileService.getProfileByAccountId(accountId);
