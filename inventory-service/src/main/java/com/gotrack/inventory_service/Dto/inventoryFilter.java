@@ -6,4 +6,5 @@ import lombok.Data;
 public class inventoryFilter {
         private Integer branchId;
         private String uniqueSku;
+        private Long MerchantId;
 }
