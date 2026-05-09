@@ -2,8 +2,11 @@ package com.gotrack.user_branch_service.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,11 +28,6 @@ import com.gotrack.user_branch_service.service.ProfileService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-
-
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Pageable;
-import org.springframework.validation.annotation.Validated;
 
 @Validated
 @RestController
@@ -68,6 +66,7 @@ public class ProfileController {
         return ResponseEntity.ok(profileService.updateProfile(id, dto));
     }
 
+
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<PageResponse<ProfileResponseDTO>> getAllProfiles(
@@ -94,5 +93,14 @@ public class ProfileController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return ResponseEntity.ok(
                 profileService.searchProfiles(name, phoneNumber, type, branchId, status, pageable));
+    }
+
+
+    @GetMapping("/account/{accountId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE' , 'MERCHANT')")
+    public ResponseEntity<ProfileResponseDTO> getProfileByAccountId(
+            @PathVariable String accountId) {
+        ProfileResponseDTO profile = profileService.getProfileByAccountId(accountId);
+        return ResponseEntity.ok(profile);
     }
 }
