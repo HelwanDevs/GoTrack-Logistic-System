@@ -713,6 +713,9 @@ const [merchantInfo,setMerchantInfo] = useState([
   }
 ])
 
+
+
+//shipment variables
 const [shipmentId,setShipmentId] = useState("")
 const [shipmentNotes,setShipmentNotes] = useState("")
 const [shipmentLastUpdated,setShipmentLastUpdated] = useState("")
@@ -723,6 +726,16 @@ const [dateDelivered,setDateDelivered]=useState("")
 const [newShipment,setNewShipment] = useState("")
 const [showShipmentForm,setShowShipmentForm] = useState(false)
 
+
+//inventory variables
+const [inventroyName,setInventoryName] = useState("")
+const [inventoryType,setInventoryTybe] = useState("")
+const [inventoryStock,setInventoryStock] = useState("")
+const [inventoryAvailbleAt,setInventoryAvailbeAt] = useState("")
+const [newInventory,setNewInventory] = useState([])
+const [showInventoryForm,setShowInventoryForm] = useState(false)
+
+//shipment functions
 
 function handleNewShipmentId (e){
   setShipmentId(e.target.value);
@@ -775,10 +788,9 @@ DATE_DELIVERED: dateDelivered
 setNewShipment(tempNewShipment)
 
 setShipments(shipments=> [...shipments,newShipment])
-//         setTestData(testData => [...testData, newBranch])
 }
 
-
+// merchant functions
 const [showMerchantForm,setShowMerchantForm] =useState(false)
 
 function handleMerchantBranchChange (event){
@@ -819,7 +831,48 @@ function handleUpdateMerchantInfo(){
   setMerchantInfo(tempMerchant)
 }
 
-     
+//inventory functions
+
+function handleAddInventory(){
+  const oldInventory = testInventory
+  const tempInventory={
+    id: String(oldInventory.length + 1),
+    NAME:inventroyName,
+    TYPE: inventoryType,
+    STOCK: inventoryStock,
+    BRANCH: inventoryAvailbleAt
+  }
+
+  setNewInventory(tempInventory)
+
+  setTestInventory(testInventory=> [...testInventory,newInventory])
+}
+
+function handleNewInventoryName(e) {
+  setInventoryName(e.target.value)
+}
+
+function handleNewInventoryType(e) {
+  setInventoryTybe(e.target.value)
+}
+
+function handleNewInventoryStock(e) {
+  setInventoryStock(e.target.value)
+}
+
+function handleNewInventoryAvailbleAt(e) {
+  setInventoryAvailbeAt(e.target.value)
+}
+
+function showInventoryFormFun(){
+  setShowInventoryForm(true)
+}
+
+function hideInventoryFormFun(){
+  setShowInventoryForm(false)
+}
+
+
 
   // return(
 
@@ -1034,173 +1087,210 @@ function handleUpdateMerchantInfo(){
 
 // shipment page
 
-  return(
+//   return(
 
-    <main>
+//     <main>
 
-       <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
-       <div className="flex">
-        <Button onClick={showMerchantFormFun} className="bg-primary-container p-10 mt-3 mr-4 mb-9">return to merchant profile</Button>
-         <div><p className="mr-100 text-2xl">MERCHANT NAME</p></div>
-         <div> <p className="mr-30 mt-10">merchant id;123465 </p></div>
-         <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
-       </div>
+//        <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
+//        <div className="flex">
+//         <Button onClick={showMerchantFormFun} className="bg-primary-container p-10 mt-3 mr-4 mb-9">return to merchant profile</Button>
+//          <div><p className="mr-100 text-2xl">MERCHANT NAME</p></div>
+//          <div> <p className="mr-30 mt-10">merchant id;123465 </p></div>
+//          <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
+//        </div>
         
-      </span></Card>
+//       </span></Card>
 
 
-      <div className="flex mr-160 font-semibold text-3xl mb-3 mt-3">Shipments</div>
+//       <div className="flex mr-160 font-semibold text-3xl mb-3 mt-3">Shipments</div>
 
 
 
-      {showShipmentForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
-                 <Header className="font-headline-md text-headline-md text-on-background mb-6" title="Update Merchant Info"></Header>
-                 <form>
-                     <div>
-                         <label>Shipment Id</label>
-                         <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Shipment id"
-               placeholder="example name" value={shipments.SHIPMENT_ID} onChange={handleNewShipmentId} type ="text"></input></div>
+//       {showShipmentForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+//                  <Header className="font-headline-md text-headline-md text-on-background mb-6" title="Update Merchant Info"></Header>
+//                  <form>
+//                      <div>
+//                          <label>Shipment Id</label>
+//                          <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Shipment id"
+//                placeholder="example name" value={shipments.SHIPMENT_ID} onChange={handleNewShipmentId} type ="text"></input></div>
                 
-                 <div>
-                     <label>Notes</label>
-                     <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Notes"
-                  type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></input></div>
+//                  <div>
+//                      <label>Notes</label>
+//                      <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Notes"
+//                   type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></input></div>
 
-                <div> <label>Last Update</label>
-                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Last Updated"
-               type ="text" value={shipments.LAST_UPDATE} onChange={handleNewShipmentLastUpdated}></input></div>
+//                 <div> <label>Last Update</label>
+//                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Last Updated"
+//                type ="text" value={shipments.LAST_UPDATE} onChange={handleNewShipmentLastUpdated}></input></div>
 
-                <div> <label>Status</label>
-                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Status"
-               type ="text" value={shipments.STATUS} onChange={handleNewShipmentStatus}></input></div>
+//                 <div> <label>Status</label>
+//                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Status"
+//                type ="text" value={shipments.STATUS} onChange={handleNewShipmentStatus}></input></div>
 
-               <div> <label>Total Price</label>
-                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="total Price"
-               type ="text" value={shipments.TOTAL_PRICE} onChange={handleNewShipmentTotalPrice}></input></div>
+//                <div> <label>Total Price</label>
+//                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="total Price"
+//                type ="text" value={shipments.TOTAL_PRICE} onChange={handleNewShipmentTotalPrice}></input></div>
 
-               <div> <label>Shipping fees</label>
-                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="shipping fee"
-               type ="text" value={shipments.SHIPPING_FEE} onChange={handleNewShipmentShippingFee}></input></div>
+//                <div> <label>Shipping fees</label>
+//                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="shipping fee"
+//                type ="text" value={shipments.SHIPPING_FEE} onChange={handleNewShipmentShippingFee}></input></div>
 
-               <div> <label>Date Delivered</label>
-                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="date Delivered"
-               type ="text" value={shipments.DATE_DELIVERED} onChange={handleNewShipmentDateDelivered}></input></div>
+//                <div> <label>Date Delivered</label>
+//                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="date Delivered"
+//                type ="text" value={shipments.DATE_DELIVERED} onChange={handleNewShipmentDateDelivered}></input></div>
               
-                <div className="flex gap-3 pt-2">
-                  <Button
-                 type="submit"
-                 variant="primary"
-                 size="md"
-                 onClick={handleNewShippment}>change info</Button>
-                 <Button
-                 type="button"
-                 variant="outline"
-                 size="md"
-                 onClick={hideShipmentFormFun}>Cancle</Button>
-                </div>
-                </form>
-                </Card>}
+//                 <div className="flex gap-3 pt-2">
+//                   <Button
+//                  type="submit"
+//                  variant="primary"
+//                  size="md"
+//                  onClick={handleNewShippment}>change info</Button>
+//                  <Button
+//                  type="button"
+//                  variant="outline"
+//                  size="md"
+//                  onClick={hideShipmentFormFun}>Cancle</Button>
+//                 </div>
+//                 </form>
+//                 </Card>}
 
 
-      <Card className="mr-6">
-      <table className="w-full mr-6 ml-6">
-          <thead>
-            <tr className="border-b border-outline-variant">                       
-                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                      Shipment Id
-                </th>
+//       <Card className="mr-6">
+//       <table className="w-full mr-6 ml-6">
+//           <thead>
+//             <tr className="border-b border-outline-variant">                       
+//                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                       Shipment Id
+//                 </th>
                  
-                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                  Notes
-                </th>
+//                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                   Notes
+//                 </th>
 
-                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                  Last Updated
-                </th> 
+//                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                   Last Updated
+//                 </th> 
 
-                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                  Status
-                </th>
-                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                  Total Price
-                </th>
+//                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                   Status
+//                 </th>
+//                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                   Total Price
+//                 </th>
                 
-                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                  Shipping Fee
-                </th> 
-                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                  Date Delivred
-                </th> 
+//                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                   Shipping Fee
+//                 </th> 
+//                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                   Date Delivred
+//                 </th> 
                 
 
-                <Button onClick={showShipmentFormFun} className="">New Shipment</Button>
-            </tr>
-          </thead>
-          <tbody>
-            {shipments.map((data)=>(
+//                 <Button onClick={showShipmentFormFun} className="">New Shipment</Button>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {shipments.map((data)=>(
 
-               <tr 
+//                <tr 
                             
-                key={data.id}
-                className={`border-b border-surface-variant hover:bg-surface-container-low transition  ${data.STATUS ==="Delivered"? "bg-green-200! hover:bg-green-300!" :"" }`}>
+//                 key={data.id}
+//                 className={`border-b border-surface-variant hover:bg-surface-container-low transition  ${data.STATUS ==="Delivered"? "bg-green-200! hover:bg-green-300!" :"" }`}>
                   
 
-                  <td className="p-4"><p className="text-body-md text-on-surface">
-                                       {data.SHIPMENT_ID}
-                                     </p></td>
-                  <td className="p-4"><p className="text-body-md text-on-surface">
-                                       {data.NOTES}
-                                     </p></td>
-                  <td className="p-4"><p className="text-body-md text-on-surface">
-                                       {data.LAST_UPDATE}
-                                     </p></td>
-                  <td className="p-4"><p className="text-body-md text-on-surface">
-                                       {data.STATUS}
-                                     </p></td>
-                  <td className="p-4"><p className="text-body-md text-on-surface">
-                                       {data.TOTAL_PRICE}
-                                     </p></td>
-                  <td className="p-4"><p className="text-body-md text-on-surface">
-                                       {data.SHIPPING_FEE}
-                                     </p></td>
-                  <td className="p-4"><p className="text-body-md text-on-surface">
-                                       {data.DATE_DELIVERED}
-                                     </p></td>
-               </tr>
+//                   <td className="p-4"><p className="text-body-md text-on-surface">
+//                                        {data.SHIPMENT_ID}
+//                                      </p></td>
+//                   <td className="p-4"><p className="text-body-md text-on-surface">
+//                                        {data.NOTES}
+//                                      </p></td>
+//                   <td className="p-4"><p className="text-body-md text-on-surface">
+//                                        {data.LAST_UPDATE}
+//                                      </p></td>
+//                   <td className="p-4"><p className="text-body-md text-on-surface">
+//                                        {data.STATUS}
+//                                      </p></td>
+//                   <td className="p-4"><p className="text-body-md text-on-surface">
+//                                        {data.TOTAL_PRICE}
+//                                      </p></td>
+//                   <td className="p-4"><p className="text-body-md text-on-surface">
+//                                        {data.SHIPPING_FEE}
+//                                      </p></td>
+//                   <td className="p-4"><p className="text-body-md text-on-surface">
+//                                        {data.DATE_DELIVERED}
+//                                      </p></td>
+//                </tr>
               
-            ))}
+//             ))}
             
-          </tbody>
-      </table>
-      </Card> 
+//           </tbody>
+//       </table>
+//       </Card> 
 
 
-    </main>
+//     </main>
 
-  )
-}
+//   )
+// }
 
 // export const BranchesPage = () =>{
 
 // Inventory page
 
 
-  // return(
-  // <main>
-  //   <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
-  //     <div className="flex">
-  //       <Button className="bg-primary-container p-10 mt-3 mr-4 mb-9">return to main profile</Button>
-  //       <div><p className="mr-100 text-2xl">MERCHANT NAME</p></div>
-  //       <div> <p className="mr-30 mt-10">merchant id;123465 </p></div>
-  //       <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
-  //     </div>
+   return(
+   <main>
+     <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
+       <div className="flex">
+         <Button className="bg-primary-container p-10 mt-3 mr-4 mb-9">return to main profile</Button>
+         <div><p className="mr-100 text-2xl">MERCHANT NAME</p></div>
+         <div> <p className="mr-30 mt-10">merchant id;123465 </p></div>
+         <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
+       </div>
         
-  //     </span></Card>
-  //     <div className="flex mr-160 text-3xl font-semibold">
-  //       <h1>Inventory</h1>
-  //     </div>
+       </span></Card>
+       <div className="flex mr-160 text-3xl font-semibold">
+         <h1>Inventory</h1>
+       </div>
 
-    /* <Card className="mr-6">
+
+       {showInventoryForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+                  <Header className="font-headline-md text-headline-md text-on-background mb-6" title="add new inventory"></Header>
+                  <form>
+                      <div>
+                          <label>Item name</label>
+                          <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Name"
+                placeholder="example name" value={testInventory.NAME} onChange={handleNewInventoryName} type ="text"></input></div>
+              
+                  <div>
+                      <label>item type</label>
+                      <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Type"
+                   type ="text" value={testInventory.TYPE} onChange={handleNewInventoryType}></input></div>
+
+                 <div> <label>Item Stock</label>
+                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Stock"
+                type ="text" value={testInventory.STOCK} onChange={handleNewInventoryStock}></input></div>
+
+                 <div> <label>Availble at</label>
+                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Branch"
+                type ="text" value={testInventory.BRANCH} onChange={handleNewInventoryAvailbleAt}></input></div>
+              
+                 <div className="flex gap-3 pt-2">
+                   <Button
+                  type="submit"
+                  variant="primary"
+                  size="md"
+                  onClick={handleAddInventory}>change info</Button>
+                  <Button
+                  type="button"
+                  variant="outline"
+                  size="md"
+                  onClick={hideInventoryFormFun}>Cancle</Button>
+                 </div>
+                 </form>
+                 </Card>}
+
+     <Card className="mr-6">
       <table className="w-full mr-6 ml-6">
           <thead>
             <tr className="border-b border-outline-variant">                       
@@ -1216,11 +1306,11 @@ function handleUpdateMerchantInfo(){
                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
                   Availble at
                 </th>
-                {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                 {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
                   Add product
-                </th> */
+                </th>  */}
 
-               /* <Button>Add product</Button>
+                <Button onClick={showInventoryFormFun}>Add product</Button>
             </tr>
           </thead>
           <tbody>
@@ -1250,6 +1340,6 @@ function handleUpdateMerchantInfo(){
             
           </tbody>
       </table>
-      </Card> */
-  //   </main>
-  // )}
+      </Card> 
+     </main>
+   )}
