@@ -47,7 +47,8 @@ public class NotificationService {
 
     public List<Notifications> getNotificationsForProfile(Boolean isRead) {
         String profileId = user.getCurrentUserId();
-        if (isRead == null) {// get all notifications IN_APP
+
+        if (isRead == null) {
             return repo.findByProfileIdAndChannelOrderBySentAtDesc(profileId, NotificationChannel.IN_APP);
         }
         return repo.findByProfileIdAndIsReadAndChannelOrderBySentAtDesc(profileId, isRead, NotificationChannel.IN_APP);
