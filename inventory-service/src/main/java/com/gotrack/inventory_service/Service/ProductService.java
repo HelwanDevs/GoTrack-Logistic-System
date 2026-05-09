@@ -44,6 +44,9 @@ public class ProductService {
 }
 
     public void updateProduct(Long id, ProductDTO dto) {
+    if (id == null) {
+        throw new NotFoundException("Product ID is required");
+    }
     Product product = productRepository.findById(id)
             .orElseThrow(() -> new NotFoundException(
                 "Product with ID " + id + " not found"));
