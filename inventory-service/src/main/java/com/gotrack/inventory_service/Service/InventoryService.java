@@ -1,5 +1,7 @@
 package com.gotrack.inventory_service.Service;
 
+import java.util.ArrayList;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -14,6 +16,7 @@ import com.gotrack.inventory_service.Enums.InventoryStatus;
 import com.gotrack.inventory_service.Exception.ConflictException;
 import com.gotrack.inventory_service.Exception.NotFoundException;
 import com.gotrack.inventory_service.Specifications.inventorySpecifications;
+import com.gotrack.inventory_service.filter.AuthenticationDetails;
 import com.gotrack.inventory_service.repository.InventoryRepository;
 import com.gotrack.inventory_service.repository.ProductRepository;
 
@@ -22,28 +25,45 @@ public class InventoryService {
 
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
+    private final BranchServices branchServices;
+    private final UserServices userServices;
+    private final ProductService productService;
 
     public InventoryService(InventoryRepository inventoryRepository,
-            ProductRepository productRepository) {
+            ProductRepository productRepository, BranchServices branchServices, UserServices userServices,
+            ProductService productService) {
         this.inventoryRepository = inventoryRepository;
         this.productRepository = productRepository;
+        this.branchServices = branchServices;
+        this.userServices = userServices;
+        this.productService = productService;
     }
 
-    // TODO: Cross-service validation - verify branchId exists via user-service
     public void receiveItems(InventoryItemRequest dto) {
 
+        Boolean branchExists = branchServices.getBranchById(dto.getBranchId()) != null;
+        if (!branchExists) {
+            throw new NotFoundException("No Branch with ID " + dto.getBranchId() + " was found");
+        }
         Long productId = dto.getProductId();
-
-
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(
                         "Product with ID " + productId + " not found"));
 
+        ArrayList<String> existingSkus = new ArrayList<String>();
+
         for (String sku : dto.getUniqueSkus()) {
             if (inventoryRepository.existsByUniqueSku(sku)) {
-                throw new ConflictException("One or more Unique SKUs already exist in the inventory");
+                existingSkus.add(sku);
             }
+        }
+        if (!existingSkus.isEmpty()) {
+            throw new ConflictException(
+                    "The following Unique SKUs already exist in the inventory: " + existingSkus.toString());
+        }
+        // TODO check if the pickup request ID is valid and belongs to the same merchant as the product
 
+        for (String sku : dto.getUniqueSkus()) {
             InventoryItem item = new InventoryItem();
             item.setProduct(product);
             item.setBranchId(dto.getBranchId());
@@ -69,9 +89,18 @@ public class InventoryService {
 
     public Page<InventoryItemResponse> getItems(inventoryFilter filter, Pageable pageable) {
 
+        AuthenticationDetails authDetails = new AuthenticationDetails();
+        if ("MERCHANT".equals(authDetails.getRole())) {
+            Long merchantId = userServices.getProfileByAccountId(authDetails.getAccountId()).getId();
+            if (merchantId == null) {
+                throw new NotFoundException("You do not have a merchant profile");
+            }
+            if (filter.getMerchantId() != null && !filter.getMerchantId().equals(merchantId)) {
+                throw new ConflictException("You can only filter by your own merchant ID");
+            }
+        }
         Specification<InventoryItem> spec = inventorySpecifications.filterInventory(filter);
-
-        return inventoryRepository.findAll(spec, pageable)
+        Page<InventoryItemResponse> inventoryFiltered = inventoryRepository.findAll(spec, pageable)
                 .map(item -> InventoryItemResponse.builder()
                         .id(item.getId())
                         .productId(item.getProductId())
@@ -80,5 +109,12 @@ public class InventoryService {
                         .uniqueSku(item.getUniqueSku())
                         .status(item.getStatus())
                         .build());
+        if (!inventoryFiltered.isEmpty()) {
+            inventoryFiltered.forEach(item -> {
+                Long merchantId = productService.getMerchantIdByProductId(item.getProductId());
+                item.setMerchantId(merchantId);
+            });
+        }
+        return inventoryFiltered;
     }
 }
