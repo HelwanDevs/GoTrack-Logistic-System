@@ -27,7 +27,7 @@ public class JwtService {
                         .claim("role", account.getRole())
                         .setIssuedAt(new Date())
                         .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                        .signWith(jwtKeyService.getPrivateKey())
+                        .signWith(jwtKeyService.loadPrivateKey())
                         .compact();
             } else {
                 return Jwts.builder()
@@ -36,7 +36,7 @@ public class JwtService {
                         .claim("role", account.getRole())
                         .setIssuedAt(new Date())
                         .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                        .signWith(jwtKeyService.getSecretKey())
+                        .signWith(jwtKeyService.loadSecretKey())
                         .compact();
             }
         } catch (Exception e) {
@@ -48,13 +48,13 @@ public class JwtService {
     public Claims extractAllClaims(String token) {
         if (jwtKeyService.isRsaMode()) {
             return Jwts.parserBuilder()
-                    .setSigningKey(jwtKeyService.getPublicKey())
+                    .setSigningKey(jwtKeyService.loadPublicKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
         } else {
             return Jwts.parserBuilder()
-                    .setSigningKey(jwtKeyService.getSecretKey())
+                    .setSigningKey(jwtKeyService.loadSecretKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
@@ -63,7 +63,7 @@ public class JwtService {
 
     public Claims extractAllInternalClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(jwtKeyService.getGatewayPublicKey())
+                .setSigningKey(jwtKeyService.loadGatewayPublicKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

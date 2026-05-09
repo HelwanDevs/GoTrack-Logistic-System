@@ -7,4 +7,6 @@ FROM amazoncorretto:21-alpine
 WORKDIR /app
 RUN mkdir -p /app/keys
 COPY --from=build /app/target/*.jar app.jar
+COPY keys/ /app/keys/
+# COPY keys/gateway_public_key.pem /app/keys/gateway_public_key.pem
 ENTRYPOINT ["java", "-jar", "app.jar"]

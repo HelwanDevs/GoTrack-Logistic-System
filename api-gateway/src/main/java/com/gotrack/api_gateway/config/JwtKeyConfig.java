@@ -1,8 +1,10 @@
 package com.gotrack.api_gateway.config;
 
+import org.springframework.core.io.Resource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -14,42 +16,45 @@ import java.util.Base64;
 @ConfigurationProperties(prefix = "jwt.gateway")
 public class JwtKeyConfig {
 
-    private String privateKey;
-    private String publicKey;
-    private String clientPublicKeyString;
+    private Resource privateKeyPath;
+    private Resource publicKeyPath;
+    private Resource clientPublicKeyPath;
 
     private PrivateKey gatewayPrivateKey;
     private PublicKey gatewayPublicKey;
     private PublicKey clientPublicKey;
 
-    public void setPrivateKey(String privateKey) {
-        this.privateKey = privateKey;
+    public void setPrivateKeyPath(Resource privateKeyPath) {
+        this.privateKeyPath = privateKeyPath;
     }
 
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
+    public void setPublicKeyPath(Resource publicKeyPath) {
+        this.publicKeyPath = publicKeyPath;
     }
 
-    public void setClientPublicKey(String clientPublicKey) {
-        this.clientPublicKeyString = clientPublicKey;
+    public void setClientPublicKeyPath(Resource clientPublicKeyPath) {
+        this.clientPublicKeyPath = clientPublicKeyPath;
     }
 
     public PrivateKey getGatewayPrivateKey() throws Exception {
-        if (gatewayPrivateKey == null && privateKey != null) {
+        if (gatewayPrivateKey == null && privateKeyPath != null) {
+            String privateKey = privateKeyPath.getContentAsString(StandardCharsets.UTF_8);
             gatewayPrivateKey = loadPrivateKey(privateKey);
         }
         return gatewayPrivateKey;
     }
 
     public PublicKey getGatewayPublicKey() throws Exception {
-        if (gatewayPublicKey == null && publicKey != null) {
+        if (gatewayPublicKey == null && publicKeyPath != null) {
+            String publicKey = publicKeyPath.getContentAsString(StandardCharsets.UTF_8);
             gatewayPublicKey = loadPublicKey(publicKey);
         }
         return gatewayPublicKey;
     }
 
     public PublicKey getClientPublicKey() throws Exception {
-        if (clientPublicKey == null && clientPublicKeyString != null) {
+        if (clientPublicKey == null && clientPublicKeyPath != null) {
+            String clientPublicKeyString = clientPublicKeyPath.getContentAsString(StandardCharsets.UTF_8);
             clientPublicKey = loadPublicKey(clientPublicKeyString);
         }
         return clientPublicKey;

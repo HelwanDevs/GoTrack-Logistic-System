@@ -9,9 +9,9 @@ server:
   port: ${SERVER_PORT}
   
 jwt:
-  private_key: ${JWT_CLIENT_PRIVATE_KEY}
-  public_key: ${JWT_CLIENT_PUBLIC_KEY}
-  gateway_public_key: ${JWT_GATEWAY_PUBLIC_KEY}
+  private-key-path: ${JWT_CLIENT_PRIVATE_KEY_PATH}
+  public-key-path: ${JWT_CLIENT_PUBLIC_KEY_PATH}
+  gateway-public-key-path: ${JWT_GATEWAY_PUBLIC_KEY_PATH}
 
 eureka:
   client:

@@ -55,24 +55,4 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/internal/validate")
-    public ResponseEntity<?> validateInternalToken(@RequestBody java.util.Map<String, String> request) {
-        String token = request.get("token");
-        if (token == null || !jwtService.validateInternalToken(token)) {
-            return ResponseEntity.badRequest()
-                    .body(java.util.Map.of("valid", "false", "error", "Invalid internal token"));
-        }
-        Claims claims = jwtService.extractAllInternalClaims(token);
-        String role = claims.get("role", String.class);
-        String email = claims.getSubject();
-        return ResponseEntity.ok(java.util.Map.of("valid", "true", "role", role, "email", email));
-    }
-
-    @GetMapping("/internal/key")
-    public ResponseEntity<?> getPublicKey() {
-        String publicKeyPem = "-----BEGIN PUBLIC KEY-----\n"
-                + jwtKeyService.getPublicKeyBase64() + "\n-----END PUBLIC KEY-----";
-        return ResponseEntity.ok(java.util.Map.of("keyType", "RSA", "publicKey", publicKeyPem));
-    }
-
 }

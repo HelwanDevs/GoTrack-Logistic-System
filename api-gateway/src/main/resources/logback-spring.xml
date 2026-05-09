@@ -37,7 +37,7 @@
   <logger name="org.hibernate" level="WARN" />
 
   <!-- Custom app loggers -->
-  <logger name="com.gotrack.user_branch_service.logging" level="INFO" additivity="false">
+  <logger name="com.gotrack.api_gateway.logging" level="INFO" additivity="false">
     <appender-ref ref="CONSOLE" />
     <appender-ref ref="FILE" />
   </logger>

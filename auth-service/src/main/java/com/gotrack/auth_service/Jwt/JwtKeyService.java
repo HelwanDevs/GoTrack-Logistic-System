@@ -1,5 +1,6 @@
 package com.gotrack.auth_service.Jwt;
 
+import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
@@ -7,8 +8,8 @@ import java.util.Base64;
 import javax.crypto.SecretKey;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import io.jsonwebtoken.security.Keys;
 import lombok.Setter;
@@ -18,9 +19,9 @@ import lombok.Setter;
 @Setter
 public class JwtKeyService {
 
-    private String privateKey;
-    private String publicKey;
-    private String gatewayPublicKey;
+    private Resource privateKeyPath;
+    private Resource publicKeyPath;
+    private Resource gatewayPublicKeyPath;
     private String secret;
     private boolean useHmac;
 
@@ -30,8 +31,8 @@ public class JwtKeyService {
 
     public boolean isRsaMode() {
         return !Boolean.TRUE.equals(useHmac)
-                && StringUtils.hasText(privateKey)
-                && StringUtils.hasText(publicKey);
+                && privateKeyPath != null
+                && publicKeyPath != null;
     }
 
     public byte[] decodePem(String pem) {
@@ -46,17 +47,23 @@ public class JwtKeyService {
         return Base64.getDecoder().decode(base64);
     }
 
-    public String getPublicKeyBase64() {
-        if (!isRsaMode())
-            return null;
-        byte[] keyBytes = decodePem(publicKey);
-        return Base64.getEncoder().encodeToString(keyBytes);
-    }
-
-    public PrivateKey getPrivateKey() {
+    public String loadPublicKeyBase64() {
         if (!isRsaMode())
             return null;
         try {
+            String publicKey = publicKeyPath.getContentAsString(StandardCharsets.UTF_8);
+            byte[] keyBytes = decodePem(publicKey);
+            return Base64.getEncoder().encodeToString(keyBytes);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to read public key from resource", e);
+        }
+    }
+
+    public PrivateKey loadPrivateKey() {
+        if (!isRsaMode())
+            return null;
+        try {
+            String privateKey = privateKeyPath.getContentAsString(StandardCharsets.UTF_8);
             byte[] keyBytes = decodePem(privateKey);
             return java.security.KeyFactory.getInstance("RSA")
                     .generatePrivate(new java.security.spec.PKCS8EncodedKeySpec(keyBytes));
@@ -65,10 +72,11 @@ public class JwtKeyService {
         }
     }
 
-    public PublicKey getPublicKey() {
+    public PublicKey loadPublicKey() {
         if (!isRsaMode())
             return null;
         try {
+            String publicKey = publicKeyPath.getContentAsString(StandardCharsets.UTF_8);
             byte[] keyBytes = decodePem(publicKey);
             return java.security.KeyFactory.getInstance("RSA")
                     .generatePublic(new java.security.spec.X509EncodedKeySpec(keyBytes));
@@ -77,14 +85,15 @@ public class JwtKeyService {
         }
     }
 
-    public SecretKey getSecretKey() {
+    public SecretKey loadSecretKey() {
         if (!Boolean.TRUE.equals(useHmac))
             return null;
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public PublicKey getGatewayPublicKey() {
+    public PublicKey loadGatewayPublicKey() {
         try {
+            String gatewayPublicKey = gatewayPublicKeyPath.getContentAsString(StandardCharsets.UTF_8);
             byte[] keyBytes = decodePem(gatewayPublicKey);
             return java.security.KeyFactory.getInstance("RSA")
                     .generatePublic(new java.security.spec.X509EncodedKeySpec(keyBytes));

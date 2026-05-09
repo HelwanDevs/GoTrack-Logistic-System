@@ -22,4 +22,4 @@ eureka:
 
 jwt:
   gateway:
-    public_key: ${JWT_GATEWAY_PUBLIC_KEY}
+    public-key-path: ${JWT_GATEWAY_PUBLIC_KEY_PATH}
