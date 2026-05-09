@@ -22,8 +22,6 @@ import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
-
-
 @Entity
 @Getter
 @Setter
@@ -35,7 +33,7 @@ public class Shipment {
     @ManyToOne
     @JoinColumn(name = "pickup_request_id")
     private Pickup pickupRequest;
-    
+
     @OneToMany(mappedBy = "shipment", cascade = CascadeType.ALL)
     private List<ShipmentItem> items;
 
@@ -43,22 +41,20 @@ public class Shipment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "customer_id" , nullable = false)
-    private Long customerId;
+    @Column(name = "MERCHANT_id", nullable = false)
+    private Long MERCHANTId;
 
     @Column(name = "courier_id")
     private Long courierId;
-    
 
-    @Column(name = "flyer_number" ,updatable=false  , nullable = false)
+    @Column(name = "flyer_number", updatable = false, nullable = false)
     private Long flyerNumber;
 
     private String note;
-    
+
     @Column(name = "last_update")
     @UpdateTimestamp
     private LocalDateTime lastUpDate;
-
 
     @Enumerated
     private ShipmentStatus status;
@@ -74,4 +70,4 @@ public class Shipment {
     @Column(name = "delivery_date")
     private LocalDateTime DeliveryDate;
 
-}   
+}

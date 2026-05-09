@@ -11,13 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as BranchRouteImport } from './routes/branch'
 import { Route as R404RouteImport } from './routes/404'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
-import { Route as DashboardBranchesRouteImport } from './routes/dashboard/branches'
 import { Route as DashboardProfilesRouteImport } from './routes/dashboard/profiles'
+import { Route as DashboardBranchesRouteImport } from './routes/dashboard/branches'
 import { Route as DashboardAccountsRouteImport } from './routes/dashboard/accounts'
 
 const LoginRoute = LoginRouteImport.update({
@@ -28,6 +29,11 @@ const LoginRoute = LoginRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BranchRoute = BranchRouteImport.update({
+  id: '/branch',
+  path: '/branch',
   getParentRoute: () => rootRouteImport,
 } as any)
 const R404Route = R404RouteImport.update({
@@ -55,12 +61,14 @@ const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardBranchesRoute = DashboardBranchesRouteImport.update({
-  id: '/branches',
-  path: '/branches',
 const DashboardProfilesRoute = DashboardProfilesRouteImport.update({
   id: '/profiles',
   path: '/profiles',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardBranchesRoute = DashboardBranchesRouteImport.update({
+  id: '/branches',
+  path: '/branches',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardAccountsRoute = DashboardAccountsRouteImport.update({
@@ -73,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/404': typeof R404Route
+  '/branch': typeof BranchRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/dashboard/accounts': typeof DashboardAccountsRoute
@@ -85,6 +94,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/404': typeof R404Route
+  '/branch': typeof BranchRoute
   '/login': typeof LoginRoute
   '/dashboard/accounts': typeof DashboardAccountsRoute
   '/dashboard/branches': typeof DashboardBranchesRoute
@@ -97,6 +107,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/404': typeof R404Route
+  '/branch': typeof BranchRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/dashboard/accounts': typeof DashboardAccountsRoute
@@ -111,6 +122,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/404'
+    | '/branch'
     | '/dashboard'
     | '/login'
     | '/dashboard/accounts'
@@ -123,6 +135,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/404'
+    | '/branch'
     | '/login'
     | '/dashboard/accounts'
     | '/dashboard/branches'
@@ -134,6 +147,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/404'
+    | '/branch'
     | '/dashboard'
     | '/login'
     | '/dashboard/accounts'
@@ -147,6 +161,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
   R404Route: typeof R404Route
+  BranchRoute: typeof BranchRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   LoginRoute: typeof LoginRoute
 }
@@ -165,6 +180,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/branch': {
+      id: '/branch'
+      path: '/branch'
+      fullPath: '/branch'
+      preLoaderRoute: typeof BranchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/404': {
@@ -202,16 +224,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/dashboard/branches': {
-      id: '/dashboard/branches'
-      path: '/branches'
-      fullPath: '/dashboard/branches'
-      preLoaderRoute: typeof DashboardBranchesRouteImport
     '/dashboard/profiles': {
       id: '/dashboard/profiles'
       path: '/profiles'
       fullPath: '/dashboard/profiles'
       preLoaderRoute: typeof DashboardProfilesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/branches': {
+      id: '/dashboard/branches'
+      path: '/branches'
+      fullPath: '/dashboard/branches'
+      preLoaderRoute: typeof DashboardBranchesRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/accounts': {
@@ -248,6 +272,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
   R404Route: R404Route,
+  BranchRoute: BranchRoute,
   DashboardRoute: DashboardRouteWithChildren,
   LoginRoute: LoginRoute,
 }

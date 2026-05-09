@@ -7,7 +7,7 @@ export enum UserRole {
 export enum ProfileType {
   EMPLOYEE = "EMPLOYEE",
   COURIER = "COURIER",
-  CUSTOMER = "CUSTOMER",
+  MERCHANT = "MERCHANT",
   ADMIN = "ADMIN",
 }
 

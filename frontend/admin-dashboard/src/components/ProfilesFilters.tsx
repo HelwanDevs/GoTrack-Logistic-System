@@ -45,7 +45,7 @@ export const ProfilesFilters = ({
     { value: "", label: "جميع الأنواع" },
     { value: ProfileType.EMPLOYEE, label: "موظف" },
     { value: ProfileType.COURIER, label: "سائق توصيل" },
-    { value: ProfileType.CUSTOMER, label: "تاجر" },
+    { value: ProfileType.MERCHANT, label: "تاجر" },
     { value: ProfileType.ADMIN, label: "مسؤول" },
   ];
 

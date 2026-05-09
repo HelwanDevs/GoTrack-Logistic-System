@@ -15,22 +15,21 @@ import lombok.Setter;
 @Setter
 public class ShipmentDTO {
 
-
     private Long id;
 
     @NotNull
-    @Positive(message = "Customer ID must be positive")
-    private Long customerId;
+    @Positive(message = "MERCHANT ID must be positive")
+    private Long MERCHANTId;
 
     @NotNull
     @Positive(message = "Courier ID must be positive")
     private Long courierId;
-    
+
     @NotNull
     private Long flyerNumber;
 
     private String note;
-    
+
     private ShipmentStatus status;
 
     @NotNull
@@ -40,7 +39,7 @@ public class ShipmentDTO {
     @NotNull
     @Positive(message = "Shipment fee must be greater than zero")
     private BigDecimal shipmentFee;
-    
+
     private LocalDateTime lastUpDate;
 
     @Future(message = "Invalid date formatting")
@@ -48,7 +47,5 @@ public class ShipmentDTO {
 
     @NotNull
     private PickupRequestDTO pickupRequest;
-
-
 
 }

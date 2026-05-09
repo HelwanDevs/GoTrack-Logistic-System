@@ -1,4 +1,4 @@
-package com.gotrack.user_branch_service.domain.enums;
+package com.gotrack.inventory_service.Enums;
 
 public enum ProfileType {
     EMPLOYEE,

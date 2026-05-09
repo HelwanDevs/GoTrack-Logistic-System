@@ -22,4 +22,6 @@ public interface ProfileService {
     //Feature Addition: Add functionality to search for a profile by number, type, status, name, or BranchID
     PageResponse<ProfileResponseDTO> searchProfiles(
             String name, String phoneNumber, ProfileType type, Long branchId, ProfileStatus status, Pageable pageable);
+
+    ProfileResponseDTO getProfileByAccountId(String accountId);
 }

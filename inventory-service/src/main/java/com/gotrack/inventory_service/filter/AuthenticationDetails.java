@@ -1,4 +1,4 @@
-package com.gotrack.user_branch_service.filter;
+package com.gotrack.inventory_service.filter;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

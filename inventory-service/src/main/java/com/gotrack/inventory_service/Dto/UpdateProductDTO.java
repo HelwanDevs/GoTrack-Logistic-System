@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class ProductDTO {
+public class UpdateProductDTO {
     
     @Positive(message = "Product ID must be a positive number")
     private Long id;
@@ -25,8 +25,5 @@ public class ProductDTO {
     @NotNull(message = "Merchant ID is required")
     @Positive(message = "Merchant ID must be a positive number")
     private Long merchantId;
-
-    @NotBlank(message = "Base SKU is required")
-    private String baseSku;
-    
+  
 }

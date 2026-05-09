@@ -52,7 +52,11 @@ const fakeProfiles: Profile[] = [
     created_by: "system",
     status: ProfileStatus.ACTIVE,
     created_at: "2025-01-15T10:00:00Z",
-    account: { id: "1", email: "ahmed_mohamed2023@company.com", role: UserRole.EMPLOYEE },
+    account: {
+      id: "1",
+      email: "ahmed_mohamed2023@company.com",
+      role: UserRole.EMPLOYEE,
+    },
   },
   {
     id: "2",
@@ -69,7 +73,7 @@ const fakeProfiles: Profile[] = [
     id: "3",
     full_name: "خالد عبدالله",
     phone_number: "966507654321",
-    type: ProfileType.CUSTOMER,
+    type: ProfileType.MERCHANT,
     account_id: null,
     branch_id: null,
     created_by: "system",
@@ -116,7 +120,9 @@ export const ProfilesPage = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingProfile, setEditingProfile] = useState<Profile | null>(null);
   const [linkingProfile, setLinkingProfile] = useState<Profile | null>(null);
-  const [notifyingProfile, setNotifyingProfile] = useState<Profile | null>(null);
+  const [notifyingProfile, setNotifyingProfile] = useState<Profile | null>(
+    null,
+  );
 
   // ── Forms ──
   const [createForm, setCreateForm] = useState<CreateProfileForm>({

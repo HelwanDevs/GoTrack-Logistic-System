@@ -27,18 +27,17 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Pickup {
-    
+
     @OneToMany(mappedBy = "pickupRequest", cascade = CascadeType.ALL)
     private List<Shipment> shipments;
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "customer_id", nullable = false)
+    @Column(name = "MERCHANT_id", nullable = false)
     @NotNull
-    private Long customerId;
+    private Long MERCHANTId;
 
     @Column(name = "courier_id")
     private Long courierId;
@@ -48,27 +47,25 @@ public class Pickup {
 
     private String notes;
 
-
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    
     @UpdateTimestamp
     @Column(name = "last_update")
     private LocalDateTime lastUpdate;
-    
+
     private LocalDateTime pickupTime;
 
     @Enumerated
     private PickupStatus status;
-    
+
     @Column(name = "receiver_name", nullable = false)
     private String receiverName;
 
     @Column(name = "receiver_contact", nullable = false)
     private String receiverContact;
-    
+
     @Column(name = "receiver_address", nullable = false)
     private String receiverAddress;
 
