@@ -505,7 +505,7 @@ import wallet from "../assets/wallet icon.png";
 export const BranchesPage = () =>{
 
 
- 
+ //test data arrays
 
 
   const transactionHeader=[
@@ -734,6 +734,56 @@ const [inventoryStock,setInventoryStock] = useState("")
 const [inventoryAvailbleAt,setInventoryAvailbeAt] = useState("")
 const [newInventory,setNewInventory] = useState([])
 const [showInventoryForm,setShowInventoryForm] = useState(false)
+
+//Transactions variables
+
+const [transactionAmount,setTransactionAmount] =useState("")
+const [transactionType,setTransactionType] = useState("")
+const [transactionShippingId,setTransactionShippingId] = useState("")
+const [transactionTime,setTransactionTime] = useState("")
+const [newTransaction,setNewTransaction] = useState([])
+const [showTransactionForm,setShowTransactionForm] = useState(false)
+
+
+//transaction functions
+
+function handleNewTransactionAmount (e){
+  setTransactionAmount(e.target.value)
+}
+
+
+function handleNewTransactionType (e){
+  setTransactionType(e.target.value)
+}
+function handleNewTransactionShippingId (e){
+  setTransactionShippingId(e.target.value)
+}
+function handleNewTransactionTime (e){
+  setTransactionTime(e.target.value)
+}
+
+function addNewTransaction(){
+  const oldTransactions = transactions
+  const tempTransactions={
+    id: String(oldTransactions.length + 1),
+    AMOUNT: transactionAmount,
+    TYPE: transactionAmount,
+    SHIPMENT_ID: transactionShippingId,
+    TIME: transactionTime
+  }
+  setNewTransaction(tempTransactions)
+
+  setTransactions(transactions=> [...transactions,newTransaction])
+
+}
+
+function showTransactionFormFun(){
+  setShowTransactionForm(true)
+}
+
+function hideTransactionFormFun(){
+  setShowTransactionForm(false)
+}
 
 //shipment functions
 
@@ -1012,7 +1062,9 @@ function hideInventoryFormFun(){
 
    //transaction history page
 
-{/* <main>
+
+  return(
+ <main>
 
    <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
        <div className="flex">
@@ -1025,6 +1077,45 @@ function hideInventoryFormFun(){
       </span></Card>
 
       <div><p className="mt-6 mr-140 text-3xl font-semibold">Transaction history</p></div>
+
+
+        {showTransactionForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+                   <Header className="font-headline-md text-headline-md text-on-background mb-6" title="Add new transaction"></Header>
+                   <form>
+                       <div>
+                           <label>Transaction value</label>
+                           <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Name"
+                 placeholder="Amount" value={transactions.AMOUNT} onChange={handleNewTransactionAmount} type ="text"></input></div>
+              
+                   <div>
+                       <label>transaction type</label>
+                       <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Type"
+                    type ="text" value={transactions.TYPE} onChange={handleNewTransactionType}></input></div>
+
+                  <div> <label>transaction shipment id</label>
+                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="shipment id"
+                 type ="text" value={transactions.SHIPMENT_ID} onChange={handleNewTransactionShippingId}></input></div>
+
+                  <div> <label>Transaction time</label>
+                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="time"
+                 type ="text" value={transactions.TIME} onChange={handleNewTransactionTime}></input></div>
+              
+                  <div className="flex gap-3 pt-2">
+                    <Button
+                   type="submit"
+                   variant="primary"
+                   size="md"
+                   onClick={addNewTransaction}>change info</Button>
+                   <Button
+                   type="button"
+                  variant="outline"
+                   size="md"
+                   onClick={hideTransactionFormFun}>Cancle</Button>
+                  </div>
+                  </form>
+                  </Card>}
+
+
 
     <div className="flex ">
        <Card className="mt-6 mr-6 w-full">
@@ -1043,6 +1134,8 @@ function hideInventoryFormFun(){
                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
                   Time
                 </th>
+
+                <Button onClick={showTransactionFormFun}>Add Transaction</Button>
             
 
                 
@@ -1081,8 +1174,8 @@ function hideInventoryFormFun(){
       </Card>
     </div>
     
-  </main> */}
-  // )
+  </main> 
+   )}
 
 
 // shipment page
@@ -1238,108 +1331,108 @@ function hideInventoryFormFun(){
 // Inventory page
 
 
-   return(
-   <main>
-     <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
-       <div className="flex">
-         <Button className="bg-primary-container p-10 mt-3 mr-4 mb-9">return to main profile</Button>
-         <div><p className="mr-100 text-2xl">MERCHANT NAME</p></div>
-         <div> <p className="mr-30 mt-10">merchant id;123465 </p></div>
-         <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
-       </div>
+  //  return(
+  //  <main>
+  //    <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
+  //      <div className="flex">
+  //        <Button className="bg-primary-container p-10 mt-3 mr-4 mb-9">return to main profile</Button>
+  //        <div><p className="mr-100 text-2xl">MERCHANT NAME</p></div>
+  //        <div> <p className="mr-30 mt-10">merchant id;123465 </p></div>
+  //        <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
+  //      </div>
         
-       </span></Card>
-       <div className="flex mr-160 text-3xl font-semibold">
-         <h1>Inventory</h1>
-       </div>
+  //      </span></Card>
+  //      <div className="flex mr-160 text-3xl font-semibold">
+  //        <h1>Inventory</h1>
+  //      </div>
 
 
-       {showInventoryForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
-                  <Header className="font-headline-md text-headline-md text-on-background mb-6" title="add new inventory"></Header>
-                  <form>
-                      <div>
-                          <label>Item name</label>
-                          <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Name"
-                placeholder="example name" value={testInventory.NAME} onChange={handleNewInventoryName} type ="text"></input></div>
+  //      {showInventoryForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+  //                 <Header className="font-headline-md text-headline-md text-on-background mb-6" title="add new inventory"></Header>
+  //                 <form>
+  //                     <div>
+  //                         <label>Item name</label>
+  //                         <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Name"
+  //               placeholder="example name" value={testInventory.NAME} onChange={handleNewInventoryName} type ="text"></input></div>
               
-                  <div>
-                      <label>item type</label>
-                      <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Type"
-                   type ="text" value={testInventory.TYPE} onChange={handleNewInventoryType}></input></div>
+  //                 <div>
+  //                     <label>item type</label>
+  //                     <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Type"
+  //                  type ="text" value={testInventory.TYPE} onChange={handleNewInventoryType}></input></div>
 
-                 <div> <label>Item Stock</label>
-                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Stock"
-                type ="text" value={testInventory.STOCK} onChange={handleNewInventoryStock}></input></div>
+  //                <div> <label>Item Stock</label>
+  //                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Stock"
+  //               type ="text" value={testInventory.STOCK} onChange={handleNewInventoryStock}></input></div>
 
-                 <div> <label>Availble at</label>
-                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Branch"
-                type ="text" value={testInventory.BRANCH} onChange={handleNewInventoryAvailbleAt}></input></div>
+  //                <div> <label>Availble at</label>
+  //                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Branch"
+  //               type ="text" value={testInventory.BRANCH} onChange={handleNewInventoryAvailbleAt}></input></div>
               
-                 <div className="flex gap-3 pt-2">
-                   <Button
-                  type="submit"
-                  variant="primary"
-                  size="md"
-                  onClick={handleAddInventory}>change info</Button>
-                  <Button
-                  type="button"
-                  variant="outline"
-                  size="md"
-                  onClick={hideInventoryFormFun}>Cancle</Button>
-                 </div>
-                 </form>
-                 </Card>}
+  //                <div className="flex gap-3 pt-2">
+  //                  <Button
+  //                 type="submit"
+  //                 variant="primary"
+  //                 size="md"
+  //                 onClick={handleAddInventory}>change info</Button>
+  //                 <Button
+  //                 type="button"
+  //                 variant="outline"
+  //                 size="md"
+  //                 onClick={hideInventoryFormFun}>Cancle</Button>
+  //                </div>
+  //                </form>
+  //                </Card>}
 
-     <Card className="mr-6">
-      <table className="w-full mr-6 ml-6">
-          <thead>
-            <tr className="border-b border-outline-variant">                       
-                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                      Name
-                </th>
-                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                  Type
-                </th>
-                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                  Stock
-                </th>
-                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                  Availble at
-                </th>
-                 {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                  Add product
-                </th>  */}
+  //    <Card className="mr-6">
+  //     <table className="w-full mr-6 ml-6">
+  //         <thead>
+  //           <tr className="border-b border-outline-variant">                       
+  //                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+  //                     Name
+  //               </th>
+  //                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+  //                 Type
+  //               </th>
+  //               <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+  //                 Stock
+  //               </th>
+  //               <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+  //                 Availble at
+  //               </th>
+  //                {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+  //                 Add product
+  //               </th>  */}
 
-                <Button onClick={showInventoryFormFun}>Add product</Button>
-            </tr>
-          </thead>
-          <tbody>
-            {testInventory.map((data)=>(
+  //               <Button onClick={showInventoryFormFun}>Add product</Button>
+  //           </tr>
+  //         </thead>
+  //         <tbody>
+  //           {testInventory.map((data)=>(
 
-               <tr 
+  //              <tr 
                             
-                key={data.id}
-                className="border-b border-surface-variant hover:bg-surface-container-low transition">
+  //               key={data.id}
+  //               className="border-b border-surface-variant hover:bg-surface-container-low transition">
                   
 
-                  <td className="p-4"><p className="text-body-md text-on-surface">
-                                       {data.NAME}
-                                     </p></td>
-                  <td className="p-4"><p className="text-body-md text-on-surface">
-                                       {data.TYPE}
-                                     </p></td>
-                  <td className="p-4"><p className="text-body-md text-on-surface">
-                                       {data.STOCK}
-                                     </p></td>
-                  <td className="p-4"><p className="text-body-md text-on-surface">
-                                       {data.BRANCH}
-                                     </p></td>
-               </tr>
+  //                 <td className="p-4"><p className="text-body-md text-on-surface">
+  //                                      {data.NAME}
+  //                                    </p></td>
+  //                 <td className="p-4"><p className="text-body-md text-on-surface">
+  //                                      {data.TYPE}
+  //                                    </p></td>
+  //                 <td className="p-4"><p className="text-body-md text-on-surface">
+  //                                      {data.STOCK}
+  //                                    </p></td>
+  //                 <td className="p-4"><p className="text-body-md text-on-surface">
+  //                                      {data.BRANCH}
+  //                                    </p></td>
+  //              </tr>
               
-            ))}
+  //           ))}
             
-          </tbody>
-      </table>
-      </Card> 
-     </main>
-   )}
+  //         </tbody>
+  //     </table>
+  //     </Card> 
+  //    </main>
+  //  )}
