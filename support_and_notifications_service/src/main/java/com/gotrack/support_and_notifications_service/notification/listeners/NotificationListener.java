@@ -10,7 +10,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.gotrack.support_and_notifications_service.config.AsyncConfig;
 import com.gotrack.support_and_notifications_service.notification.event.NotificationCreated;
 
 @Component

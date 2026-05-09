@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gotrack.support_and_notifications_service.complaint.entity.ComplaintStatus;
 import com.gotrack.support_and_notifications_service.notification.dto.AdminNotificationRequest;
 import com.gotrack.support_and_notifications_service.notification.entity.Notifications;
 import com.gotrack.support_and_notifications_service.notification.service.NotificationService;
