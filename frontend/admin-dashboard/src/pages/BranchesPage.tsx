@@ -924,162 +924,92 @@ function hideInventoryFormFun(){
 
 
 
-  // return(
+ 
 
 
     //MRCHANT PROFILE PAGE
 
-    
-  // <main>
-  //   <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
-  //     <div className="flex">
-  //  <Button onClick={showMerchantForm} className="bg-primary-container p-10 mt-3 mr-4 mb-9">edit profile</Button>
-  //       <div><p className="mr-100 text-2xl">MERCHANT NAME</p></div>
-  //       <div> <p className="mr-30 mt-10">merchant id;123465 </p></div>
-  //       <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
-  //     </div>
+ return(
 
 
-  // {showMerchantForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
-  //                <Header className="font-headline-md text-headline-md text-on-background mb-6" title="Update Merchant Info"></Header>
-  //                <form>
-  //                    <div>
-  //                        <label>Merchant name</label>
-  //                        <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Branch Name"
-  //              placeholder="example name" value={merchantInfo.NAME} onChange={handleMerchantNameChange} type ="text"></input></div>
-                
-  //                <div>
-  //                    <label>Merchant Email</label>
-  //                    <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="example email"
-  //                 type ="text" value={merchantInfo.EMAIL} onChange={handleMerchantEmailChange}></input></div>
-
-  //               <div> <label>Branch location</label>
-  //               <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="example branch"
-  //              type ="text" value={merchantInfo.MERCHANT_BRANCH} onChange={handleMerchantBranchChange}></input></div>
-
-  //               <div> <label>Phone number</label>
-  //               <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="PhoneNum"
-  //              type ="text" value={merchantInfo.MERCHANT_PHONE} onChange={handleMerchantPhoneChange}></input></div>
-              
-  //               <div className="flex gap-3 pt-2">
-  //                 <Button
-  //                type="submit"
-  //                variant="primary"
-  //                size="md"
-  //                onClick={handleUpdateMerchantInfo}>change info</Button>
-  //                <Button
-  //                type="button"
-  //                variant="outline"
-  //                size="md"
-  //                onClick={hideMerchantFormFun}>Cancle</Button>
-  //               </div>
-  //               </form>
-  //               </Card>}
-
-        
-  //     </span></Card>
-  //   <span className="flex grow gap-4.5 mt-6 w-full">
-  //     <Card className="w-75/100 mr-6"><p className="text-2xl">Merchant Info</p>
-  //     <div className="flex">
-  //       <p className="ml-50">merchant name</p>
-  //       <p className="mr-20">merchant email</p>
-  //       </div>
-  //       <div className="flex mt-4">
-  //       <p className="bg-gray-200 p-3 rounded-md ml-65">name example</p>
-  //       <p className="bg-gray-200 p-3 rounded-md">email example</p>
-  //       </div>
-  //       <div className=" flex">
-  //         <p className="ml-50">branch location</p>
-  //         <p className="mr-20">Phone number</p>
-  //       </div>
-  //       <div className="flex">
-  //         <p className="bg-gray-200 p-3 rounded-md ml-61">location example</p>
-  //         <p className="bg-gray-200 p-3 rounded-md">phone number example</p>
-  //       </div>
-  //     </Card>
-  //     <BlueCard className="w-25/100  pl-3"><div className="flex">
-  //       <img className="h-12 ml-3" src={wallet} alt="wallet icon"></img>
-  //       <p className="text-white mt-1 mr-10">current balance<br></br>
-  //       13232132$</p></div>
-  //       <Button className="w-90/100 mr-1 mt-4 pl-3">New transaction</Button>
-  //       <Button variant="outline" className="bg-gray-500 text-white w-90/100 mr-1 mt-4 pl-3">Transaction history</Button>
-  //     </BlueCard>
-  //   </span>
-
-  //   <div className="flex">
-  //      <Card className="mt-6 mr-6">
-  //     <table className=" mr-6 ml-4">
-  //         <thead>
-  //           <tr className="border-b border-outline-variant">                       
-  //                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-  //                     Name
-  //               </th>
-  //                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-  //                 Type
-  //               </th>
-  //               <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-  //                 Stock
-  //               </th>
-  //               <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-  //                 Availble at
-  //               </th>
-  //               {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-  //                 Add product
-  //               </th> */}
-
-  //               <Button>Add product</Button>
-  //           </tr>
-  //         </thead>
-  //         <tbody>
-  //           {testInventory.map((data)=>(
-
-  //              <tr 
-                            
-  //               key={data.id}
-  //               className="border-b border-surface-variant hover:bg-surface-container-low transition">
-                  
-
-  //                 <td className="p-4"><p className="text-body-md text-on-surface">
-  //                                      {data.NAME}
-  //                                    </p></td>
-  //                 <td className="p-4"><p className="text-body-md text-on-surface">
-  //                                      {data.TYPE}
-  //                                    </p></td>
-  //                 <td className="p-4"><p className="text-body-md text-on-surface">
-  //                                      {data.STOCK}
-  //                                    </p></td>
-  //                 <td className="p-4"><p className="text-body-md text-on-surface">
-  //                                      {data.BRANCH}
-  //                                    </p></td>
-  //              </tr>
-              
-  //           ))}
-            
-  //         </tbody>
-  //     </table>
-   //   </Card>
-   
-
-   //transaction history page
-
-
-  return(
- <main>
-
+  <main>
    <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
        <div className="flex">
-        <Button className="bg-primary-container p-10 mt-3 mr-4 mb-9">return to merchant profile</Button>
+    <Button onClick={showMerchantForm} className="bg-primary-container p-10 mt-3 mr-4 mb-9">edit profile</Button>
          <div><p className="mr-100 text-2xl">MERCHANT NAME</p></div>
          <div> <p className="mr-30 mt-10">merchant id;123465 </p></div>
          <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
        </div>
+
+
+   {showMerchantForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+                  <Header className="font-headline-md text-headline-md text-on-background mb-6" title="Update Merchant Info"></Header>
+                  <form>
+                      <div>
+                          <label>Merchant name</label>
+                          <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Branch Name"
+                placeholder="example name" value={merchantInfo.NAME} onChange={handleMerchantNameChange} type ="text"></input></div>
+                
+                  <div>
+                      <label>Merchant Email</label>
+                      <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="example email"
+                   type ="text" value={merchantInfo.EMAIL} onChange={handleMerchantEmailChange}></input></div>
+
+                 <div> <label>Branch location</label>
+                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="example branch"
+                type ="text" value={merchantInfo.MERCHANT_BRANCH} onChange={handleMerchantBranchChange}></input></div>
+
+                 <div> <label>Phone number</label>
+                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="PhoneNum"
+                type ="text" value={merchantInfo.MERCHANT_PHONE} onChange={handleMerchantPhoneChange}></input></div>
+              
+                 <div className="flex gap-3 pt-2">
+                   <Button
+                  type="submit"
+                  variant="primary"
+                  size="md"
+                  onClick={handleUpdateMerchantInfo}>change info</Button>
+                 <Button
+                  type="button"
+                  variant="outline"
+                  size="md"
+                  onClick={hideMerchantFormFun}>Cancle</Button>
+                 </div>
+                 </form>
+                 </Card>}
+
         
-      </span></Card>
+       </span></Card>
+     <span className="flex grow gap-4.5 mt-6 w-full">
+       <Card className="w-75/100 mr-6"><p className="text-2xl">Merchant Info</p>
+       <div className="flex">
+         <p className="ml-50">merchant name</p>
+         <p className="mr-20">merchant email</p>
+         </div>
+         <div className="flex mt-4">
+         <p className="bg-gray-200 p-3 rounded-md ml-65">name example</p>
+         <p className="bg-gray-200 p-3 rounded-md">email example</p>
+         </div>
+         <div className=" flex">
+           <p className="ml-50">branch location</p>
+           <p className="mr-20">Phone number</p>
+         </div>
+         <div className="flex">
+           <p className="bg-gray-200 p-3 rounded-md ml-61">location example</p>
+           <p className="bg-gray-200 p-3 rounded-md">phone number example</p>
+         </div>
+       </Card>
+       <BlueCard className="w-25/100  pl-3"><div className="flex">
+         <img className="h-12 ml-3" src={wallet} alt="wallet icon"></img>
+         <p className="text-white mt-1 mr-10">current balance<br></br>
+         13232132$</p></div>
+         <Button className="w-90/100 mr-1 mt-4 pl-3">New transaction</Button>
+         <Button variant="outline" className="bg-gray-500 text-white w-90/100 mr-1 mt-4 pl-3">Transaction history</Button>
+       </BlueCard>
+     </span>
 
-      <div><p className="mt-6 mr-140 text-3xl font-semibold">Transaction history</p></div>
-
-
-        {showTransactionForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+  
+   {showTransactionForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
                    <Header className="font-headline-md text-headline-md text-on-background mb-6" title="Add new transaction"></Header>
                    <form>
                        <div>
@@ -1114,72 +1044,350 @@ function hideInventoryFormFun(){
                   </div>
                   </form>
                   </Card>}
+  
+
+      {showInventoryForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+                   <Header className="font-headline-md text-headline-md text-on-background mb-6" title="add new inventory"></Header>
+                   <form>
+                       <div>
+                           <label>Item name</label>
+                           <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Name"
+                 placeholder="example name" value={testInventory.NAME} onChange={handleNewInventoryName} type ="text"></input></div>
+            
+                   <div>
+                       <label>item type</label>
+                       <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Type"
+                   type ="text" value={testInventory.TYPE} onChange={handleNewInventoryType}></input></div>
+                <div> <label>Item Stock</label>
+                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Stock"
+                 type ="text" value={testInventory.STOCK} onChange={handleNewInventoryStock}></input></div>
+
+                  <div> <label>Availble at</label>
+                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Branch"
+                 type ="text" value={testInventory.BRANCH} onChange={handleNewInventoryAvailbleAt}></input></div>
+              
+                  <div className="flex gap-3 pt-2">
+                    <Button
+                   type="submit"
+                   variant="primary"
+                   size="md"
+                   onClick={handleAddInventory}>change info</Button>
+                   <Button
+                   type="button"
+                   variant="outline"
+                   size="md"
+                   onClick={hideInventoryFormFun}>Cancle</Button>
+                  </div>
+                  </form>
+                  </Card>}
 
 
 
-    <div className="flex ">
-       <Card className="mt-6 mr-6 w-full">
-      <table className=" mr-6 ml-6 w-full">
-          <thead>
-            <tr className="border-b border-outline-variant">                       
-                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                      Amount
-                </th>
-                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+         {showShipmentForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+                  <Header className="font-headline-md text-headline-md text-on-background mb-6" title="Update Merchant Info"></Header>
+                  <form>
+                      <div>
+                          <label>Shipment Id</label>
+                          <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Shipment id"
+                placeholder="example name" value={shipments.SHIPMENT_ID} onChange={handleNewShipmentId} type ="text"></input></div>
+              
+                  <div>
+                      <label>Notes</label>
+                      <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Notes"
+                   type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></input></div>
+
+                 <div> <label>Last Update</label>
+                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Last Updated"
+                type ="text" value={shipments.LAST_UPDATE} onChange={handleNewShipmentLastUpdated}></input></div>
+
+                 <div> <label>Status</label>
+                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Status"
+                type ="text" value={shipments.STATUS} onChange={handleNewShipmentStatus}></input></div>
+
+                <div> <label>Total Price</label>
+                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="total Price"
+                type ="text" value={shipments.TOTAL_PRICE} onChange={handleNewShipmentTotalPrice}></input></div>
+
+                <div> <label>Shipping fees</label>
+                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="shipping fee"
+                type ="text" value={shipments.SHIPPING_FEE} onChange={handleNewShipmentShippingFee}></input></div>
+
+                <div> <label>Date Delivered</label>
+                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="date Delivered"
+                type ="text" value={shipments.DATE_DELIVERED} onChange={handleNewShipmentDateDelivered}></input></div>
+              
+                 <div className="flex gap-3 pt-2">
+                   <Button
+                  type="submit"
+                  variant="primary"
+                  size="md"
+                  onClick={handleNewShippment}>change info</Button>
+                  <Button
+                  type="button"
+                  variant="outline"
+                  size="md"
+                  onClick={hideShipmentFormFun}>Cancle</Button>
+             </div>
+             </form>
+             </Card>}
+
+   <div className="flex">
+      <Card className="mt-6 mr-6">
+       <table className=" mr-6 ml-4">
+           <thead>
+             <tr className="border-b border-outline-variant">                       
+                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                       Name
+                 </th>
+                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
                   Type
-                </th>
-                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                  Shipment Id
-                </th>
-                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                  Time
-                </th>
+                 </th>
+                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                   Stock
+                 </th>
+                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                   Availble at
+                 </th>
+                 {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                   Add product
+                 </th> */}
 
-                <Button onClick={showTransactionFormFun}>Add Transaction</Button>
+                 <Button>Add product</Button>
+             </tr>
+           </thead>
+           <tbody>
+             {testInventory.map((data)=>(
+
+                <tr 
+                          
+                 key={data.id}
+                 className="border-b border-surface-variant hover:bg-surface-container-low transition">
+                  
+
+                   <td className="p-4"><p className="text-body-md text-on-surface">
+                                        {data.NAME}
+                                      </p></td>
+                   <td className="p-4"><p className="text-body-md text-on-surface">
+                                        {data.TYPE}
+                                      </p></td>
+                   <td className="p-4"><p className="text-body-md text-on-surface">
+                                        {data.STOCK}
+                                      </p></td>
+                   <td className="p-4"><p className="text-body-md text-on-surface">
+                                        {data.BRANCH}
+                                      </p></td>
+                </tr>
+              
+             ))}
+            
+           </tbody>
+       </table>
+     </Card>
+
+
+
+       <Card className="mr-6">
+       <table className="w-full mr-6 ml-6">
+           <thead>
+             <tr className="border-b border-outline-variant">                       
+                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                       Shipment Id
+                 </th>
+                 
+                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                   Notes
+                 </th>
+
+                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                   Last Updated
+                 </th> 
+
+                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                   Status
+                 </th>
+                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                   Total Price
+                 </th>
+                
+                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                   Shipping Fee
+                 </th> 
+                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                   Date Delivred
+                 </th> 
+                
+
+                 <Button onClick={showShipmentFormFun} className="">New Shipment</Button>
+             </tr>
+           </thead>
+           <tbody>
+             {shipments.map((data)=>(
+
+                <tr 
+                            
+                 key={data.id}
+                 className={`border-b border-surface-variant hover:bg-surface-container-low transition  ${data.STATUS ==="Delivered"? "bg-green-200! hover:bg-green-300!" :"" }`}>
+                  
+
+                   <td className="p-4"><p className="text-body-md text-on-surface">
+                                        {data.SHIPMENT_ID}
+                                      </p></td>
+                   <td className="p-4"><p className="text-body-md text-on-surface">
+                                        {data.NOTES}
+                                      </p></td>
+                   <td className="p-4"><p className="text-body-md text-on-surface">
+                                        {data.LAST_UPDATE}
+                                      </p></td>
+                  <td className="p-4"><p className="text-body-md text-on-surface">
+                                        {data.STATUS}
+                                      </p></td>
+                   <td className="p-4"><p className="text-body-md text-on-surface">
+                                        {data.TOTAL_PRICE}
+                                      </p></td>
+                   <td className="p-4"><p className="text-body-md text-on-surface">
+                                        {data.SHIPPING_FEE}
+                                      </p></td>
+                   <td className="p-4"><p className="text-body-md text-on-surface">
+                                        {data.DATE_DELIVERED}
+                                      </p></td>
+                </tr>
+              
+             ))}
+            
+           </tbody>
+       </table>
+       </Card> 
+
+
+  </div>
+</main>
+
+ )}
+    
+ 
+
+
+   //transaction history page
+
+{/* 
+//   return(
+//  <main>
+
+//    <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
+//        <div className="flex">
+//         <Button className="bg-primary-container p-10 mt-3 mr-4 mb-9">return to merchant profile</Button>
+//          <div><p className="mr-100 text-2xl">MERCHANT NAME</p></div>
+//          <div> <p className="mr-30 mt-10">merchant id;123465 </p></div>
+//          <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
+//        </div>
+        
+//       </span></Card>
+
+//       <div><p className="mt-6 mr-140 text-3xl font-semibold">Transaction history</p></div>
+
+
+//         {showTransactionForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+//                    <Header className="font-headline-md text-headline-md text-on-background mb-6" title="Add new transaction"></Header>
+//                    <form>
+//                        <div>
+//                            <label>Transaction value</label>
+//                            <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Name"
+//                  placeholder="Amount" value={transactions.AMOUNT} onChange={handleNewTransactionAmount} type ="text"></input></div>
+               
+//                    <div>
+//                        <label>transaction type</label>
+//                        <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Type"
+//                     type ="text" value={transactions.TYPE} onChange={handleNewTransactionType}></input></div>
+
+//                   <div> <label>transaction shipment id</label>
+//                   <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="shipment id"
+//                  type ="text" value={transactions.SHIPMENT_ID} onChange={handleNewTransactionShippingId}></input></div>
+
+//                   <div> <label>Transaction time</label>
+//                   <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="time"
+//                  type ="text" value={transactions.TIME} onChange={handleNewTransactionTime}></input></div>
+              
+//                   <div className="flex gap-3 pt-2">
+//                     <Button
+//                    type="submit"
+//                    variant="primary"
+//                    size="md"
+//                    onClick={addNewTransaction}>change info</Button>
+//                    <Button
+//                    type="button"
+//                   variant="outline"
+//                    size="md"
+//                    onClick={hideTransactionFormFun}>Cancle</Button>
+//                   </div>
+//                   </form>
+//                   </Card>}
+
+
+
+//     <div className="flex ">
+//        <Card className="mt-6 mr-6 w-full">
+//       <table className=" mr-6 ml-6 w-full">
+//           <thead>
+//             <tr className="border-b border-outline-variant">                       
+//                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                       Amount
+//                 </th>
+//                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                   Type
+//                 </th>
+//                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                   Shipment Id
+//                 </th>
+//                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                   Time
+//                 </th>
+
+//                 <Button onClick={showTransactionFormFun}>Add Transaction</Button>
             
 
                 
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((data)=>(
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {transactions.map((data)=>(
 
-               <tr 
+//                <tr 
                             
-                key={data.id}
-                className="border-b border-surface-variant hover:bg-surface-container-low transition">
+//                 key={data.id}
+//                 className="border-b border-surface-variant hover:bg-surface-container-low transition">
                   
 
-                  <td className="p-4"><p className={ ` ${data.TYPE === "Debit" ? "text-green-400" : "text-red-500"}`} >
-                                       {data.AMOUNT}
-                                     </p></td>
-                  <td className="p-4"> <span
-                        className={`px-4 py-1 rounded-full
-                           ${data.TYPE ==="Debit" ? "bg-green-600 bg-error text-on-error" : "bg-error text-on-error"}`}
-                      >
-                                       {data.TYPE}
-                                     </span></td>
-                  <td className="p-4"><p className="text-body-md text-on-surface">
-                                       {data.SHIPMENT_ID}
-                                     </p></td>
-                  <td className="p-4"><p className="text-body-md text-on-surface">
-                                       {data.TIME}
-                                     </p></td>
-               </tr>
+//                   <td className="p-4"><p className={ ` ${data.TYPE === "Debit" ? "text-green-400" : "text-red-500"}`} >
+//                                        {data.AMOUNT}
+//                                      </p></td>
+//                   <td className="p-4"> <span
+//                         className={`px-4 py-1 rounded-full
+//                            ${data.TYPE ==="Debit" ? "bg-green-600 bg-error text-on-error" : "bg-error text-on-error"}`}
+//                       >
+//                                        {data.TYPE}
+//                                      </span></td>
+//                   <td className="p-4"><p className="text-body-md text-on-surface">
+//                                        {data.SHIPMENT_ID}
+//                                      </p></td>
+//                   <td className="p-4"><p className="text-body-md text-on-surface">
+//                                        {data.TIME}
+//                                      </p></td>
+//                </tr>
               
-            ))}
+//             ))}
             
-          </tbody>
-      </table>
-      </Card>
-    </div>
+//           </tbody>
+//       </table>
+//       </Card>
+//     </div>
     
-  </main> 
-   )}
+//   </main> 
+//    )}
+*/}
 
 
 // shipment page
-
+{/*
 //   return(
 
 //     <main>
@@ -1401,7 +1609,7 @@ function hideInventoryFormFun(){
   //               </th>
   //                {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
   //                 Add product
-  //               </th>  */}
+  //               </th>  
 
   //               <Button onClick={showInventoryFormFun}>Add product</Button>
   //           </tr>
@@ -1436,3 +1644,4 @@ function hideInventoryFormFun(){
   //     </Card> 
   //    </main>
   //  )}
+  */}
