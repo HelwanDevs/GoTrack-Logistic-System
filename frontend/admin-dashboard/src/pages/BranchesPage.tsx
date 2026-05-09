@@ -712,6 +712,73 @@ const [merchantInfo,setMerchantInfo] = useState([
     MERCHANT_PHONE:""
   }
 ])
+
+const [shipmentId,setShipmentId] = useState("")
+const [shipmentNotes,setShipmentNotes] = useState("")
+const [shipmentLastUpdated,setShipmentLastUpdated] = useState("")
+const [shipmentStatus,setShipmentStatus] = useState("")
+const [totalPrice,setTotalPrice]= useState("")
+const [shippingFee,setShippingFee] = useState("")
+const [dateDelivered,setDateDelivered]=useState("")
+const [newShipment,setNewShipment] = useState("")
+const [showShipmentForm,setShowShipmentForm] = useState(false)
+
+
+function handleNewShipmentId (e){
+  setShipmentId(e.target.value);
+}
+
+function handleNewShipmentNotes (e){
+  setShipmentNotes(e.target.value);
+}
+
+function handleNewShipmentLastUpdated (e){
+  setShipmentLastUpdated(e.target.value);
+}
+
+function handleNewShipmentStatus (e){
+  setShipmentStatus(e.target.value);
+}
+
+function handleNewShipmentTotalPrice (e){
+  setTotalPrice(e.target.value);
+}
+
+function handleNewShipmentShippingFee (e){
+  setShippingFee(e.target.value);
+}
+
+function handleNewShipmentDateDelivered (e){
+  setDateDelivered(e.target.value);
+}
+
+function showShipmentFormFun (){
+  setShowShipmentForm(true)
+}
+
+function hideShipmentFormFun (){
+  setShowShipmentForm(false)
+}
+
+function handleNewShippment (){
+  const oldShippment =shipments
+  const tempNewShipment ={
+id: String(oldShippment.length + 1),
+SHIPMENT_ID: shipmentId,
+NOTES: shipmentNotes,
+LAST_UPDATED: shipmentLastUpdated,
+STATUS: shipmentStatus,
+TOTAL_PRICE: totalPrice,
+SHIPPING_FEE: shippingFee,
+DATE_DELIVERED: dateDelivered
+  }
+setNewShipment(tempNewShipment)
+
+setShipments(shipments=> [...shipments,newShipment])
+//         setTestData(testData => [...testData, newBranch])
+}
+
+
 const [showMerchantForm,setShowMerchantForm] =useState(false)
 
 function handleMerchantBranchChange (event){
@@ -742,7 +809,7 @@ const showMerchantFormFun = (e) => {
 function handleUpdateMerchantInfo(){
   const oldMerchant = merchantInfo
   const tempMerchant={
-    id:"1",
+    id:`${oldMerchant[0]}`,
     MERCHANT_ID:`${oldMerchant[1]}`,
     NAME: merchantName,
     MERCHANTBRANCH: merchantBranch,
@@ -763,11 +830,49 @@ function handleUpdateMerchantInfo(){
   // <main>
   //   <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
   //     <div className="flex">
-  //       <Button className="bg-primary-container p-10 mt-3 mr-4 mb-9">edit profile</Button>
+  //  <Button onClick={showMerchantForm} className="bg-primary-container p-10 mt-3 mr-4 mb-9">edit profile</Button>
   //       <div><p className="mr-100 text-2xl">MERCHANT NAME</p></div>
   //       <div> <p className="mr-30 mt-10">merchant id;123465 </p></div>
   //       <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
   //     </div>
+
+
+  // {showMerchantForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+  //                <Header className="font-headline-md text-headline-md text-on-background mb-6" title="Update Merchant Info"></Header>
+  //                <form>
+  //                    <div>
+  //                        <label>Merchant name</label>
+  //                        <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Branch Name"
+  //              placeholder="example name" value={merchantInfo.NAME} onChange={handleMerchantNameChange} type ="text"></input></div>
+                
+  //                <div>
+  //                    <label>Merchant Email</label>
+  //                    <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="example email"
+  //                 type ="text" value={merchantInfo.EMAIL} onChange={handleMerchantEmailChange}></input></div>
+
+  //               <div> <label>Branch location</label>
+  //               <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="example branch"
+  //              type ="text" value={merchantInfo.MERCHANT_BRANCH} onChange={handleMerchantBranchChange}></input></div>
+
+  //               <div> <label>Phone number</label>
+  //               <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="PhoneNum"
+  //              type ="text" value={merchantInfo.MERCHANT_PHONE} onChange={handleMerchantPhoneChange}></input></div>
+              
+  //               <div className="flex gap-3 pt-2">
+  //                 <Button
+  //                type="submit"
+  //                variant="primary"
+  //                size="md"
+  //                onClick={handleUpdateMerchantInfo}>change info</Button>
+  //                <Button
+  //                type="button"
+  //                variant="outline"
+  //                size="md"
+  //                onClick={hideMerchantFormFun}>Cancle</Button>
+  //               </div>
+  //               </form>
+  //               </Card>}
+
         
   //     </span></Card>
   //   <span className="flex grow gap-4.5 mt-6 w-full">
@@ -948,38 +1053,50 @@ function handleUpdateMerchantInfo(){
 
 
 
-      {showMerchantForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+      {showShipmentForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
                  <Header className="font-headline-md text-headline-md text-on-background mb-6" title="Update Merchant Info"></Header>
                  <form>
                      <div>
-                         <label>Merchant name</label>
-                         <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Branch Name"
-               placeholder="example name" value={merchantInfo.NAME} onChange={handleMerchantNameChange} type ="text"></input></div>
+                         <label>Shipment Id</label>
+                         <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Shipment id"
+               placeholder="example name" value={shipments.SHIPMENT_ID} onChange={handleNewShipmentId} type ="text"></input></div>
                 
                  <div>
-                     <label>Merchant Email</label>
-                     <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="example email"
-                  type ="text" value={merchantInfo.EMAIL} onChange={handleMerchantEmailChange}></input></div>
+                     <label>Notes</label>
+                     <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Notes"
+                  type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></input></div>
 
-                <div> <label>Branch location</label>
-                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="example branch"
-               type ="text" value={merchantInfo.MERCHANT_BRANCH} onChange={handleMerchantBranchChange}></input></div>
+                <div> <label>Last Update</label>
+                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Last Updated"
+               type ="text" value={shipments.LAST_UPDATE} onChange={handleNewShipmentLastUpdated}></input></div>
 
-                <div> <label>Phone number</label>
-                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="PhoneNum"
-               type ="text" value={merchantInfo.MERCHANT_PHONE} onChange={handleMerchantPhoneChange}></input></div>
+                <div> <label>Status</label>
+                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Status"
+               type ="text" value={shipments.STATUS} onChange={handleNewShipmentStatus}></input></div>
+
+               <div> <label>Total Price</label>
+                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="total Price"
+               type ="text" value={shipments.TOTAL_PRICE} onChange={handleNewShipmentTotalPrice}></input></div>
+
+               <div> <label>Shipping fees</label>
+                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="shipping fee"
+               type ="text" value={shipments.SHIPPING_FEE} onChange={handleNewShipmentShippingFee}></input></div>
+
+               <div> <label>Date Delivered</label>
+                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="date Delivered"
+               type ="text" value={shipments.DATE_DELIVERED} onChange={handleNewShipmentDateDelivered}></input></div>
               
                 <div className="flex gap-3 pt-2">
                   <Button
                  type="submit"
                  variant="primary"
                  size="md"
-                 onClick={handleUpdateMerchantInfo}>change info</Button>
+                 onClick={handleNewShippment}>change info</Button>
                  <Button
                  type="button"
                  variant="outline"
                  size="md"
-                 onClick={hideMerchantFormFun}>Cancle</Button>
+                 onClick={hideShipmentFormFun}>Cancle</Button>
                 </div>
                 </form>
                 </Card>}
@@ -1016,7 +1133,7 @@ function handleUpdateMerchantInfo(){
                 </th> 
                 
 
-                <Button className="">New Shipment</Button>
+                <Button onClick={showShipmentFormFun} className="">New Shipment</Button>
             </tr>
           </thead>
           <tbody>
@@ -1025,7 +1142,7 @@ function handleUpdateMerchantInfo(){
                <tr 
                             
                 key={data.id}
-                className={`border-b border-surface-variant hover:bg-surface-container-low transition`}>
+                className={`border-b border-surface-variant hover:bg-surface-container-low transition  ${data.STATUS ==="Delivered"? "bg-green-200! hover:bg-green-300!" :"" }`}>
                   
 
                   <td className="p-4"><p className="text-body-md text-on-surface">
