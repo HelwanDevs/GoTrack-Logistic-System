@@ -1,4 +1,8 @@
 spring:
+  security:
+    user:
+      name: disabled
+      password: disabled
   application:
     name: user-branch-service
   profiles:
