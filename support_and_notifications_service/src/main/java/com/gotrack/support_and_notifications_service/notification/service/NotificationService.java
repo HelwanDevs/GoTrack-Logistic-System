@@ -47,10 +47,10 @@ public class NotificationService {
 
     public List<Notifications> getNotificationsForProfile(Boolean isRead) {
         String profileId = user.getCurrentUserId();
-        if (isRead == null) {
-            return repo.findByProfileIdOrderBySentAtDesc(profileId);
+        if (isRead == null) {// get all notifications IN_APP
+            return repo.findByProfileIdAndChannelOrderBySentAtDesc(profileId, NotificationChannel.IN_APP);
         }
-        return repo.findByProfileIdAndIsReadOrderBySentAtDesc(profileId, isRead);
+        return repo.findByProfileIdAndIsReadAndChannelOrderBySentAtDesc(profileId, isRead, NotificationChannel.IN_APP);
     }
 
     public List<Notifications> createAdminNotification(String profileId, String message,

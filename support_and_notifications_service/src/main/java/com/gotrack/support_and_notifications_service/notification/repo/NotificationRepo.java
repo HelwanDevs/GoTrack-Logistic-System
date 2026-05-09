@@ -15,4 +15,9 @@ public interface NotificationRepo extends MongoRepository<Notifications, String>
 
     List<Notifications> findByProfileIdAndIsReadFalseAndChannelOrderBySentAtDesc(String profileId,
             NotificationChannel channel);
+
+    List<Notifications> findByProfileIdAndChannelOrderBySentAtDesc(String profileId, NotificationChannel channel);
+
+    List<Notifications> findByProfileIdAndIsReadAndChannelOrderBySentAtDesc(String profileId, boolean isRead,
+            NotificationChannel channel);
 }
