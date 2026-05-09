@@ -33,9 +33,6 @@ public class InventoryService {
     public void receiveItems(InventoryItemRequest dto) {
 
         Long productId = dto.getProductId();
-        if (productId == null) {
-            throw new NotFoundException("Product ID is required");
-        }
 
 
         Product product = productRepository.findById(productId)
@@ -59,9 +56,6 @@ public class InventoryService {
     }
 
     public Page<InventoryItemResponse> getAllItems(Pageable pageable) {
-        if (pageable == null) {
-            pageable = Pageable.unpaged();
-        }
         return inventoryRepository.findAll(pageable)
                 .map(item -> InventoryItemResponse.builder()
                         .id(item.getId())
