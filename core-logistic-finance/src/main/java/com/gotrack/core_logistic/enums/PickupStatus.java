@@ -11,16 +11,12 @@ public enum PickupStatus {
 
 
     public boolean canTransitionTo(PickupStatus newStatus) {
-    switch (this) {
-        case Pending:
-            return newStatus == Accepted || newStatus == Cancelled;
-        case Accepted:
-            return newStatus == Completed || newStatus == CurierAssigned || newStatus == Cancelled;
-        case CurierAssigned:
-            return newStatus == Completed || newStatus == Cancelled;
-        default:
-            return false;
-    }
+        return switch (this) {
+            case Pending -> newStatus == Accepted || newStatus == Cancelled;
+            case Accepted -> newStatus == Completed || newStatus == CurierAssigned || newStatus == Cancelled;
+            case CurierAssigned -> newStatus == Completed || newStatus == Cancelled;
+            default -> false;
+        };
 }
 }
 
