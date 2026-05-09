@@ -89,7 +89,7 @@ public class PickupService {
 
                 if (filter.getMERCHANTId() != null && filter.getMERCHANTId() != profile.getId()
                                 && profile.getType().toString() != "MERCHANT") {
-                        throw new ConflictException("You are not authorized to search pickups for this customer");
+                        throw new ConflictException("You are not authorized to search pickups for this merchant");
                 }
 
                 if (profile.getType().toString() == "MERCHANT")

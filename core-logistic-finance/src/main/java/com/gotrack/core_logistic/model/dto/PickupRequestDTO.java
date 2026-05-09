@@ -20,8 +20,8 @@ public class PickupRequestDTO {
     private Long id;
     
     
-    @Positive(message = "Customer ID must be positive")
-    private Long customerId;
+    @Positive(message = "Merchant id is required")
+    private Long MERCHANTId;
     
     private Long courierId;
 
