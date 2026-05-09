@@ -1,7 +1,6 @@
 package com.gotrack.core_logistic.Service;
 
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,11 +11,14 @@ import com.gotrack.core_logistic.ExceptionHandling.ConflictException;
 import com.gotrack.core_logistic.ExceptionHandling.ResourceNotFoundException;
 import com.gotrack.core_logistic.Specifications.PickupSpecification;
 import com.gotrack.core_logistic.enums.PickupStatus;
+import com.gotrack.core_logistic.filter.AuthenticationDetails;
 import com.gotrack.core_logistic.mapper.PickupRequestMapper;
+import com.gotrack.core_logistic.model.dto.DTOFilters.PickupFilter;
 import com.gotrack.core_logistic.model.dto.PickupRequestDTO;
-import com.gotrack.core_logistic.model.dto.Filters.PickupFilter;
+import com.gotrack.core_logistic.model.dto.ProfileResponse;
 import com.gotrack.core_logistic.model.entity.Pickup;
 import com.gotrack.core_logistic.repository.PickupRepo;
+
 
 
 
@@ -27,14 +29,20 @@ public class PickupService {
          private PickupRepo pickupRepository;
         @Autowired
         private PickupRequestMapper pickupMapper;
-        
+        @Autowired
+        private ProfileBranchService profileBranchService;
+        @Autowired
+        private AuthenticationDetails AuthenticationDetails;
         
     
     
         public PickupRequestDTO createPickup(PickupRequestDTO pickupRequest) {
              Pickup pickup = pickupMapper.toEntity(pickupRequest);
 
-             //TODO: integrate with profile service to validate customerId
+              String accountId = AuthenticationDetails.getAccountId();
+              ProfileResponse profile = profileBranchService.getProfileByAccountId(accountId);
+
+             pickup.setCustomerId(profile.getId());
              pickup.setStatus(PickupStatus.Pending);
              Pickup savedPickup = pickupRepository.save(pickup);
              return pickupMapper.toDTO(savedPickup);
@@ -73,7 +81,11 @@ public class PickupService {
         public PickupRequestDTO assignCourier(Long id, Long courierId) {
                 Pickup existingPickup = pickupRepository.findById(id)
                         .orElseThrow(() -> new ResourceNotFoundException("Pickup not found with id: " + id));
-                //TODO: integrate with Profile service to validate courierId and check availability
+                
+                ProfileResponse profile = profileBranchService.getProfileById(courierId);
+                if(profile.getType().toString() != "COURIER")
+                    throw new ConflictException("This is not a courier profile");
+
                 existingPickup.setCourierId(courierId);
                 existingPickup.setStatus(PickupStatus.CurierAssigned);
 
@@ -83,12 +95,20 @@ public class PickupService {
                  
         
         public Page<PickupRequestDTO> searchPickups(PickupFilter filter, Pageable pageable) {
+        
+        String accountId = AuthenticationDetails.getAccountId();
+        ProfileResponse profile =profileBranchService.getProfileByAccountId(accountId);
+        
+        if(filter.getCustomerId() != null && filter.getCustomerId() != profile.getId() && profile.getType().toString() != "MERCHANT"){
+            throw new ConflictException("You are not authorized to search pickups for this customer");
+        }
+
+        if(profile.getType().toString() == "MERCHANT") filter.setCustomerId(profile.getId());
 
         Specification<Pickup> spec = PickupSpecification.filterPickups(filter);
-
         return pickupRepository.findAll(spec, pageable)
                     .map(pickupMapper::toDTO);
 }
-        
-    
+
 }
+    

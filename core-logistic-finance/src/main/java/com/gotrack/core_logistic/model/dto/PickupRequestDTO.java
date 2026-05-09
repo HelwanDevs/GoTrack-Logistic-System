@@ -20,11 +20,10 @@ public class PickupRequestDTO {
     
     private Long id;
     
-    @NotNull(message = "Customer ID is required")
+    
     @Positive(message = "Customer ID must be positive")
     private Long customerId;
     
-    @NotNull(message = "Courier ID is required")
     private Long courierId;
     
     @NotBlank(message = "Pickup address is required")

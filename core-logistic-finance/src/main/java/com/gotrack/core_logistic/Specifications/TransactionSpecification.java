@@ -7,7 +7,7 @@ import jakarta.persistence.criteria.Predicate;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.gotrack.core_logistic.model.dto.Filters.TransactionFilter;
+import com.gotrack.core_logistic.model.dto.DTOFilters.TransactionFilter;
 import com.gotrack.core_logistic.model.entity.Transaction;
 
 public class TransactionSpecification {

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gotrack.core_logistic.Service.ShipmentService;
-import com.gotrack.core_logistic.model.dto.Filters.ShipmentFilter;
 import com.gotrack.core_logistic.model.dto.ShipmentDTO;
+import com.gotrack.core_logistic.model.dto.DTOFilters.ShipmentFilter;
 
 import jakarta.validation.Valid;
 
@@ -32,18 +33,21 @@ public class ShipmentController {
 
 
    @PostMapping
+   @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
    public ResponseEntity<ShipmentDTO> createShipment(@Valid @RequestBody ShipmentDTO request) {
        ShipmentDTO response = shipmentService.createShipment(request);
        return ResponseEntity.ok(response);
    }
    
    @PutMapping("/{id}/status")
+   @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
    public ResponseEntity<ShipmentDTO> updateShipmentStatus(@PathVariable Long id, @RequestBody ShipmentDTO request) {
        ShipmentDTO response = shipmentService.updateShipmentStatus(id, request);
        return ResponseEntity.ok(response);
    }
 
    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<Page<ShipmentDTO>> searchShipments(
         ShipmentFilter filter,
         @PageableDefault(size = 10, direction = Sort.Direction.DESC)

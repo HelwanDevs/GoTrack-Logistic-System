@@ -1,12 +1,12 @@
 package com.gotrack.user_branch_service.service.imp;
 
-import com.gotrack.user_branch_service.exceptions.ConflictException;
-import com.gotrack.user_branch_service.exceptions.NotFoundException;
-import com.gotrack.user_branch_service.filter.AuthenticationDetails;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.gotrack.user_branch_service.domain.dto.ApiResponse;
@@ -18,6 +18,9 @@ import com.gotrack.user_branch_service.domain.entity.ProfileEntity;
 import com.gotrack.user_branch_service.domain.enums.ProfileStatus;
 import com.gotrack.user_branch_service.domain.enums.ProfileType;
 import com.gotrack.user_branch_service.domain.response.PageResponse;
+import com.gotrack.user_branch_service.exceptions.ConflictException;
+import com.gotrack.user_branch_service.exceptions.NotFoundException;
+import com.gotrack.user_branch_service.filter.AuthenticationDetails;
 import com.gotrack.user_branch_service.mappers.imp.ProfileMapperImp;
 import com.gotrack.user_branch_service.repository.BranchRepository;
 import com.gotrack.user_branch_service.repository.ProfileRepository;
@@ -25,11 +28,6 @@ import com.gotrack.user_branch_service.service.ProfileService;
 
 import jakarta.persistence.criteria.Predicate;
 import jakarta.ws.rs.ForbiddenException;
-
-import org.springframework.data.jpa.domain.Specification;
-import java.util.ArrayList;
-
-import java.util.List;
 
 @Service
 public class ProfileServiceImp implements ProfileService {
@@ -241,6 +239,13 @@ public class ProfileServiceImp implements ProfileService {
             throw new ConflictException("Cannot assign profile to a deleted or inactive branch");
         }
         return branch;
+    }
+
+    @Override
+    public ProfileResponseDTO getProfileByAccountId(String accountId) {
+        ProfileEntity entity = profileRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new NotFoundException("Profile not found"));
+        return profileMapper.toDto(entity);
     }
 
 }

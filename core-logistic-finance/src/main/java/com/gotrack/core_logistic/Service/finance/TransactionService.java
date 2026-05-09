@@ -2,7 +2,6 @@ package com.gotrack.core_logistic.Service.finance;
 
 import java.math.BigDecimal;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,12 +10,15 @@ import org.springframework.stereotype.Service;
 
 import com.gotrack.core_logistic.ExceptionHandling.ConflictException;
 import com.gotrack.core_logistic.ExceptionHandling.ResourceNotFoundException;
+import com.gotrack.core_logistic.Service.ProfileBranchService;
 import com.gotrack.core_logistic.Specifications.TransactionSpecification;
 import com.gotrack.core_logistic.enums.ReportPeriod;
+import com.gotrack.core_logistic.filter.AuthenticationDetails;
 import com.gotrack.core_logistic.mapper.TransactionMapper;
+import com.gotrack.core_logistic.model.dto.DTOFilters.TransactionFilter;
 import com.gotrack.core_logistic.model.dto.FinancialSummaryDTO;
+import com.gotrack.core_logistic.model.dto.ProfileResponse;
 import com.gotrack.core_logistic.model.dto.TransactionDTO;
-import com.gotrack.core_logistic.model.dto.Filters.TransactionFilter;
 import com.gotrack.core_logistic.model.entity.Transaction;
 import com.gotrack.core_logistic.model.entity.Wallet;
 import com.gotrack.core_logistic.repository.TransactionRepo;
@@ -37,6 +39,10 @@ public class TransactionService {
     FinanceService financeService;
     @Autowired 
     WalletRepo walletRepo;
+    @Autowired
+    ProfileBranchService profileBranchService;
+    @Autowired
+    AuthenticationDetails AuthenticationDetails;
     
 
 
@@ -80,6 +86,16 @@ public class TransactionService {
 
 
    public Page<TransactionDTO> getTransactions(TransactionFilter filter, Pageable pageable){
+
+       String accountId = AuthenticationDetails.getAccountId();
+       ProfileResponse profile = profileBranchService.getProfileByAccountId(accountId);
+       
+       if(filter.getFromProfileId() != null && filter.getFromProfileId() != profile.getId() && profile.getType().toString() == "EMPLOYEE")
+          throw new ConflictException("You are not authorized to search transactions for this profile");
+
+        if(filter.getToProfileId() != null && filter.getToProfileId() != profile.getId() && profile.getType().toString() == "EMPLOYEE")
+          throw new ConflictException("You are not authorized to search transactions for this profile");
+
        Specification<Transaction> spec = TransactionSpecification.filterTransactions(filter);
        return transactionRepo.findAll(spec, pageable);
        
@@ -88,11 +104,12 @@ public class TransactionService {
 
 
    public Page<TransactionDTO> GetMyTransactions(Pageable pageable){
-    //TODO: integrate with profile service to validate ProfileId
-
-       Long profileId = 1L; // temporary 
+    
+    String accountId = AuthenticationDetails.getAccountId();
+    ProfileResponse profile = profileBranchService.getProfileByAccountId(accountId);
+    
          return transactionRepo
-             .findByTransacteFromOrTransacteTo(profileId, profileId, pageable)
+             .findByTransacteFromOrTransacteTo(profile.getId(), profile.getId(), pageable)
              .map(transactionMapper::toDTO);
    }
 
