@@ -30,6 +30,9 @@ public class ProductService {
     }
 
     Product product = productMapper.toEntity(productDto);
+    if (product.getMerchantId() == null) {
+        throw new NotFoundException("Merchant ID is required");
+    }
     Product saved = productRepository.save(product);
 
     return ProductResponseDTO.builder()

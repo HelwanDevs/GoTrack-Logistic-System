@@ -24,7 +24,7 @@ public class InventoryService {
     private final ProductRepository productRepository;
 
     public InventoryService(InventoryRepository inventoryRepository,
-                            ProductRepository productRepository) {
+            ProductRepository productRepository) {
         this.inventoryRepository = inventoryRepository;
         this.productRepository = productRepository;
     }
@@ -32,9 +32,15 @@ public class InventoryService {
     // TODO: Cross-service validation - verify branchId exists via user-service
     public void receiveItems(InventoryItemRequest dto) {
 
-        Product product = productRepository.findById(dto.getProductId())
+        Long productId = dto.getProductId();
+        if (productId == null) {
+            throw new NotFoundException("Product ID is required");
+        }
+
+
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(
-                    "Product with ID " + dto.getProductId() + " not found"));
+                        "Product with ID " + productId + " not found"));
 
         for (String sku : dto.getUniqueSkus()) {
             if (inventoryRepository.existsByUniqueSku(sku)) {
@@ -53,6 +59,9 @@ public class InventoryService {
     }
 
     public Page<InventoryItemResponse> getAllItems(Pageable pageable) {
+        if (pageable == null) {
+            pageable = Pageable.unpaged();
+        }
         return inventoryRepository.findAll(pageable)
                 .map(item -> InventoryItemResponse.builder()
                         .id(item.getId())
@@ -64,19 +73,18 @@ public class InventoryService {
                         .build());
     }
 
+    public Page<InventoryItemResponse> getItems(inventoryFilter filter, Pageable pageable) {
 
-    public Page<InventoryItemResponse> getItems(inventoryFilter filter,Pageable pageable) {
+        Specification<InventoryItem> spec = inventorySpecifications.filterInventory(filter);
 
-        Specification<InventoryItem> spec =inventorySpecifications.filterInventory(filter);
-
-     return inventoryRepository.findAll(spec, pageable)
-            .map(item -> InventoryItemResponse.builder()
-                    .id(item.getId())
-                    .productId(item.getProductId())
-                    .productName(item.getProductName())
-                    .branchId(item.getBranchId())
-                    .uniqueSku(item.getUniqueSku())
-                    .status(item.getStatus())
-                    .build());
-}
+        return inventoryRepository.findAll(spec, pageable)
+                .map(item -> InventoryItemResponse.builder()
+                        .id(item.getId())
+                        .productId(item.getProductId())
+                        .productName(item.getProductName())
+                        .branchId(item.getBranchId())
+                        .uniqueSku(item.getUniqueSku())
+                        .status(item.getStatus())
+                        .build());
+    }
 }
