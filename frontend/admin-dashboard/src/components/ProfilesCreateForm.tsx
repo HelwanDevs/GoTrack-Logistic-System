@@ -112,7 +112,7 @@ export const ProfilesCreateForm = ({
     { value: "", label: "اختر النوع" },
     { value: ProfileType.EMPLOYEE, label: "موظف" },
     { value: ProfileType.COURIER, label: "سائق توصيل" },
-    { value: ProfileType.CUSTOMER, label: "عميل" },
+    { value: ProfileType.MERCHANT, label: "عميل" },
     { value: ProfileType.ADMIN, label: "مسؤول" },
   ];
 

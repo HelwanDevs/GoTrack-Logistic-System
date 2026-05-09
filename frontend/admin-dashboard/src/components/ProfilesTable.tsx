@@ -68,7 +68,7 @@ const getProfileTypeLabel = (type: ProfileType): string => {
   const map: Record<ProfileType, string> = {
     [ProfileType.EMPLOYEE]: "موظف",
     [ProfileType.COURIER]: "سائق توصيل",
-    [ProfileType.CUSTOMER]: "تاجر",
+    [ProfileType.MERCHANT]: "تاجر",
     [ProfileType.ADMIN]: "مسؤول",
   };
   return map[type];
@@ -117,7 +117,7 @@ export const ProfilesTable = ({
     { value: "", label: "اختر النوع" },
     { value: ProfileType.EMPLOYEE, label: "موظف" },
     { value: ProfileType.COURIER, label: "سائق توصيل" },
-    { value: ProfileType.CUSTOMER, label: "تاجر" },
+    { value: ProfileType.MERCHANT, label: "تاجر" },
     { value: ProfileType.ADMIN, label: "مسؤول" },
   ];
 
@@ -186,9 +186,9 @@ export const ProfilesTable = ({
                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
                   تاريخ الإنشاء
                 </th>
-             <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md max-w-28">
-                   الإجراءات
-                 </th>
+                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md max-w-28">
+                  الإجراءات
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -302,7 +302,9 @@ export const ProfilesTable = ({
                   </td>
 
                   <td className="p-4">
-                    <div className={`max-w-${editingId ? "50" : "70"} overflow-x-scroll py-1`}>
+                    <div
+                      className={`max-w-${editingId ? "50" : "70"} overflow-x-scroll py-1`}
+                    >
                       {editingId === profile.id ? (
                         <Button
                           variant="secondary"
@@ -358,32 +360,67 @@ export const ProfilesTable = ({
                     {new Date(profile.created_at).toLocaleDateString("ar-SA")}
                   </td>
 
-               <td className="p-4 w-28">
+                  <td className="p-4 w-28">
                     {editingId === profile.id ? (
                       <div className="flex space-x-2">
-                        <Button variant="primary" size="sm" onClick={onSaveEdit} fullWidth>
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={onSaveEdit}
+                          fullWidth
+                        >
                           حفظ
                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => onNotify(profile)} className="px-2 py-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onNotify(profile)}
+                          className="px-2 py-1"
+                        >
                           🔔
                         </Button>
                         <div className="col-span-2" />
-                        <Button  size="sm" onClick={onCancelEdit} fullWidth className="px-2 py-1 bg-red-600 text-white hover:bg-red-700">
+                        <Button
+                          size="sm"
+                          onClick={onCancelEdit}
+                          fullWidth
+                          className="px-2 py-1 bg-red-600 text-white hover:bg-red-700"
+                        >
                           إلغاء
                         </Button>
                       </div>
                     ) : (
                       <div className="flex space-x-2">
-                        <Button variant="secondary" size="sm" onClick={() => onEditClick(profile)} fullWidth>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => onEditClick(profile)}
+                          fullWidth
+                        >
                           تعديل
                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => onOpenLink(profile)} fullWidth>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onOpenLink(profile)}
+                          fullWidth
+                        >
                           {profile.account_id ? "تغيير الحساب" : "ربط حساب"}
                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => onNotify(profile)} className="px-2 py-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onNotify(profile)}
+                          className="px-2 py-1"
+                        >
                           🔔
                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => onDelete(profile.id)} fullWidth>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onDelete(profile.id)}
+                          fullWidth
+                        >
                           حذف
                         </Button>
                       </div>
