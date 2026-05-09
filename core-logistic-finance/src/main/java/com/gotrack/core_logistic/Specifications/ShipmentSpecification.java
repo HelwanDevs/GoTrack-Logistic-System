@@ -1,6 +1,5 @@
 package com.gotrack.core_logistic.Specifications;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +21,8 @@ public class ShipmentSpecification {
                 predicates.add(cb.equal(root.get("id"), filter.getId()));
             }
 
-            if (filter.getCustomerId() != null) {
-                predicates.add(cb.equal(root.get("customerId"), filter.getCustomerId()));
+            if (filter.getMERCHANTId() != null) {
+                predicates.add(cb.equal(root.get("MERCHANTId"), filter.getMERCHANTId()));
             }
 
             if (filter.getCourierId() != null) {

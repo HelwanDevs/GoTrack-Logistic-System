@@ -16,8 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PickupRequestDTO {
-    
-    
+
     private Long id;
     
     
@@ -25,35 +24,32 @@ public class PickupRequestDTO {
     private Long customerId;
     
     private Long courierId;
-    
+
     @NotBlank(message = "Pickup address is required")
     private String pickupAddress;
-
 
     private String notes;
 
     @Future(message = "Invalid date formatting")
     private LocalDateTime pickupTime;
 
-    @NotBlank(message = "Receiver name is required") 
-    @Pattern(regexp="^[a-zA-Z]+( [a-zA-Z]+)*$", 
-         message="Receiver name must contain only letters and single spaces between words")
+    @NotBlank(message = "Receiver name is required")
+    @Pattern(regexp = "^[a-zA-Z]+( [a-zA-Z]+)*$", message = "Receiver name must contain only letters and single spaces between words")
     private String receiverName;
-    
+
     @NotBlank(message = "Receiver contact is required")
-    @Pattern(regexp="^[0-9]+$", message="Receiver contact must contain only numbers")
+    @Pattern(regexp = "^[0-9]+$", message = "Receiver contact must contain only numbers")
     private String receiverContact;
 
     @NotBlank(message = "Receiver address is required")
     private String receiverAddress;
 
     private PickupStatus Status;
-    
+
     @NotNull(message = "Cost is required")
     private BigDecimal cost;
 
     private LocalDateTime lastUpdate;
     private LocalDateTime createdAt;
-    
 
 }

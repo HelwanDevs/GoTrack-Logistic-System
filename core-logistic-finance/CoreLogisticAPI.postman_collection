@@ -23,7 +23,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": 1,\n  \"courierId\": 2,\n  \"pickupAddress\": \"Nasr City\",\n  \"notes\": \"Handle carefully\",\n  \"pickupTime\": \"2026-05-10T12:00:00\",\n  \"receiverName\": \"Ahmed Ali\",\n  \"receiverContact\": \"01012345678\",\n  \"receiverAddress\": \"Maadi\",\n  \"status\": \"PENDING\",\n  \"cost\": 250.00\n}"
+              "raw": "{\n  \"MERCHANTId\": 1,\n  \"courierId\": 2,\n  \"pickupAddress\": \"Nasr City\",\n  \"notes\": \"Handle carefully\",\n  \"pickupTime\": \"2026-05-10T12:00:00\",\n  \"receiverName\": \"Ahmed Ali\",\n  \"receiverContact\": \"01012345678\",\n  \"receiverAddress\": \"Maadi\",\n  \"status\": \"PENDING\",\n  \"cost\": 250.00\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/pickups",
@@ -50,7 +50,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": 1,\n  \"courierId\": 2,\n  \"pickupAddress\": \"Heliopolis\",\n  \"notes\": \"Updated pickup\",\n  \"pickupTime\": \"2026-05-11T14:00:00\",\n  \"receiverName\": \"Mohamed Samy\",\n  \"receiverContact\": \"01198765432\",\n  \"receiverAddress\": \"Dokki\",\n  \"status\": \"ASSIGNED\",\n  \"cost\": 300.00\n}"
+              "raw": "{\n  \"MERCHANTId\": 1,\n  \"courierId\": 2,\n  \"pickupAddress\": \"Heliopolis\",\n  \"notes\": \"Updated pickup\",\n  \"pickupTime\": \"2026-05-11T14:00:00\",\n  \"receiverName\": \"Mohamed Samy\",\n  \"receiverContact\": \"01198765432\",\n  \"receiverAddress\": \"Dokki\",\n  \"status\": \"ASSIGNED\",\n  \"cost\": 300.00\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/pickups/1",
@@ -138,7 +138,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerId\": 1,\n  \"courierId\": 2,\n  \"flyerNumber\": 123456,\n  \"note\": \"Fragile\",\n  \"status\": \"PENDING\",\n  \"totalPrice\": 1000,\n  \"shipmentFee\": 100,\n  \"deliveryDate\": \"2026-05-15T18:00:00\",\n  \"pickupRequest\": {\n    \"id\": 1\n  }\n}"
+              "raw": "{\n  \"MERCHANTId\": 1,\n  \"courierId\": 2,\n  \"flyerNumber\": 123456,\n  \"note\": \"Fragile\",\n  \"status\": \"PENDING\",\n  \"totalPrice\": 1000,\n  \"shipmentFee\": 100,\n  \"deliveryDate\": \"2026-05-15T18:00:00\",\n  \"pickupRequest\": {\n    \"id\": 1\n  }\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/shipments",

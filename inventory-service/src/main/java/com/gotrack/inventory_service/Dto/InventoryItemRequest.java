@@ -20,7 +20,7 @@ public class InventoryItemRequest {
 
     @NotNull(message = "branchId is required")
     @Min(value = 1, message = "Branch ID must be a positive number")
-    private Integer branchId;
+    private Long branchId;
 
     @NotNull(message = "pickupRequestId is required")
     @Positive(message = "pickupRequestId must be a positive number")

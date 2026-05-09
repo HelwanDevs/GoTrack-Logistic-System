@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 public class ShipmentFilter {
     private Long id;
-    private Long customerId;
+    private Long MERCHANTId;
     private Long courierId;
-    private ShipmentStatus status;  
+    private ShipmentStatus status;
     private Long flyerNumber;
 }

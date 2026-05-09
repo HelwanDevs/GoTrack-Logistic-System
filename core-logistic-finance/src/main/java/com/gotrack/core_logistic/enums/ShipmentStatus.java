@@ -1,14 +1,12 @@
 package com.gotrack.core_logistic.enums;
 
-
-
 public enum ShipmentStatus {
-      PendingPickup,
-      InTransitToWarehouse,
-      ArrivedAtWarehouse ,
-      OutForDelivery ,
-      InTransitToCustomer,
-      DELIVERED;
+    PendingPickup,
+    InTransitToWarehouse,
+    ArrivedAtWarehouse,
+    OutForDelivery,
+    InTransitToMERCHANT,
+    DELIVERED;
 
 
 
@@ -18,8 +16,8 @@ public enum ShipmentStatus {
               case PendingPickup -> newStatus == InTransitToWarehouse;
               case InTransitToWarehouse -> newStatus == ArrivedAtWarehouse;
               case ArrivedAtWarehouse -> newStatus == OutForDelivery;
-              case OutForDelivery -> newStatus == InTransitToCustomer;
-              case InTransitToCustomer -> newStatus == DELIVERED;
+              case OutForDelivery -> newStatus == InTransitToMERCHANT;
+              case InTransitToMERCHANT -> newStatus == DELIVERED;
               default -> false;
           };
 }

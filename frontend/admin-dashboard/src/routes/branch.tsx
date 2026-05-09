@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { checkIsEmployee, checkIsAuthenticated } from "@/features/auth";
 import { Sidebar } from "@/components/Sidebar";
-export const Route = createFileRoute("/branches")({
+export const Route = createFileRoute("/branch")({
   beforeLoad: async () => {
     // if (!checkIsAuthenticated() || !checkIsEmployee()) {
     //   throw redirect({ to: "/login" });

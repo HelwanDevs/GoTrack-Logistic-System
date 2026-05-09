@@ -11,6 +11,6 @@ import com.gotrack.inventory_service.Entity.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsByBaseSku(String baseSku);
-
+    boolean existsByNameAndMerchantId(String name, Long merchantId);
     Optional<Page<Product>> findByMerchantId(Long merchantId, Pageable pageable);
 }

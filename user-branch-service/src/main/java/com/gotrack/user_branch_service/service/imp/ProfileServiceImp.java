@@ -86,6 +86,17 @@ public class ProfileServiceImp implements ProfileService {
 
     @Override
     public ProfileResponseDTO findById(Long id) {
+        AuthenticationDetails authDetails = new AuthenticationDetails();
+        // check if MERCHANT is trying to access a profile that is not theirs
+        if (authDetails.getRole().equals("MERCHANT")) {
+            Long profileId = profileRepository.findByAccountId(authDetails.getAccountId())
+                    .orElseThrow(() -> new NotFoundException(
+                            "Profile not found for account ID: " + authDetails.getAccountId()))
+                    .getId();
+            if (!profileId.equals(id)) {
+                throw new ForbiddenException("You are not authorized to view this profile");
+            }
+        }
         ProfileEntity entity = profileRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Profile not found"));
         return profileMapper.toDto(entity);
@@ -101,16 +112,15 @@ public class ProfileServiceImp implements ProfileService {
         if (entity.getAccountId() != null && !entity.getAccountId().equals(authDetails.getAccountId())) {
             Boolean isSuperAdmin = accountService.isSuperAdmin(authDetails.getAccountId());
             // check if user is super admin to allow updating ADmIN and EMPLOYEE profiles,
-            // otherwise only allow updating MERCHANT, COURIER, CUSTOMER profiles 
+            // otherwise only allow updating MERCHANT, COURIER, MERCHANT profiles
             // if user is ADMIN or EMPLOYEE
             if (List.of("ADMIN", "EMPLOYEE").contains(entity.getType().toString()) && !isSuperAdmin) {
                 throw new ForbiddenException("You are not authorized to update this profile");
-            } else if (List.of("MERCHANT", "COURIER", "CUSTOMER").contains(entity.getType().toString()) &&
+            } else if (List.of("MERCHANT", "COURIER", "MERCHANT").contains(entity.getType().toString()) &&
                     !List.of("ADMIN", "EMPLOYEE").contains(authDetails.getRole())) {
                 throw new ForbiddenException("You are not authorized to update this profile");
             }
         }
-
 
         // FullName: updated when not null or blank
         if (dto.getFullName() != null && !dto.getFullName().isBlank()) {
@@ -135,9 +145,9 @@ public class ProfileServiceImp implements ProfileService {
             BranchEntity branch = validateBranch(dto.getBranchId());
             entity.setBranch(branch);
         }
-        if (dto.getAccountId() != null && !dto.getAccountId().isBlank() && !dto.getAccountId().equals(entity.getAccountId()))
-        {
-            if (  profileRepository.findByAccountId(dto.getAccountId()).isPresent() ) {
+        if (dto.getAccountId() != null && !dto.getAccountId().isBlank()
+                && !dto.getAccountId().equals(entity.getAccountId())) {
+            if (profileRepository.findByAccountId(dto.getAccountId()).isPresent()) {
                 throw new ConflictException("Account already linked to another profile");
             }
             if (!accountService.isAccountValid(dto.getAccountId())) {
@@ -191,7 +201,7 @@ public class ProfileServiceImp implements ProfileService {
                         root.get("phoneNumber"), phoneNumber));
             }
 
-            // exact type match — EMPLOYEE, COURIER, CUSTOMER, ADMIN
+            // exact type match — EMPLOYEE, COURIER, MERCHANT, ADMIN
             if (type != null) {
                 predicates.add(criteriaBuilder.equal(
                         root.get("type"), type));

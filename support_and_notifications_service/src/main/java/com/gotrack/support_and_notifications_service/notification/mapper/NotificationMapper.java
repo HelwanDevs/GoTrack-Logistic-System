@@ -13,6 +13,8 @@ public interface NotificationMapper {
     @Mapping(target = "message", source = "message")
     @Mapping(target = "channel", source = "channel")
     @Mapping(target = "isRead", constant = "false")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "sentAt", ignore = true)
     Notifications toNotificationMessage(String profileId, String message, NotificationChannel channel);
 
 }

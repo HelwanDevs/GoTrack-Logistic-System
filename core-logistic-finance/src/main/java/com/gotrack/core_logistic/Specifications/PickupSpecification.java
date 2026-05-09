@@ -21,8 +21,8 @@ public class PickupSpecification {
                 predicates.add(cb.equal(root.get("id"), filter.getId()));
             }
 
-            if (filter.getCustomerId() != null) {
-                predicates.add(cb.equal(root.get("customerId"), filter.getCustomerId()));
+            if (filter.getMERCHANTId() != null) {
+                predicates.add(cb.equal(root.get("MERCHANTId"), filter.getMERCHANTId()));
             }
 
             if (filter.getCourierId() != null) {
@@ -32,8 +32,7 @@ public class PickupSpecification {
             if (filter.getStatus() != null) {
                 predicates.add(cb.equal(
                         cb.lower(root.get("status").as(String.class)),
-                        filter.getStatus().toLowerCase()
-                ));
+                        filter.getStatus().toLowerCase()));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));
