@@ -47,7 +47,7 @@ public class JwtKeyService {
         return Base64.getDecoder().decode(base64);
     }
 
-    public String getPublicKeyBase64() {
+    public String loadPublicKeyBase64() {
         if (!isRsaMode())
             return null;
         try {
@@ -59,7 +59,7 @@ public class JwtKeyService {
         }
     }
 
-    public PrivateKey getPrivateKey() {
+    public PrivateKey loadPrivateKey() {
         if (!isRsaMode())
             return null;
         try {
@@ -72,7 +72,7 @@ public class JwtKeyService {
         }
     }
 
-    public PublicKey getPublicKey() {
+    public PublicKey loadPublicKey() {
         if (!isRsaMode())
             return null;
         try {
@@ -85,13 +85,13 @@ public class JwtKeyService {
         }
     }
 
-    public SecretKey getSecretKey() {
+    public SecretKey loadSecretKey() {
         if (!Boolean.TRUE.equals(useHmac))
             return null;
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public PublicKey getGatewayPublicKey() {
+    public PublicKey loadGatewayPublicKey() {
         try {
             String gatewayPublicKey = gatewayPublicKeyPath.getContentAsString(StandardCharsets.UTF_8);
             byte[] keyBytes = decodePem(gatewayPublicKey);
