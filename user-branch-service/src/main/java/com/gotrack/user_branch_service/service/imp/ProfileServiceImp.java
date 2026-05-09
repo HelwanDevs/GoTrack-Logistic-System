@@ -1,12 +1,12 @@
 package com.gotrack.user_branch_service.service.imp;
 
-import com.gotrack.user_branch_service.exceptions.ConflictException;
-import com.gotrack.user_branch_service.exceptions.NotFoundException;
-import com.gotrack.user_branch_service.filter.AuthenticationDetails;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.gotrack.user_branch_service.domain.dto.ApiResponse;
@@ -18,6 +18,9 @@ import com.gotrack.user_branch_service.domain.entity.ProfileEntity;
 import com.gotrack.user_branch_service.domain.enums.ProfileStatus;
 import com.gotrack.user_branch_service.domain.enums.ProfileType;
 import com.gotrack.user_branch_service.domain.response.PageResponse;
+import com.gotrack.user_branch_service.exceptions.ConflictException;
+import com.gotrack.user_branch_service.exceptions.NotFoundException;
+import com.gotrack.user_branch_service.filter.AuthenticationDetails;
 import com.gotrack.user_branch_service.mappers.imp.ProfileMapperImp;
 import com.gotrack.user_branch_service.repository.BranchRepository;
 import com.gotrack.user_branch_service.repository.ProfileRepository;
@@ -25,11 +28,6 @@ import com.gotrack.user_branch_service.service.ProfileService;
 
 import jakarta.persistence.criteria.Predicate;
 import jakarta.ws.rs.ForbiddenException;
-
-import org.springframework.data.jpa.domain.Specification;
-import java.util.ArrayList;
-
-import java.util.List;
 
 @Service
 public class ProfileServiceImp implements ProfileService {
@@ -88,6 +86,17 @@ public class ProfileServiceImp implements ProfileService {
 
     @Override
     public ProfileResponseDTO findById(Long id) {
+        AuthenticationDetails authDetails = new AuthenticationDetails();
+        // check if MERCHANT is trying to access a profile that is not theirs
+        if (authDetails.getRole().equals("MERCHANT")) {
+            Long profileId = profileRepository.findByAccountId(authDetails.getAccountId())
+                    .orElseThrow(() -> new NotFoundException(
+                            "Profile not found for account ID: " + authDetails.getAccountId()))
+                    .getId();
+            if (!profileId.equals(id)) {
+                throw new ForbiddenException("You are not authorized to view this profile");
+            }
+        }
         ProfileEntity entity = profileRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Profile not found"));
         return profileMapper.toDto(entity);
@@ -103,16 +112,15 @@ public class ProfileServiceImp implements ProfileService {
         if (entity.getAccountId() != null && !entity.getAccountId().equals(authDetails.getAccountId())) {
             Boolean isSuperAdmin = accountService.isSuperAdmin(authDetails.getAccountId());
             // check if user is super admin to allow updating ADmIN and EMPLOYEE profiles,
-            // otherwise only allow updating MERCHANT, COURIER, CUSTOMER profiles 
+            // otherwise only allow updating MERCHANT, COURIER, MERCHANT profiles
             // if user is ADMIN or EMPLOYEE
             if (List.of("ADMIN", "EMPLOYEE").contains(entity.getType().toString()) && !isSuperAdmin) {
                 throw new ForbiddenException("You are not authorized to update this profile");
-            } else if (List.of("MERCHANT", "COURIER", "CUSTOMER").contains(entity.getType().toString()) &&
+            } else if (List.of("MERCHANT", "COURIER", "MERCHANT").contains(entity.getType().toString()) &&
                     !List.of("ADMIN", "EMPLOYEE").contains(authDetails.getRole())) {
                 throw new ForbiddenException("You are not authorized to update this profile");
             }
         }
-
 
         // FullName: updated when not null or blank
         if (dto.getFullName() != null && !dto.getFullName().isBlank()) {
@@ -137,9 +145,9 @@ public class ProfileServiceImp implements ProfileService {
             BranchEntity branch = validateBranch(dto.getBranchId());
             entity.setBranch(branch);
         }
-        if (dto.getAccountId() != null && !dto.getAccountId().isBlank() && !dto.getAccountId().equals(entity.getAccountId()))
-        {
-            if (  profileRepository.findByAccountId(dto.getAccountId()).isPresent() ) {
+        if (dto.getAccountId() != null && !dto.getAccountId().isBlank()
+                && !dto.getAccountId().equals(entity.getAccountId())) {
+            if (profileRepository.findByAccountId(dto.getAccountId()).isPresent()) {
                 throw new ConflictException("Account already linked to another profile");
             }
             if (!accountService.isAccountValid(dto.getAccountId())) {
@@ -193,7 +201,7 @@ public class ProfileServiceImp implements ProfileService {
                         root.get("phoneNumber"), phoneNumber));
             }
 
-            // exact type match — EMPLOYEE, COURIER, CUSTOMER, ADMIN
+            // exact type match — EMPLOYEE, COURIER, MERCHANT, ADMIN
             if (type != null) {
                 predicates.add(criteriaBuilder.equal(
                         root.get("type"), type));
@@ -241,6 +249,13 @@ public class ProfileServiceImp implements ProfileService {
             throw new ConflictException("Cannot assign profile to a deleted or inactive branch");
         }
         return branch;
+    }
+
+    @Override
+    public ProfileResponseDTO getProfileByAccountId(String accountId) {
+        ProfileEntity entity = profileRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new NotFoundException("Profile not found"));
+        return profileMapper.toDto(entity);
     }
 
 }
