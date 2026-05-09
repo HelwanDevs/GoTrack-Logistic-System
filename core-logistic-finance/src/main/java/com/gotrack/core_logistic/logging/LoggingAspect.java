@@ -22,7 +22,8 @@ public class LoggingAspect {
     private static final String APPLICATION_PACKAGE = "within(" + BASE_PACKAGE + "..*)";
 
     private static final String EXCLUDED_PACKAGES = "!within(" + BASE_PACKAGE + "..config..*) " +
-            "&& !within(" + BASE_PACKAGE + "..logging..*)" + "&& !within(" + BASE_PACKAGE + "..filter..*)";
+            "&& !within(" + BASE_PACKAGE + "..logging..*)" + "&& !within(" + BASE_PACKAGE + "..filter..*)"
+            + "&& !within(" + BASE_PACKAGE + "..model..*)" + "&& !within(" + BASE_PACKAGE + "..Specifications..*)";
 
     @Pointcut(APPLICATION_PACKAGE + " && " + EXCLUDED_PACKAGES)
     public void app() {
