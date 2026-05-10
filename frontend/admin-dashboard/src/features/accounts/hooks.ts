@@ -6,6 +6,7 @@ import {
   updateAccountApi,
   deleteAccountApi,
   changeAccountPasswordApi,
+  isSuperAdminApi,
 } from "./api";
 import {
   UpdateAccountRequest,
@@ -111,5 +112,14 @@ export const useChangePasswordMutation = () => {
         "Failed to change password";
       throw new Error(message);
     },
+  });
+};
+
+export const useIsSuperAdminQuery = (accountId: string) => {
+  return useQuery({
+    queryKey: accountQueryKeys.isSuperAdmin(accountId),
+    queryFn: () => isSuperAdminApi(accountId),
+    enabled: Boolean(accountId),
+    staleTime: 30 * 1000,
   });
 };

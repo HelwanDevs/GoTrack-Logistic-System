@@ -16,10 +16,15 @@ import { Route as R404RouteImport } from './routes/404'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as DashboardShipmentsRouteImport } from './routes/dashboard/shipments'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
 import { Route as DashboardProfilesRouteImport } from './routes/dashboard/profiles'
+import { Route as DashboardProductsRouteImport } from './routes/dashboard/products'
+import { Route as DashboardPickupsRouteImport } from './routes/dashboard/pickups'
+import { Route as DashboardInventoryRouteImport } from './routes/dashboard/inventory'
 import { Route as DashboardBranchesRouteImport } from './routes/dashboard/branches'
 import { Route as DashboardAccountsRouteImport } from './routes/dashboard/accounts'
+import { Route as DashboardProfileProfileIdRouteImport } from './routes/dashboard/profile/$profileId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -56,6 +61,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardShipmentsRoute = DashboardShipmentsRouteImport.update({
+  id: '/shipments',
+  path: '/shipments',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -64,6 +74,21 @@ const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
 const DashboardProfilesRoute = DashboardProfilesRouteImport.update({
   id: '/profiles',
   path: '/profiles',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardProductsRoute = DashboardProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardPickupsRoute = DashboardPickupsRouteImport.update({
+  id: '/pickups',
+  path: '/pickups',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardInventoryRoute = DashboardInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardBranchesRoute = DashboardBranchesRouteImport.update({
@@ -76,6 +101,12 @@ const DashboardAccountsRoute = DashboardAccountsRouteImport.update({
   path: '/accounts',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardProfileProfileIdRoute =
+  DashboardProfileProfileIdRouteImport.update({
+    id: '/profile/$profileId',
+    path: '/profile/$profileId',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -86,9 +117,14 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/dashboard/accounts': typeof DashboardAccountsRoute
   '/dashboard/branches': typeof DashboardBranchesRoute
+  '/dashboard/inventory': typeof DashboardInventoryRoute
+  '/dashboard/pickups': typeof DashboardPickupsRoute
+  '/dashboard/products': typeof DashboardProductsRoute
   '/dashboard/profiles': typeof DashboardProfilesRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/shipments': typeof DashboardShipmentsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/profile/$profileId': typeof DashboardProfileProfileIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -98,9 +134,14 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/dashboard/accounts': typeof DashboardAccountsRoute
   '/dashboard/branches': typeof DashboardBranchesRoute
+  '/dashboard/inventory': typeof DashboardInventoryRoute
+  '/dashboard/pickups': typeof DashboardPickupsRoute
+  '/dashboard/products': typeof DashboardProductsRoute
   '/dashboard/profiles': typeof DashboardProfilesRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/shipments': typeof DashboardShipmentsRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/profile/$profileId': typeof DashboardProfileProfileIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -112,9 +153,14 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/dashboard/accounts': typeof DashboardAccountsRoute
   '/dashboard/branches': typeof DashboardBranchesRoute
+  '/dashboard/inventory': typeof DashboardInventoryRoute
+  '/dashboard/pickups': typeof DashboardPickupsRoute
+  '/dashboard/products': typeof DashboardProductsRoute
   '/dashboard/profiles': typeof DashboardProfilesRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/shipments': typeof DashboardShipmentsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/profile/$profileId': typeof DashboardProfileProfileIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,9 +173,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/dashboard/accounts'
     | '/dashboard/branches'
+    | '/dashboard/inventory'
+    | '/dashboard/pickups'
+    | '/dashboard/products'
     | '/dashboard/profiles'
     | '/dashboard/settings'
+    | '/dashboard/shipments'
     | '/dashboard/'
+    | '/dashboard/profile/$profileId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -139,9 +190,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/dashboard/accounts'
     | '/dashboard/branches'
+    | '/dashboard/inventory'
+    | '/dashboard/pickups'
+    | '/dashboard/products'
     | '/dashboard/profiles'
     | '/dashboard/settings'
+    | '/dashboard/shipments'
     | '/dashboard'
+    | '/dashboard/profile/$profileId'
   id:
     | '__root__'
     | '/'
@@ -152,9 +208,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/dashboard/accounts'
     | '/dashboard/branches'
+    | '/dashboard/inventory'
+    | '/dashboard/pickups'
+    | '/dashboard/products'
     | '/dashboard/profiles'
     | '/dashboard/settings'
+    | '/dashboard/shipments'
     | '/dashboard/'
+    | '/dashboard/profile/$profileId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -217,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/shipments': {
+      id: '/dashboard/shipments'
+      path: '/shipments'
+      fullPath: '/dashboard/shipments'
+      preLoaderRoute: typeof DashboardShipmentsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/settings': {
       id: '/dashboard/settings'
       path: '/settings'
@@ -229,6 +297,27 @@ declare module '@tanstack/react-router' {
       path: '/profiles'
       fullPath: '/dashboard/profiles'
       preLoaderRoute: typeof DashboardProfilesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/products': {
+      id: '/dashboard/products'
+      path: '/products'
+      fullPath: '/dashboard/products'
+      preLoaderRoute: typeof DashboardProductsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/pickups': {
+      id: '/dashboard/pickups'
+      path: '/pickups'
+      fullPath: '/dashboard/pickups'
+      preLoaderRoute: typeof DashboardPickupsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/inventory': {
+      id: '/dashboard/inventory'
+      path: '/inventory'
+      fullPath: '/dashboard/inventory'
+      preLoaderRoute: typeof DashboardInventoryRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/branches': {
@@ -245,23 +334,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardAccountsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/profile/$profileId': {
+      id: '/dashboard/profile/$profileId'
+      path: '/profile/$profileId'
+      fullPath: '/dashboard/profile/$profileId'
+      preLoaderRoute: typeof DashboardProfileProfileIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface DashboardRouteChildren {
   DashboardAccountsRoute: typeof DashboardAccountsRoute
   DashboardBranchesRoute: typeof DashboardBranchesRoute
+  DashboardInventoryRoute: typeof DashboardInventoryRoute
+  DashboardPickupsRoute: typeof DashboardPickupsRoute
+  DashboardProductsRoute: typeof DashboardProductsRoute
   DashboardProfilesRoute: typeof DashboardProfilesRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardShipmentsRoute: typeof DashboardShipmentsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardProfileProfileIdRoute: typeof DashboardProfileProfileIdRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAccountsRoute: DashboardAccountsRoute,
   DashboardBranchesRoute: DashboardBranchesRoute,
+  DashboardInventoryRoute: DashboardInventoryRoute,
+  DashboardPickupsRoute: DashboardPickupsRoute,
+  DashboardProductsRoute: DashboardProductsRoute,
   DashboardProfilesRoute: DashboardProfilesRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardShipmentsRoute: DashboardShipmentsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardProfileProfileIdRoute: DashboardProfileProfileIdRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(

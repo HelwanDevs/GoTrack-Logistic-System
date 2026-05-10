@@ -6,6 +6,11 @@ import { Select } from "@/components/Select";
 import { ProfileType, ProfileStatus } from "@/types/enums";
 import { AccountSearchDropdown } from "@/components/AccountSearchDropdown";
 import { SearchableSelect } from "@/components/SearchableSelect";
+import {
+  useAccountsQuery,
+  type AccountResponse,
+  type ListAccountsParams,
+} from "@/features/accounts";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -23,7 +28,7 @@ interface ProfilesCreateFormProps {
   setForm: React.Dispatch<React.SetStateAction<CreateProfileForm>>;
   errors: Record<string, string>;
   setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
-  onSubmit: () => void;
+  onSubmit: (data: CreateProfileForm) => void;
   onCancel: () => void;
   branches: { id: string; name: string }[];
 }
@@ -33,16 +38,6 @@ interface AccountResult {
   email: string;
   role: string;
 }
-
-// ─── Fake Data ───────────────────────────────────────────────────────────────
-
-const fakeAccounts: AccountResult[] = [
-  { id: "1", email: "ahmed@company.com", role: "موظف" },
-  { id: "2", email: "noura@company.com", role: "مسؤول" },
-  { id: "3", email: "sara@company.com", role: "تاجر" },
-  { id: "4", email: "khalid@company.com", role: "موظف" },
-  { id: "5", email: "faisal@company.com", role: "تاجر" },
-];
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
@@ -61,6 +56,28 @@ export const ProfilesCreateForm = ({
     null,
   );
 
+  // ── Fetch accounts from API ──
+  const [accountPage, setAccountPage] = useState(0);
+  const accountQuery: ListAccountsParams = {
+    page: accountPage,
+    size: 10,
+    email: accountSearchQuery || undefined,
+    includeDeleted: false,
+  };
+
+  const {
+    data: accountsData,
+    isLoading: accountsLoading,
+  } = useAccountsQuery(accountQuery);
+
+  const accounts: AccountResult[] =
+    accountsData?.accounts?.map((account: AccountResponse) => ({
+      id: account.id,
+      email: account.email,
+      role: account.role || "غير محدد",
+    })) || [];
+
+  // ── Validation ──
   const validate = (): boolean => {
     const errs: Record<string, string> = {};
     if (!form.full_name.trim()) errs.full_name = "الاسم الكامل مطلوب";
@@ -68,16 +85,16 @@ export const ProfilesCreateForm = ({
     else if (!/^\+?[0-9]{10,15}$/.test(form.phone_number.trim()))
       errs.phone_number = "رقم الهاتف غير صحيح";
     if (!form.type) errs.type = "النوع مطلوب";
-    if (!form.status) errs.status = "الحالة مطلوبة";
     setLocalErrors(errs);
     return Object.keys(errs).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
-      setForm({ ...form, account_id: linkedAccount?.id ?? form.account_id });
-      onSubmit();
+    const valid = validate();
+    if (valid) {
+      const submitData = { ...form, account_id: linkedAccount?.id ?? form.account_id };
+      onSubmit(submitData);
     }
   };
 
@@ -85,7 +102,6 @@ export const ProfilesCreateForm = ({
     setLinkedAccount(account);
     setForm({ ...form, account_id: account.id });
     setAccountSearchQuery(account.email);
-    setAccountSearchQuery("");
   };
 
   const handleRemoveAccount = () => {
@@ -129,6 +145,8 @@ export const ProfilesCreateForm = ({
       return next;
     });
   };
+
+  const isSearching = accountsLoading;
 
   return (
     <Card className="bg-surface-container-low border-2 border-secondary-container/20">
@@ -189,22 +207,6 @@ export const ProfilesCreateForm = ({
             />
           </div>
           <div className="col-span-3">
-            <Select
-              label="الحالة"
-              value={form.status}
-              onChange={(e) => {
-                setForm({
-                  ...form,
-                  status: (e.target.value as ProfileStatus) || "",
-                });
-                clearError("status");
-              }}
-              options={statusOptions}
-              error={errors.status || localErrors.status}
-              required
-            />
-          </div>
-          <div className="col-span-3">
             <SearchableSelect
               options={branchOptions}
               searchQuery={
@@ -256,12 +258,16 @@ export const ProfilesCreateForm = ({
               الحساب المرتبط
             </label>
             <AccountSearchDropdown
-              accounts={fakeAccounts}
+              accounts={accounts}
               searchQuery={accountSearchQuery}
-              setSearchQuery={setAccountSearchQuery}
+              setSearchQuery={(value) => {
+                setAccountSearchQuery(value);
+                setAccountPage(0);
+              }}
               onSelect={handleSelectAccount}
               placeholder="example@domain.com"
               selectedId={form.account_id || undefined}
+              isLoading={isSearching}
             />
             <p className="text-body-sm text-on-surface-variant mt-2">
               اختياري — ابحث عن حساب لربطه بالملف الشخصي

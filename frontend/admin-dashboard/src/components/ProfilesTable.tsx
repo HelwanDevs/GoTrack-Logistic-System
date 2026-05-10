@@ -6,6 +6,7 @@ import { Select } from "@/components/Select";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { Pagination } from "@/components/Pagination";
 import { SearchableSelect } from "@/components/SearchableSelect";
+import { useNavigate } from "@tanstack/react-router";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -111,6 +112,7 @@ export const ProfilesTable = ({
   isLoading,
   branches,
 }: ProfilesTableProps) => {
+  const navigate = useNavigate();
   const paged = filtered.slice(searchPage * size, searchPage * size + size);
 
   const typeOptions = [
@@ -213,9 +215,12 @@ export const ProfilesTable = ({
                           className="text-body-sm w-50!"
                         />
                       ) : (
-                        <p className="text-body-md text-on-surface">
+                        <button
+                          onClick={() => navigate({ to: "/dashboard/profile/$profileId", params: { profileId: profile.id } })}
+                          className="text-body-md text-on-surface hover:text-primary text-left font-medium transition-colors"
+                        >
                           {profile.full_name}
-                        </p>
+                        </button>
                       )}
                     </div>
                   </td>

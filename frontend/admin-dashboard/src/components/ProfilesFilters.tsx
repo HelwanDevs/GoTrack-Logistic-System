@@ -87,7 +87,7 @@ export const ProfilesFilters = ({
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
           <div className="col-span-1 md:col-span-3">
             <Input
-              label="البحث حسب الاسم , رقم الهاتف أو البريد الإلكتروني"
+              label="البحث حسب الاسم"
               type="text"
               placeholder="ابحث..."
               value={nameSearch}

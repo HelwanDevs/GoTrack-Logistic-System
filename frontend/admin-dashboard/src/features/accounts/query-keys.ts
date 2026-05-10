@@ -8,4 +8,6 @@ export const accountQueryKeys = {
   create: () => [...accountQueryKeys.all, "create"] as const,
   update: (id: string) => [...accountQueryKeys.all, "update", id] as const,
   delete: (id: string) => [...accountQueryKeys.all, "delete", id] as const,
+  isSuperAdmin: (accountId: string) =>
+    [...accountQueryKeys.all, "superAdmin", accountId] as const,
 };

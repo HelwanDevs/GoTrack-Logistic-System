@@ -55,6 +55,20 @@ export const Sidebar = () => {
       Roles: ["admin"],
     },
     {
+      id: "pickups",
+      label: "إدارة طلبات الاستلام",
+      icon: "🚚",
+      onClick: () => setActiveNav("pickups"),
+      Roles: ["admin", "employee"],
+    },
+    {
+      id: "inventory",
+      label: "إدارة المخزون",
+      icon: "🏬",
+      onClick: () => setActiveNav("inventory"),
+      Roles: ["admin"],
+    },
+    {
       id: "shipments",
       label: "إدارة الشحنات",
       icon: "📦",
@@ -63,10 +77,10 @@ export const Sidebar = () => {
       Roles: ["admin", "employee"],
     },
     {
-      id: "reports",
-      label: "التقارير",
-      icon: "📈",
-      onClick: () => setActiveNav("reports"),
+      id: "products",
+      label: "إدارة المنتجات",
+      icon: "📱",
+      onClick: () => setActiveNav("products"),
       Roles: ["admin"],
     },
     {

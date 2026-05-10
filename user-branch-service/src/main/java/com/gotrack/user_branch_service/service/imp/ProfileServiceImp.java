@@ -253,6 +253,9 @@ public class ProfileServiceImp implements ProfileService {
 
     @Override
     public ProfileResponseDTO getProfileByAccountId(String accountId) {
+        if (accountId.startsWith("ACCOUNT_")) {
+            accountId = accountId.substring(8);
+        }
         ProfileEntity entity = profileRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new NotFoundException("Profile not found"));
         return profileMapper.toDto(entity);

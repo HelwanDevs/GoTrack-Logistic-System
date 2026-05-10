@@ -89,3 +89,12 @@ export const changeAccountPasswordApi = async (
   );
   return response.data;
 };
+
+export const isSuperAdminApi = async (
+  accountId: string,
+): Promise<boolean> => {
+  const response = await apiClient.get(
+    `/api/auth/accounts/super-admin/${accountId}`,
+  );
+  return response.data;
+};

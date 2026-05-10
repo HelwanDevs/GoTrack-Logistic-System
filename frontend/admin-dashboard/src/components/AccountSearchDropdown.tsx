@@ -13,6 +13,7 @@ interface AccountSearchDropdownProps {
   onSelect: (account: AccountResult) => void;
   placeholder?: string;
   selectedId?: string;
+  isLoading?: boolean;
 }
 
 export const AccountSearchDropdown = ({
@@ -22,6 +23,7 @@ export const AccountSearchDropdown = ({
   onSelect,
   placeholder = "example@domain.com",
   selectedId,
+  isLoading = false,
 }: AccountSearchDropdownProps) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -92,7 +94,13 @@ export const AccountSearchDropdown = ({
         </div>
       )}
 
-      {isOpen && filteredAccounts.length === 0 && (
+      {isOpen && isLoading && (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-surface border-2 border-outline-variant rounded-lg z-10 p-3">
+          <p className="text-on-surface-variant text-body-sm">جاري التحميل...</p>
+        </div>
+      )}
+
+      {isOpen && !isLoading && filteredAccounts.length === 0 && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-surface border-2 border-outline-variant rounded-lg z-10 p-3">
           <p className="text-error text-body-sm">لا توجد نتائج</p>
         </div>

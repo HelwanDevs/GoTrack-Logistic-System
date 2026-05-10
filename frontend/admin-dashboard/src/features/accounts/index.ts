@@ -25,3 +25,7 @@ export {
 } from "./hooks";
 
 export { accountQueryKeys } from "./query-keys";
+
+export { isSuperAdminApi } from "./api";
+
+export { useIsSuperAdminQuery } from "./hooks";
