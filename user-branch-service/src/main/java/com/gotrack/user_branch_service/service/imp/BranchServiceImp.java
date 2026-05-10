@@ -34,6 +34,9 @@ public class BranchServiceImp implements BranchService {
     public BranchEntity findById(Long id) {
         BranchEntity branch = branchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Branch not found"));
+        if (Boolean.TRUE.equals(branch.getIsDeleted())) {
+            throw new NotFoundException("Branch not found");
+        }
         return branch;
     }
 
