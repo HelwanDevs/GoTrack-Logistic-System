@@ -1,6 +1,8 @@
 package com.gotrack.auth_service.services;
 
-import com.gotrack.auth_service.Jwt.RefreshTokenService;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +14,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.gotrack.auth_service.Exceptions.AccountNotFoundException;
+import com.gotrack.auth_service.Exceptions.EmailAlreadyExistsException;
+import com.gotrack.auth_service.Jwt.JwtService;
+import com.gotrack.auth_service.Jwt.RefreshTokenService;
 import com.gotrack.auth_service.dto.AccountResponse;
 import com.gotrack.auth_service.dto.CreateAccountRequest;
 import com.gotrack.auth_service.dto.CreateAccountResponse;
@@ -21,12 +27,7 @@ import com.gotrack.auth_service.dto.UpdateAccountRequest;
 import com.gotrack.auth_service.dto.UpdateDeleteResponse;
 import com.gotrack.auth_service.entity.Account;
 import com.gotrack.auth_service.enums.Role;
-import com.gotrack.auth_service.Exceptions.AccountNotFoundException;
-import com.gotrack.auth_service.Exceptions.EmailAlreadyExistsException;
-import com.gotrack.auth_service.Jwt.JwtService;
 import com.gotrack.auth_service.repository.AccountRepository;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -56,7 +57,7 @@ public class AccountService {
 
             String currentUserIdString = auth.getDetails().toString();
 
-            Account currentUser = accRepository.findById(currentUserIdString)
+            Account currentUser = accRepository.findByEmail(currentUserIdString)
                     .orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
             if (currentUser.getSuperAdmin() == false) {
