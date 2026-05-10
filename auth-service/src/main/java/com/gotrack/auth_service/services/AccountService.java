@@ -113,7 +113,7 @@ public class AccountService {
                 .orElseThrow(() -> new AccountNotFoundException("Account ID does not exist"));
 
         String currentUserId = (String) SecurityContextHolder.getContext().getAuthentication().getDetails();
-        Account currentUser = accRepository.findById(currentUserId)
+        Account currentUser = accRepository.findByEmail(currentUserId)
                 .orElseThrow(() -> new AccountNotFoundException("Your account not found"));
 
         if (currentUserId.equals(targetId) && request.getEmail() == null && request.getPassword() == null
