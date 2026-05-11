@@ -10,7 +10,8 @@ description: Overview of the GoTrack Logistic System microservices architecture,
 GoTrack is a **logistics and supply chain management platform** built as a Spring Boot microservices application. It enables merchants to manage products, inventory, shipments, pickups, finances, and complaints — all coordinated through an API Gateway with Eureka service discovery.
 
 ### You can find more about system documentation here 👇
-## <a href="/tree/documentation">Project Documentation</a>
+## [Project Documentation](./tree/documentation)
+
 
 ## Directory Layout
 
