@@ -16,7 +16,9 @@ public class ProfileResponseDTO {
 
     private ProfileType type;
 
-    private String accountId; // Nullable, Couriers have no account    private BranchDTO branch;
+    private String accountId; // Nullable, Couriers have no account
+
+    private BranchDTO branch;
 
     private ProfileStatus status;
 
