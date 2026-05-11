@@ -61,7 +61,7 @@ public class AuthController {
     public Boolean validateUserRefresToken(@RequestBody String accountId) {
 
         try {
-            return refreshTokenService.validateByUsername(accountId);
+            return refreshTokenService.validateByAccountId(accountId);
         } catch (Exception e) {
             return false;
         }
