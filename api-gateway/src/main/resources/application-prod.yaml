@@ -1,0 +1,13 @@
+server:
+  port: ${SERVER_PORT}
+
+jwt:
+  gateway:
+    private-key-path: ${JWT_GATEWAY_PRIVATE_KEY_PATH}
+    public-key-path: ${JWT_GATEWAY_PUBLIC_KEY_PATH}
+    client-public-key-path: ${JWT_CLIENT_PUBLIC_KEY_PATH}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE}

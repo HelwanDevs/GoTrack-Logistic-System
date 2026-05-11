@@ -1,0 +1,20 @@
+spring:
+  docker:
+    compose:
+      enabled: false
+  mongodb:
+      uri: ${MONGODB_URI}
+
+server:
+  port: ${SERVER_PORT}
+  
+jwt:
+  private-key-path: ${JWT_CLIENT_PRIVATE_KEY_PATH}
+  public-key-path: ${JWT_CLIENT_PUBLIC_KEY_PATH}
+  gateway-public-key-path: ${JWT_GATEWAY_PUBLIC_KEY_PATH}
+
+eureka:
+  client:
+    enabled: true
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE}

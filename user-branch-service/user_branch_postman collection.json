@@ -1,0 +1,915 @@
+{
+  "info": {
+    "name": "GoTrack User-Branch Service API",
+    "description": "Complete API collection for Branch and Profile management with test cases",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "gotrack-user-branch-api"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8082",
+      "type": "string"
+    },
+    {
+      "key": "branchId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "profileId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Branches",
+      "item": [
+        {
+          "name": "Create Branch - Success",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Downtown Branch\",\n  \"location\": \"123 Main St\",\n  \"phone\": \"+201112345678\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/branches",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "branches"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has ID', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.id).to.exist;",
+                  "  pm.collectionVariables.set('branchId', json.id);",
+                  "});",
+                  "pm.test('Fields match', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.name).to.eql('Downtown Branch');",
+                  "  pm.expect(json.phone).to.eql('+201112345678');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Branch - Validation Error",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"location\": \"Test\",\n  \"phone\": \"invalid\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/branches",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "branches"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Has validation errors', () => {",
+                  "  pm.expect(pm.response.text()).to.include('validation');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Branch - Duplicate Phone",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Another Branch\",\n  \"location\": \"456 Oak Ave\",\n  \"phone\": \"+201112345678\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/branches",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "branches"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 409 Conflict', () => pm.response.to.have.status(409));",
+                  "pm.test('Error message', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.message || json.error).to.include('Phone already in use');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Branches - Pagination",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/branches?page=0&size=5&sort=id,asc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "branches"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "5" },
+                { "key": "sort", "value": "id,asc" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has pagination fields', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.content).to.be.an('array');",
+                  "  pm.expect(json.pageNumber).to.exist;",
+                  "  pm.expect(json.pageSize).to.exist;",
+                  "  pm.expect(json.totalElements).to.exist;",
+                  "  pm.expect(json.totalPages).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search Branches - By Name (Partial, Case-Insensitive)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/branches/search?name=downtown&page=0&size=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "branches", "search"],
+              "query": [
+                { "key": "name", "value": "downtown" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "5" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Results contain search term', () => {",
+                  "  const json = pm.response.json();",
+                  "  json.content.forEach(branch => {",
+                  "    pm.expect(branch.name.toLowerCase()).to.include('downtown');",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search Branches - By Phone (Exact)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/branches/search?phone=+201112345678",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "branches", "search"],
+              "query": [{ "key": "phone", "value": "+201112345678" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Exact phone match', () => {",
+                  "  const json = pm.response.json();",
+                  "  json.content.forEach(branch => {",
+                  "    pm.expect(branch.phone).to.eql('+201112345678');",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search Branches - By isDeleted=false",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/branches/search?isDeleted=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "branches", "search"],
+              "query": [{ "key": "isDeleted", "value": "false" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('All results are not deleted', () => {",
+                  "  const json = pm.response.json();",
+                  "  json.content.forEach(branch => {",
+                  "    pm.expect(branch.isDeleted).to.be.false;",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Branch - Success",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Downtown Branch - Updated\",\n  \"location\": \"123 Main St, Suite 100\",\n  \"phone\": \"+201112345678\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/branches/{{branchId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "branches", "{{branchId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Name updated', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.name).to.eql('Downtown Branch - Updated');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Branch - Not Found",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test\",\n  \"location\": \"Test\",\n  \"phone\": \"+201223456789\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/branches/999999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "branches", "999999"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Error message', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.message || json.error).to.include('not found');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Branch - Already Deleted",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test\",\n  \"location\": \"Test\",\n  \"phone\": \"+201001234567\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/branches/{{branchId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "branches", "{{branchId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// First soft-delete the branch",
+                  "const deleteReq = {",
+                  "  url: pm.collectionVariables.get('baseUrl') + '/api/branches/' + pm.collectionVariables.get('branchId'),",
+                  "  method: 'DELETE'",
+                  "};",
+                  "pm.sendRequest(deleteReq, () => {});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Cannot update deleted branch', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.message || json.error).to.include('deleted');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Soft Delete Branch",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/branches/{{branchId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "branches", "{{branchId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Success message', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.message).to.eql('Branch deactivated successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Already Deleted Branch",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/branches/{{branchId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "branches", "{{branchId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Already deleted message', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.message || json.error).to.include('already deleted');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Profiles",
+      "item": [
+        {
+          "name": "Create Profile - Success",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"phoneNumber\": \"+201112345678\",\n  \"type\": \"EMPLOYEE\",\n  \"branchId\": {{branchId}},\n  \"accountId\": \"acc_12345\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profiles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profiles"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Has profile ID', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.data).to.exist;",
+                  "  pm.collectionVariables.set('profileId', json.data);",
+                  "});",
+                  "pm.test('Success message', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.message).to.eql('Profile created');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Profile - Duplicate AccountId",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Jane Doe\",\n  \"phoneNumber\": \"+201223456789\",\n  \"type\": \"EMPLOYEE\",\n  \"branchId\": {{branchId}},\n  \"accountId\": \"acc_12345\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profiles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profiles"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 409', () => pm.response.to.have.status(409));",
+                  "pm.test('Duplicate accountId error', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.message || json.error).to.include('Profile already exists');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Profile - Duplicate Phone",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Bob Smith\",\n  \"phoneNumber\": \"+201112345678\",\n  \"type\": \"COURIER\",\n  \"branchId\": {{branchId}},\n  \"accountId\": \"acc_67890\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profiles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profiles"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 409', () => pm.response.to.have.status(409));",
+                  "pm.test('Duplicate phone error', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.message || json.error).to.include('Phone number already in use');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Profile - Invalid BranchId",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Alice Wonder\",\n  \"phoneNumber\": \"+201009876543\",\n  \"type\": \"EMPLOYEE\",\n  \"branchId\": 999999,\n  \"accountId\": \"acc_11111\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profiles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profiles"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Branch not found error', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.message || json.error).to.include('Branch not found');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Profile - Success",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe - Updated\",\n  \"phoneNumber\": \"+201112345678\",\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profiles/{{profileId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profiles", "{{profileId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Update success message', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.message).to.eql('Profile updated successfully');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Profile - Not Found",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Test\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profiles/999999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profiles", "999999"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Profile not found', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.message || json.error).to.include('not found');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Profiles - Pagination",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profiles?page=0&size=10&sortBy=fullName",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profiles"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                { "key": "sortBy", "value": "fullName" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has pagination structure', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.content).to.be.an('array');",
+                  "  pm.expect(json.pageNumber).to.exist;",
+                  "  pm.expect(json.totalElements).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search Profiles - By Name (Partial)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profiles/search?name=john&page=0&size=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profiles", "search"],
+              "query": [
+                { "key": "name", "value": "john" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "5" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Results match name filter', () => {",
+                  "  const json = pm.response.json();",
+                  "  json.content.forEach(profile => {",
+                  "    pm.expect(profile.fullName.toLowerCase()).to.include('john');",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search Profiles - By Type",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profiles/search?type=EMPLOYEE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profiles", "search"],
+              "query": [{ "key": "type", "value": "EMPLOYEE" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('All results are EMPLOYEE type', () => {",
+                  "  const json = pm.response.json();",
+                  "  json.content.forEach(profile => {",
+                  "    pm.expect(profile.type).to.eql('EMPLOYEE');",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search Profiles - By BranchId",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profiles/search?branchId={{branchId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profiles", "search"],
+              "query": [{ "key": "branchId", "value": "{{branchId}}" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('All results belong to branch', () => {",
+                  "  const json = pm.response.json();",
+                  "  json.content.forEach(profile => {",
+                  "    pm.expect(profile.branchId).to.eql(pm.collectionVariables.get('branchId'));",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search Profiles - By Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profiles/search?status=ACTIVE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profiles", "search"],
+              "query": [{ "key": "status", "value": "ACTIVE" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('All results are ACTIVE', () => {",
+                  "  const json = pm.response.json();",
+                  "  json.content.forEach(profile => {",
+                  "    pm.expect(profile.status).to.eql('ACTIVE');",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search Profiles - Combined Filters",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/profiles/search?name=john&type=EMPLOYEE&status=ACTIVE&branchId={{branchId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "profiles", "search"],
+              "query": [
+                { "key": "name", "value": "john" },
+                { "key": "type", "value": "EMPLOYEE" },
+                { "key": "status", "value": "ACTIVE" },
+                { "key": "branchId", "value": "{{branchId}}" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('All filters applied', () => {",
+                  "  const json = pm.response.json();",
+                  "  json.content.forEach(profile => {",
+                  "    pm.expect(profile.fullName.toLowerCase()).to.include('john');",
+                  "    pm.expect(profile.type).to.eql('EMPLOYEE');",
+                  "    pm.expect(profile.status).to.eql('ACTIVE');",
+                  "    pm.expect(profile.branchId).to.eql(pm.collectionVariables.get('branchId'));",
+                  "  });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Integration Flow",
+      "item": [
+        {
+          "name": "Full Workflow: Create Branch → Create Profile → Search → Update → Delete",
+          "item": [
+            {
+              "name": "1. Create Test Branch",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Integration Test Branch\",\n  \"location\": \"Test Location\",\n  \"phone\": \"+201001112222\"\n}"
+                },
+                "url": "{{baseUrl}}/api/branches"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('branchId', json.id);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "2. Create Profile in Branch",
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"Integration User\",\n  \"phoneNumber\": \"+201003334444\",\n  \"type\": \"EMPLOYEE\",\n  \"branchId\": {{branchId}},\n  \"accountId\": \"acc_integration\"\n}"
+                },
+                "url": "{{baseUrl}}/api/users/profiles"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('profileId', json.data);"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "3. Search Profile by Branch",
+              "request": {
+                "method": "GET",
+                "url": "{{baseUrl}}/api/users/profiles/search?branchId={{branchId}}"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Profile appears in branch search', () => {",
+                      "  const json = pm.response.json();",
+                      "  const found = json.content.some(p => p.id == pm.collectionVariables.get('profileId'));",
+                      "  pm.expect(found).to.be.true;",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "4. Soft Delete Branch (Cascading check)",
+              "request": {
+                "method": "DELETE",
+                "url": "{{baseUrl}}/api/branches/{{branchId}}"
+              }
+            },
+            {
+              "name": "5. Verify Profile Cannot Update with Deleted Branch",
+              "request": {
+                "method": "PUT",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"branchId\": {{branchId}}\n}"
+                },
+                "url": "{{baseUrl}}/api/users/profiles/{{profileId}}"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test('Cannot assign to deleted branch', () => {",
+                      "  pm.response.to.have.status(409);",
+                      "  const json = pm.response.json();",
+                      "  pm.expect(json.message || json.error).to.include('deleted');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
