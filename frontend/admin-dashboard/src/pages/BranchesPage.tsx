@@ -596,6 +596,61 @@ const InventoryHeaders =[
   ]
 
 
+const [shipmentDetails,setShipmentDetails] = useState([
+  {
+    id:"1",
+    SHIPMENT_ID:"132",
+    NOTES: "no notes",
+    LAST_UPDATE: "10:10 20/2/2022",
+    STATUS: "Delivered",
+    TOTAL_PRICE: "100$",
+    SHIPPING_FEE:"20$",
+    DATE_DELIVERED:"20/2/2022",
+    PACKING_NOTES:"pack each one alone",
+    ITEMS:["item1","item2","item3","item4"]
+
+  },
+  {
+    id:"2",
+    SHIPMENT_ID:"465",
+    NOTES: "Handle with care",
+    LAST_UPDATE: "10:10 20/3/2022",
+    STATUS: "pending pickup",
+    TOTAL_PRICE: "109$",
+    SHIPPING_FEE:"24$",
+    DATE_DELIVERED:"",
+    PACKING_NOTES:"pack each one alone",
+    ITEMS:["item1","item2","item3"]
+  },
+  {
+    id:"3",
+    SHIPMENT_ID:"159",
+    NOTES: "Do not bend",
+    LAST_UPDATE: "10:10 15/2/2022",
+    STATUS: "arrived at warehouse",
+    TOTAL_PRICE: "300$",
+    SHIPPING_FEE:"30$",
+    DATE_DELIVERED:"",
+    PACKING_NOTES:"pack each one alone",
+    ITEMS:["item1","item3","item4"]
+  },
+  {
+    id:"4",
+    SHIPMENT_ID:"753",
+    NOTES: "Fragile",
+    LAST_UPDATE: "10:10 20/2/2022",
+    STATUS: "Delivered",
+    TOTAL_PRICE: "1020$",
+    SHIPPING_FEE:"200$",
+    DATE_DELIVERED:"20/2/2022",
+    PACKING_NOTES:"pack each one alone",
+    ITEMS:["item1","item2",]
+  },
+])
+
+  
+
+
 const [shipments,setShipments] = useState([
   {
     id:"1",
@@ -930,414 +985,414 @@ function hideInventoryFormFun(){
 
     //MRCHANT PROFILE PAGE
 
- return(
+//  return(
 
 
-  <main>
-   <Card className=" h-30 mt-9 w-98/100 ml-6 mr-4 "><span>
-       <div className="flex">
-    <Button onClick={showMerchantForm} className="bg-primary-container p-10 mt-3 mr-4 mb-9">تحديث بيانات</Button>
-         <div><p className="mr-100 text-2xl">اسم التاجر</p></div>
-         <div> <p className="mr-30 mt-10">رقم التاجر;123465 </p></div>
-         <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
-       </div>
+//   <main>
+//    <Card className=" h-30 mt-9 w-98/100 ml-6 mr-4 "><span>
+//        <div className="flex">
+//     <Button onClick={showMerchantForm} className="bg-primary-container p-10 mt-3 mr-4 mb-9">تحديث بيانات</Button>
+//          <div><p className="mr-100 text-2xl">اسم التاجر</p></div>
+//          <div> <p className="mr-30 mt-10">رقم التاجر;123465 </p></div>
+//          <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
+//        </div>
 
 
-   {showMerchantForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
-                  <Header className="font-headline-md text-headline-md text-on-background mb-6" title="تحديث بيانات التاجر"></Header>
-                  <form>
-                      <div>
-                          <label>اسم التاجر</label>
-                          <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Branch Name"
-                placeholder="مثال اسم" value={merchantInfo.NAME} onChange={handleMerchantNameChange} type ="text"></input></div>
+//    {showMerchantForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+//                   <Header className="font-headline-md text-headline-md text-on-background mb-6" title="تحديث بيانات التاجر"></Header>
+//                   <form>
+//                       <div>
+//                           <label>اسم التاجر</label>
+//                           <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Branch Name"
+//                 placeholder="مثال اسم" value={merchantInfo.NAME} onChange={handleMerchantNameChange} type ="text"></input></div>
                 
-                  <div>
-                      <label>بريد الالكتروني</label>
-                      <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="بريد الالكتروني"
-                   type ="text" value={merchantInfo.EMAIL} onChange={handleMerchantEmailChange}></input></div>
+//                   <div>
+//                       <label>بريد الالكتروني</label>
+//                       <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="بريد الالكتروني"
+//                    type ="text" value={merchantInfo.EMAIL} onChange={handleMerchantEmailChange}></input></div>
 
-                 <div> <label>فرع التاجر</label>
-                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="ميثال فرع"
-                type ="text" value={merchantInfo.MERCHANT_BRANCH} onChange={handleMerchantBranchChange}></input></div>
+//                  <div> <label>فرع التاجر</label>
+//                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="ميثال فرع"
+//                 type ="text" value={merchantInfo.MERCHANT_BRANCH} onChange={handleMerchantBranchChange}></input></div>
 
-                 <div> <label>رقم الهاتف</label>
-                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="رقم الهاتف"
-                type ="text" value={merchantInfo.MERCHANT_PHONE} onChange={handleMerchantPhoneChange}></input></div>
+//                  <div> <label>رقم الهاتف</label>
+//                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="رقم الهاتف"
+//                 type ="text" value={merchantInfo.MERCHANT_PHONE} onChange={handleMerchantPhoneChange}></input></div>
               
-                 <div className="flex gap-3 pt-2">
-                   <Button
-                  type="submit"
-                  variant="primary"
-                  size="md"
-                  onClick={handleUpdateMerchantInfo}>تحديث البينات</Button>
-                 <Button
-                  type="button"
-                  variant="outline"
-                  size="md"
-                  onClick={hideMerchantFormFun}>الغا</Button>
-                 </div>
-                 </form>
-                 </Card>}
+//                  <div className="flex gap-3 pt-2">
+//                    <Button
+//                   type="submit"
+//                   variant="primary"
+//                   size="md"
+//                   onClick={handleUpdateMerchantInfo}>تحديث البينات</Button>
+//                  <Button
+//                   type="button"
+//                   variant="outline"
+//                   size="md"
+//                   onClick={hideMerchantFormFun}>الغا</Button>
+//                  </div>
+//                  </form>
+//                  </Card>}
 
         
-       </span></Card>
-     <span className="flex  gap-4.5 mt-6 w-full">
+//        </span></Card>
+//      <span className="flex  gap-4.5 mt-6 w-full">
 
 
 
-       <Card className=" grid grid-cols-2 w-75/100 mr-4">
+//        <Card className=" grid grid-cols-2 w-75/100 mr-4">
        
-<div>
+// <div>
 
-<p className="text-2xl">بيانات التاجر</p>
+// <p className="text-2xl">بيانات التاجر</p>
 
-       <div className="flex">
-         <p className="ml-50">اسم التاجر</p>
-         <p className="mr-20">البريد الالكتروني</p>
-         </div>
-         <div className="flex mt-4">
-         <p className="bg-gray-200 p-3 rounded-md ml-54">ميثالرقم الهاتف</p>
-         <p className="bg-gray-200 p-3 rounded-md">بريد الالكتروني</p>
-         </div>
-         <div className=" flex mt-5">
-           <p className="ml-50">موقع الفرع</p>
-           <p className="mr-20">رقم الهاتف</p>
-         </div>
-         <div className="flex mt-5">
-           <p className="bg-gray-200 p-3 w-30 rounded-md ml-50">ميثال فرع</p>
-           <p className="bg-gray-200 w-30 p-3 rounded-md">ميثال فرع</p>
-         </div>
+//        <div className="flex">
+//          <p className="ml-50">اسم التاجر</p>
+//          <p className="mr-20">البريد الالكتروني</p>
+//          </div>
+//          <div className="flex mt-4">
+//          <p className="bg-gray-200 p-3 rounded-md ml-54">ميثالرقم الهاتف</p>
+//          <p className="bg-gray-200 p-3 rounded-md">بريد الالكتروني</p>
+//          </div>
+//          <div className=" flex mt-5">
+//            <p className="ml-50">موقع الفرع</p>
+//            <p className="mr-20">رقم الهاتف</p>
+//          </div>
+//          <div className="flex mt-5">
+//            <p className="bg-gray-200 p-3 w-30 rounded-md ml-50">ميثال فرع</p>
+//            <p className="bg-gray-200 w-30 p-3 rounded-md">ميثال فرع</p>
+//          </div>
 
-</div>
-
-
+// </div>
 
 
-<div>
+
+
+// <div>
 
 
   
-       <div className="mr-20 mt-6 mb-3 w-90 ">
-<div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm space-y-md">
-<h3 className="text-xl font-semibold p-3  text-headline-xl text-primary">توزيع الشحنات لكل فرع</h3>
-<div className="h-48 flex items-end justify-between px-md gap-sm">
-<div className="flex-1 bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
-<div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[70%] group-hover:h-[85%] transition-all"></div>
-<span className="absolute -bottom-7 left-1/2 -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">حلوان</span>
-</div>
-<div className="flex-1 bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
-<div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[40%] group-hover:h-[55%] transition-all"></div>
-<span className="absolute -bottom-7 left-1/2 -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">جيزه</span>
-</div>
-<div className="flex-1 bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
-<div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[90%] group-hover:h-[95%] transition-all"></div>
-<span className="absolute -bottom-7 left-1/2 -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">شوبره</span>
-</div>
-<div className="flex-1 bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
-<div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[30%] group-hover:h-[45%] transition-all"></div>
-<span className="absolute -bottom-7 left-1/2 -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">تجمع</span>
-</div>
-<div className="flex-1  bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
-<div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[55%] group-hover:h-[70%] transition-all"></div>
-<span className="absolute -bottom-7 left-1/2  -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">رحاب</span>
-</div>
-</div>
-</div>
-</div>
-</div>
+//        <div className="mr-20 mt-6 mb-3 w-90 ">
+// <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm space-y-md">
+// <h3 className="text-xl font-semibold p-3  text-headline-xl text-primary">توزيع الشحنات لكل فرع</h3>
+// <div className="h-48 flex items-end justify-between px-md gap-sm">
+// <div className="flex-1 bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
+// <div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[70%] group-hover:h-[85%] transition-all"></div>
+// <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">حلوان</span>
+// </div>
+// <div className="flex-1 bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
+// <div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[40%] group-hover:h-[55%] transition-all"></div>
+// <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">جيزه</span>
+// </div>
+// <div className="flex-1 bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
+// <div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[90%] group-hover:h-[95%] transition-all"></div>
+// <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">شوبره</span>
+// </div>
+// <div className="flex-1 bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
+// <div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[30%] group-hover:h-[45%] transition-all"></div>
+// <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">تجمع</span>
+// </div>
+// <div className="flex-1  bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
+// <div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[55%] group-hover:h-[70%] transition-all"></div>
+// <span className="absolute -bottom-7 left-1/2  -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">رحاب</span>
+// </div>
+// </div>
+// </div>
+// </div>
+// </div>
 
-       </Card>
-
-
+//        </Card>
 
 
 
 
 
 
-       <BlueCard className="w-25/100 ml-3 pl-3"><div className="flex">
-         <img className="h-16 ml-3 " src={orange_wallet} alt="wallet icon"></img>
-         <p className="text-white mt-1 mr-10">الرصيض الحاللي<br></br>
-         13232132$</p></div>
-         <Button className="w-90/100 mr-1 mt-4 pl-3">موعامله جديده</Button>
-         <Button variant="outline" className="bg-gray-500 text-white w-90/100 mr-1 mt-4 pl-3">المعاملت الصابقه</Button>
-       </BlueCard>
-     </span>
+
+
+//        <BlueCard className="w-25/100 ml-3 pl-3"><div className="flex">
+//          <img className="h-16 ml-3 " src={orange_wallet} alt="wallet icon"></img>
+//          <p className="text-white mt-1 mr-10">الرصيض الحاللي<br></br>
+//          13232132$</p></div>
+//          <Button className="w-90/100 mr-1 mt-4 pl-3">موعامله جديده</Button>
+//          <Button variant="outline" className="bg-gray-500 text-white w-90/100 mr-1 mt-4 pl-3">المعاملت الصابقه</Button>
+//        </BlueCard>
+//      </span>
 
   
-   {showTransactionForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
-                   <Header className="font-headline-md text-headline-md text-on-background mb-6" title="اضافت معامله جديده"></Header>
-                   <form>
-                       <div>
-                           <label>قيمت المعامله</label>
-                           <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Name"
-                 placeholder="Amount" value={transactions.AMOUNT} onChange={handleNewTransactionAmount} type ="text"></input></div>
+//    {showTransactionForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+//                    <Header className="font-headline-md text-headline-md text-on-background mb-6" title="اضافت معامله جديده"></Header>
+//                    <form>
+//                        <div>
+//                            <label>قيمت المعامله</label>
+//                            <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Name"
+//                  placeholder="Amount" value={transactions.AMOUNT} onChange={handleNewTransactionAmount} type ="text"></input></div>
               
-                   <div>
-                       <label>نوع المعامله</label>
-                       <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Type"
-                    type ="text" value={transactions.TYPE} onChange={handleNewTransactionType}></input></div>
+//                    <div>
+//                        <label>نوع المعامله</label>
+//                        <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Type"
+//                     type ="text" value={transactions.TYPE} onChange={handleNewTransactionType}></input></div>
 
-                  <div> <label>رقم شحنت المعامله</label>
-                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="shipment id"
-                 type ="text" value={transactions.SHIPMENT_ID} onChange={handleNewTransactionShippingId}></input></div>
+//                   <div> <label>رقم شحنت المعامله</label>
+//                   <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="shipment id"
+//                  type ="text" value={transactions.SHIPMENT_ID} onChange={handleNewTransactionShippingId}></input></div>
 
-                  <div> <label>وقت المعامله</label>
-                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="time"
-                 type ="text" value={transactions.TIME} onChange={handleNewTransactionTime}></input></div>
+//                   <div> <label>وقت المعامله</label>
+//                   <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="time"
+//                  type ="text" value={transactions.TIME} onChange={handleNewTransactionTime}></input></div>
               
-                  <div className="flex gap-3 pt-2">
-                    <Button
-                   type="submit"
-                   variant="primary"
-                   size="md"
-                   onClick={addNewTransaction}>تحديث البينات</Button>
-                   <Button
-                   type="button"
-                  variant="outline"
-                   size="md"
-                   onClick={hideTransactionFormFun}>الغا</Button>
-                  </div>
-                  </form>
-                  </Card>}
+//                   <div className="flex gap-3 pt-2">
+//                     <Button
+//                    type="submit"
+//                    variant="primary"
+//                    size="md"
+//                    onClick={addNewTransaction}>تحديث البينات</Button>
+//                    <Button
+//                    type="button"
+//                   variant="outline"
+//                    size="md"
+//                    onClick={hideTransactionFormFun}>الغا</Button>
+//                   </div>
+//                   </form>
+//                   </Card>}
   
 
-      {showInventoryForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
-                   <Header className="font-headline-md text-headline-md text-on-background mb-6" title="اضافت منتاج جديد"></Header>
-                   <form>
-                       <div>
-                           <label>اسم المنتج</label>
-                           <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Name"
-                 placeholder="example name" value={testInventory.NAME} onChange={handleNewInventoryName} type ="text"></input></div>
+//       {showInventoryForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+//                    <Header className="font-headline-md text-headline-md text-on-background mb-6" title="اضافت منتاج جديد"></Header>
+//                    <form>
+//                        <div>
+//                            <label>اسم المنتج</label>
+//                            <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Name"
+//                  placeholder="example name" value={testInventory.NAME} onChange={handleNewInventoryName} type ="text"></input></div>
             
-                   <div>
-                       <label>نوع المنتاج</label>
-                       <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Type"
-                   type ="text" value={testInventory.TYPE} onChange={handleNewInventoryType}></input></div>
-                <div> <label>مخزون المنتاج</label>
-                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Stock"
-                 type ="text" value={testInventory.STOCK} onChange={handleNewInventoryStock}></input></div>
+//                    <div>
+//                        <label>نوع المنتاج</label>
+//                        <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Type"
+//                    type ="text" value={testInventory.TYPE} onChange={handleNewInventoryType}></input></div>
+//                 <div> <label>مخزون المنتاج</label>
+//                   <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Stock"
+//                  type ="text" value={testInventory.STOCK} onChange={handleNewInventoryStock}></input></div>
 
-                  <div> <label>متوافر عند</label>
-                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Branch"
-                 type ="text" value={testInventory.BRANCH} onChange={handleNewInventoryAvailbleAt}></input></div>
+//                   <div> <label>متوافر عند</label>
+//                   <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Branch"
+//                  type ="text" value={testInventory.BRANCH} onChange={handleNewInventoryAvailbleAt}></input></div>
               
-                  <div className="flex gap-3 pt-2">
-                    <Button
-                   type="submit"
-                   variant="primary"
-                   size="md"
-                   onClick={handleAddInventory}>اضافت المنتاج</Button>
-                   <Button
-                   type="button"
-                   variant="outline"
-                   size="md"
-                   onClick={hideInventoryFormFun}>الغا</Button>
-                  </div>
-                  </form>
-                  </Card>}
+//                   <div className="flex gap-3 pt-2">
+//                     <Button
+//                    type="submit"
+//                    variant="primary"
+//                    size="md"
+//                    onClick={handleAddInventory}>اضافت المنتاج</Button>
+//                    <Button
+//                    type="button"
+//                    variant="outline"
+//                    size="md"
+//                    onClick={hideInventoryFormFun}>الغا</Button>
+//                   </div>
+//                   </form>
+//                   </Card>}
 
 
 
-         {showShipmentForm && <Card className=" mb-6 mt-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
-                  <Header className="font-headline-md text-headline-md text-on-background mb-6" title="اضافت شحنه جديده"></Header>
-                  <form>
-                      <div>
-                          <label>رقم الشحنه</label>
-                          <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Shipment id"
-                placeholder="رقم الشحنه" value={shipments.SHIPMENT_ID} onChange={handleNewShipmentId} type ="text"></input></div>
+//          {showShipmentForm && <Card className=" mb-6 mt-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+//                   <Header className="font-headline-md text-headline-md text-on-background mb-6" title="اضافت شحنه جديده"></Header>
+//                   <form>
+//                       <div>
+//                           <label>رقم الشحنه</label>
+//                           <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Shipment id"
+//                 placeholder="رقم الشحنه" value={shipments.SHIPMENT_ID} onChange={handleNewShipmentId} type ="text"></input></div>
               
                   
 
-                 <div> <label>اخر تحديث</label>
-                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="اخر تحديث"
-                type ="text" value={shipments.LAST_UPDATE} onChange={handleNewShipmentLastUpdated}></input></div>
+//                  <div> <label>اخر تحديث</label>
+//                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="اخر تحديث"
+//                 type ="text" value={shipments.LAST_UPDATE} onChange={handleNewShipmentLastUpdated}></input></div>
 
-                 <div> <label>الحاله</label>
-                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="الحاله"
-                type ="text" value={shipments.STATUS} onChange={handleNewShipmentStatus}></input></div>
+//                  <div> <label>الحاله</label>
+//                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="الحاله"
+//                 type ="text" value={shipments.STATUS} onChange={handleNewShipmentStatus}></input></div>
 
-                <div> <label>التمن الكلي</label>
-                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="التمن الكلي"
-                type ="text" value={shipments.TOTAL_PRICE} onChange={handleNewShipmentTotalPrice}></input></div>
+//                 <div> <label>التمن الكلي</label>
+//                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="التمن الكلي"
+//                 type ="text" value={shipments.TOTAL_PRICE} onChange={handleNewShipmentTotalPrice}></input></div>
 
-                <div> <label>رسوم الشحن</label>
-                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="رسوم الشحن"
-                type ="text" value={shipments.SHIPPING_FEE} onChange={handleNewShipmentShippingFee}></input></div>
+//                 <div> <label>رسوم الشحن</label>
+//                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="رسوم الشحن"
+//                 type ="text" value={shipments.SHIPPING_FEE} onChange={handleNewShipmentShippingFee}></input></div>
 
-                <div> <label>تاريخ الوصول</label>
-                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="تاريخ الوصول"
-                type ="text" value={shipments.DATE_DELIVERED} onChange={handleNewShipmentDateDelivered}></input></div>
+//                 <div> <label>تاريخ الوصول</label>
+//                  <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="تاريخ الوصول"
+//                 type ="text" value={shipments.DATE_DELIVERED} onChange={handleNewShipmentDateDelivered}></input></div>
 
-                <div>
-                      <label>  ملحضات التعباء</label>
-                      <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg h-50" label="location" placeholder= " ملحضات التعباء"
-                   type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></input></div>
+//                 <div>
+//                       <label>  ملحضات التعباء</label>
+//                       <textarea className="m-1 p-2 w-full border bg-surface-container-low rounded-lg h-40" label="location" placeholder= " ملحضات التعباء"
+//                    type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></textarea></div>
 
 
-                   <div>
-                      <label > ملحضات الشحن</label>
-                      <input className="m-1 p-2 w-full border bg-surface-container-low h-50 rounded-lg" label="location" placeholder="ملحضات الشحن"
-                   type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></input></div>
+//                    <div>
+//                       <label > ملحضات الشحن</label>
+//                       <textarea className="m-1 p-2 w-full border bg-surface-container-low h-40 rounded-lg" label="location" placeholder="ملحضات الشحن"
+//                    type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></textarea></div>
 
 
               
-                 <div className="flex gap-3 pt-2">
-                   <Button
-                  type="submit"
-                  variant="primary"
-                  size="md"
-                  onClick={handleNewShippment}>اضافت الشحنه</Button>
-                  <Button
-                  type="button"
-                  variant="outline"
-                  size="md"
-                  onClick={hideShipmentFormFun}>الغا</Button>
-             </div>
-             </form>
-             </Card>}
+//                  <div className="flex gap-3 pt-2">
+//                    <Button
+//                   type="submit"
+//                   variant="primary"
+//                   size="md"
+//                   onClick={handleNewShippment}>اضافت الشحنه</Button>
+//                   <Button
+//                   type="button"
+//                   variant="outline"
+//                   size="md"
+//                   onClick={hideShipmentFormFun}>الغا</Button>
+//              </div>
+//              </form>
+//              </Card>}
 
-   <div className="flex w-full ml-4">
-      <Card className="mt-6 mr-4">
-       <table className=" mr-2 ml-4">
-           <thead>
-             <tr className="border-b border-outline-variant">                       
-                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                       الاسم
-                 </th>
-                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                  النوع
-                 </th>
-                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                   المخزون
-                 </th>
-                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                   متوافر عند
-                 </th>
-                 {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                   Add product
-                 </th> */}
+//    <div className="flex w-full ml-4">
+//       <Card className="mt-6 mr-4">
+//        <table className=" mr-2 ml-4">
+//            <thead>
+//              <tr className="border-b border-outline-variant">                       
+//                    <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                        الاسم
+//                  </th>
+//                    <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                   النوع
+//                  </th>
+//                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                    المخزون
+//                  </th>
+//                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                    متوافر عند
+//                  </th>
+//                  {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                    Add product
+//                  </th> */}
 
-                 <Button>تصفح المزيد</Button>
-             </tr>
-           </thead>
-           <tbody>
-             {testInventory.map((data)=>(
+//                  <Button>تصفح المزيد</Button>
+//              </tr>
+//            </thead>
+//            <tbody>
+//              {testInventory.map((data)=>(
 
-                <tr 
+//                 <tr 
                           
-                 key={data.id}
-                 className="border-b border-surface-variant hover:bg-surface-container-low transition">
+//                  key={data.id}
+//                  className="border-b border-surface-variant hover:bg-surface-container-low transition">
                   
 
-                   <td className="p-4"><p className="text-body-md text-on-surface">
-                                        {data.NAME}
-                                      </p></td>
-                   <td className="p-4"><p className="text-body-md text-on-surface">
-                                        {data.TYPE}
-                                      </p></td>
-                   <td className="p-4"><p className="text-body-md text-on-surface">
-                                        {data.STOCK}
-                                      </p></td>
-                   <td className="p-4"><p className="text-body-md text-on-surface">
-                                        {data.BRANCH}
-                                      </p></td>
-                </tr>
+//                    <td className="p-4"><p className="text-body-md text-on-surface">
+//                                         {data.NAME}
+//                                       </p></td>
+//                    <td className="p-4"><p className="text-body-md text-on-surface">
+//                                         {data.TYPE}
+//                                       </p></td>
+//                    <td className="p-4"><p className="text-body-md text-on-surface">
+//                                         {data.STOCK}
+//                                       </p></td>
+//                    <td className="p-4"><p className="text-body-md text-on-surface">
+//                                         {data.BRANCH}
+//                                       </p></td>
+//                 </tr>
               
-             ))}
+//              ))}
             
-           </tbody>
-       </table>
-     </Card>
+//            </tbody>
+//        </table>
+//      </Card>
 
 
 
-       <Card className="mr-3 mt-6">
-       <table className="w-145 ">
-           <thead>
-             <tr className="border-b border-outline-variant">                       
-                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                       رقم الشحنه
-                 </th>
+//        <Card className="mr-3 mt-6">
+//        <table className="w-145 ">
+//            <thead>
+//              <tr className="border-b border-outline-variant">                       
+//                    <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                        رقم الشحنه
+//                  </th>
                  
-                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                   الملاحضات
-                 </th>
+//                    <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                    الملاحضات
+//                  </th>
 
-                  {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md"> */}
-                   {/* Last Updated */}
-                 {/* </th>  */} 
+//                   {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md"> */}
+//                    {/* Last Updated */}
+//                  {/* </th>  */} 
 
-                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                   الحاله
-                 </th>
-                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-                   السعر الكلي
-                 </th>
+//                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                    الحاله
+//                  </th>
+//                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+//                    السعر الكلي
+//                  </th>
                 
-                  {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md"> */}
-                   {/* Shipping Fee */}
-                 {/* </th>  */}
-                  {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md"> */}
-                   {/* Date Delivred */}
-                 {/* </th>  */}
+//                   {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md"> */}
+//                    {/* Shipping Fee */}
+//                  {/* </th>  */}
+//                   {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md"> */}
+//                    {/* Date Delivred */}
+//                  {/* </th>  */}
                 
 
-                 <Button onClick={showShipmentFormFun} className="">تصفح المزيد</Button>
-             </tr>
-           </thead>
-           <tbody>
-             {shipments.map((data)=>(
+//                  <Button onClick={showShipmentFormFun} className="">تصفح المزيد</Button>
+//              </tr>
+//            </thead>
+//            <tbody>
+//              {shipments.map((data)=>(
 
-                <tr 
+//                 <tr 
                             
-                 key={data.id}
-                 className={`border-b border-surface-variant hover:bg-surface-container-low transition  ${data.STATUS ==="Delivered"? "bg-green-200! hover:bg-green-300!" :"" }`}>
+//                  key={data.id}
+//                  className={`border-b border-surface-variant hover:bg-surface-container-low transition  ${data.STATUS ==="Delivered"? "bg-green-200! hover:bg-green-300!" :"" }`}>
                   
 
-                   <td className="p-4"><p className="text-body-md text-on-surface">
-                                        {data.SHIPMENT_ID}
-                                      </p></td>
-                   <td className="p-4"><p className="text-body-md text-on-surface">
-                                        {data.NOTES}
-                                      </p></td>
-                   {/* <td className="p-4"><p className="text-body-md text-on-surface">
-                                        {data.LAST_UPDATE}
-                                      </p></td> */}
-                  <td className="p-4"><p className="text-body-md text-on-surface">
-                                        {data.STATUS}
-                                      </p></td>
-                   <td className="p-4"><p className="text-body-md text-on-surface">
-                                        {data.TOTAL_PRICE}
-                                      </p></td>
-                   {/* <td className="p-4"><p className="text-body-md text-on-surface">
-                                        {data.SHIPPING_FEE}
-                                      </p></td>
-                   <td className="p-4"><p className="text-body-md text-on-surface">
-                                        {data.DATE_DELIVERED}
-                                      </p></td> */}
-                </tr>
+//                    <td className="p-4"><p className="text-body-md text-on-surface">
+//                                         {data.SHIPMENT_ID}
+//                                       </p></td>
+//                    <td className="p-4"><p className="text-body-md text-on-surface">
+//                                         {data.NOTES}
+//                                       </p></td>
+//                    {/* <td className="p-4"><p className="text-body-md text-on-surface">
+//                                         {data.LAST_UPDATE}
+//                                       </p></td> */}
+//                   <td className="p-4"><p className="text-body-md text-on-surface">
+//                                         {data.STATUS}
+//                                       </p></td>
+//                    <td className="p-4"><p className="text-body-md text-on-surface">
+//                                         {data.TOTAL_PRICE}
+//                                       </p></td>
+//                    {/* <td className="p-4"><p className="text-body-md text-on-surface">
+//                                         {data.SHIPPING_FEE}
+//                                       </p></td>
+//                    <td className="p-4"><p className="text-body-md text-on-surface">
+//                                         {data.DATE_DELIVERED}
+//                                       </p></td> */}
+//                 </tr>
               
-             ))}
+//              ))}
             
-           </tbody>
-       </table>
-       </Card> 
-</div>
+//            </tbody>
+//        </table>
+//        </Card> 
+// </div>
 
-{/* <div className="bg-primary p-md rounded-xl shadow-md flex items-center gap-md relative overflow-hidden"> */}
-{/* <div className="absolute top-0 left-0 w-32 h-32 bg-secondary/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-<div className="z-10 space-y-sm flex-1">
-<h3 className="font-headline-md text-headline-md text-on-primary">خريطة التوسع القادمة</h3>
-<p className="font-body-md text-body-md text-on-primary/80">نحن نخطط لافتتاح 4 فروع جديدة في منطقة البحر الأحمر خلال الربع القادم من العام.</p>
-<button className="bg-secondary text-on-secondary px-md py-sm rounded-lg font-label-md hover:bg-secondary/90 transition-all">عرض التوقعات</button>
-</div> */}
-{/* </div> */}
+// {/* <div className="bg-primary p-md rounded-xl shadow-md flex items-center gap-md relative overflow-hidden"> */}
+// {/* <div className="absolute top-0 left-0 w-32 h-32 bg-secondary/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+// <div className="z-10 space-y-sm flex-1">
+// <h3 className="font-headline-md text-headline-md text-on-primary">خريطة التوسع القادمة</h3>
+// <p className="font-body-md text-body-md text-on-primary/80">نحن نخطط لافتتاح 4 فروع جديدة في منطقة البحر الأحمر خلال الربع القادم من العام.</p>
+// <button className="bg-secondary text-on-secondary px-md py-sm rounded-lg font-label-md hover:bg-secondary/90 transition-all">عرض التوقعات</button>
+// </div> */}
+// {/* </div> */}
 
   
-</main>
+// </main>
 
- )}
+//  )}
     
  
 
@@ -1462,152 +1517,339 @@ function hideInventoryFormFun(){
 
 
 // shipment page
-{/*
-//   return(
 
-//     <main>
+  //  return(
 
-//        <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
-//        <div className="flex">
-//         <Button onClick={showMerchantFormFun} className="bg-primary-container p-10 mt-3 mr-4 mb-9">العوده الي صفحت التاجر</Button>
-//          <div><p className="mr-100 text-2xl">اسم التاجر</p></div>
-//          <div> <p className="mr-30 mt-10">رقم التاجر;123465 </p></div>
-//          <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
-//        </div>
+  //   <main>
+
+  //      <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
+  //      <div className="flex">
+  //       <Button onClick={showMerchantFormFun} className="bg-primary-container p-10 mt-3 mr-4 mb-9">العوده الي صفحت التاجر</Button>
+  //        <div><p className="mr-100 text-2xl">اسم التاجر</p></div>
+  //        <div> <p className="mr-30 mt-10">رقم التاجر;123465 </p></div>
+  //        <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
+  //      </div>
         
-//       </span></Card>
+  //     </span></Card>
 
 
-//       <div className="flex mr-160 font-semibold text-3xl mb-3 mt-3">الشحنات</div>
+  //     <div className="flex mr-160 font-semibold text-3xl mb-3 mt-3">الشحنات</div>
 
 
 
-//       {showShipmentForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
-//                  <Header className="font-headline-md text-headline-md text-on-background mb-6" title="اضافت شحنات"></Header>
-//                  <form>
-//                      <div>
-//                          <label>رقم الشحنه</label>
-//                          <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="رقم الشحنه"
-//                placeholder="example name" value={shipments.SHIPMENT_ID} onChange={handleNewShipmentId} type ="text"></input></div>
+  //     {showShipmentForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+  //                <Header className="font-headline-md text-headline-md text-on-background mb-6" title="اضافت شحنات"></Header>
+  //                <form>
+  //                    <div>
+  //                        <label>رقم الشحنه</label>
+  //                        <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="رقم الشحنه"
+  //              placeholder="example name" value={shipments.SHIPMENT_ID} onChange={handleNewShipmentId} type ="text"></input></div>
                 
-//                  <div>
-//                      <label>الملاحضات</label>
-//                      <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="الملاحضات"
-//                   type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></input></div>
+  //                <div>
+  //                    <label>الملاحضات</label>
+  //                    <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="الملاحضات"
+  //                 type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></input></div>
 
-//                 <div> <label>اخر تحديث</label>
-//                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="اخر تحديث"
-//                type ="text" value={shipments.LAST_UPDATE} onChange={handleNewShipmentLastUpdated}></input></div>
+  //               <div> <label>اخر تحديث</label>
+  //               <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="اخر تحديث"
+  //              type ="text" value={shipments.LAST_UPDATE} onChange={handleNewShipmentLastUpdated}></input></div>
 
-//                 <div> <label>الحاله</label>
-//                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="الحاله"
-//                type ="text" value={shipments.STATUS} onChange={handleNewShipmentStatus}></input></div>
+  //               <div> <label>الحاله</label>
+  //               <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="الحاله"
+  //              type ="text" value={shipments.STATUS} onChange={handleNewShipmentStatus}></input></div>
 
-//                <div> <label>السعر الكلي</label>
-//                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="السعر الكلي"
-//                type ="text" value={shipments.TOTAL_PRICE} onChange={handleNewShipmentTotalPrice}></input></div>
+  //              <div> <label>السعر الكلي</label>
+  //               <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="السعر الكلي"
+  //              type ="text" value={shipments.TOTAL_PRICE} onChange={handleNewShipmentTotalPrice}></input></div>
 
-//                <div> <label>رسوم الشحن</label>
-//                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="رسوم الشحن"
-//                type ="text" value={shipments.SHIPPING_FEE} onChange={handleNewShipmentShippingFee}></input></div>
+  //              <div> <label>رسوم الشحن</label>
+  //               <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="رسوم الشحن"
+  //              type ="text" value={shipments.SHIPPING_FEE} onChange={handleNewShipmentShippingFee}></input></div>
 
-//                <div> <label>تاريخ الوصول</label>
-//                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="تاريخ الوصول"
-//                type ="text" value={shipments.DATE_DELIVERED} onChange={handleNewShipmentDateDelivered}></input></div>
+  //              <div> <label>تاريخ الوصول</label>
+  //               <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="تاريخ الوصول"
+  //              type ="text" value={shipments.DATE_DELIVERED} onChange={handleNewShipmentDateDelivered}></input></div>
               
-//                 <div className="flex gap-3 pt-2">
-//                   <Button
-//                  type="submit"
-//                  variant="primary"
-//                  size="md"
-//                  onClick={handleNewShippment}>اضافت شحنه</Button>
-//                  <Button
-//                  type="button"
-//                  variant="outline"
-//                  size="md"
-//                  onClick={hideShipmentFormFun}>الغا</Button>
-//                 </div>
-//                 </form>
-//                 </Card>}
+  //               <div className="flex gap-3 pt-2">
+  //                 <Button
+  //                type="submit"
+  //                variant="primary"
+  //                size="md"
+  //                onClick={handleNewShippment}>اضافت شحنه</Button>
+  //                <Button
+  //                type="button"
+  //                variant="outline"
+  //                size="md"
+  //                onClick={hideShipmentFormFun}>الغا</Button>
+  //               </div>
+  //               </form>
+  //               </Card>}
 
 
-//       <Card className="mr-6">
-//       <table className="w-full mr-6 ml-6">
-//           <thead>
-//             <tr className="border-b border-outline-variant">                       
-//                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-//                       رقم الشحنه
-//                 </th>
+  //     <Card className="mr-6">
+  //     <table className="w-full mr-6 ml-6">
+  //         <thead>
+  //           <tr className="border-b border-outline-variant">                       
+  //                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+  //                     رقم الشحنه
+  //               </th>
                  
-//                   <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-//                   ملحضات
-//                 </th>
+  //                 {/* <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+  //                 ملحضات
+  //               </th> */}
 
-//                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-//                   اخر تحديث
-//                 </th> 
+  //               <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+  //                 اخر تحديث
+  //               </th> 
 
-//                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-//                   الحاله
-//                 </th>
-//                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-//                   السعر الكلي
-//                 </th>
+  //               <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+  //                 الحاله
+  //               </th>
+  //               <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+  //                 السعر الكلي
+  //               </th>
                 
-//                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-//                   رسوم الشحن
-//                 </th> 
-//                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
-//                   تاريخ الوصول
-//                 </th> 
+  //                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+  //                 رسوم الشحن
+  //               </th> 
+  //                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+  //                 تاريخ الوصول
+  //               </th> 
                 
 
-//                 <Button onClick={showShipmentFormFun} className="">اضافت شحنه</Button>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {shipments.map((data)=>(
+  //              <th> <Button onClick={showShipmentFormFun} className="">اضافت شحنه</Button></th>
+  //               <Button variant="secondary">مزيد من التفصيل</Button>
+  //           </tr>
+  //         </thead>
+  //         <tbody>
+  //           {shipments.map((data)=>(
 
-//                <tr 
+  //              <tr 
                             
-//                 key={data.id}
-//                 className={`border-b border-surface-variant hover:bg-surface-container-low transition  ${data.STATUS ==="Delivered"? "bg-green-200! hover:bg-green-300!" :"" }`}>
+  //               key={data.id}
+  //               className={`border-b border-surface-variant hover:bg-surface-container-low transition  ${data.STATUS ==="Delivered"? "bg-green-200! hover:bg-green-300!" :"" }`}>
                   
 
-//                   <td className="p-4"><p className="text-body-md text-on-surface">
-//                                        {data.SHIPMENT_ID}
-//                                      </p></td>
-//                   <td className="p-4"><p className="text-body-md text-on-surface">
-//                                        {data.NOTES}
-//                                      </p></td>
-//                   <td className="p-4"><p className="text-body-md text-on-surface">
-//                                        {data.LAST_UPDATE}
-//                                      </p></td>
-//                   <td className="p-4"><p className="text-body-md text-on-surface">
-//                                        {data.STATUS}
-//                                      </p></td>
-//                   <td className="p-4"><p className="text-body-md text-on-surface">
-//                                        {data.TOTAL_PRICE}
-//                                      </p></td>
-//                   <td className="p-4"><p className="text-body-md text-on-surface">
-//                                        {data.SHIPPING_FEE}
-//                                      </p></td>
-//                   <td className="p-4"><p className="text-body-md text-on-surface">
-//                                        {data.DATE_DELIVERED}
-//                                      </p></td>
-//                </tr>
+  //                 <td className="p-4"><p className="text-body-md text-on-surface">
+  //                                      {data.SHIPMENT_ID}
+  //                                    </p></td>
+  //                 {/* <td className="p-4"><p className="text-body-md text-on-surface">
+  //                                      {data.NOTES}
+  //                                    </p></td> */}
+  //                 <td className="p-4"><p className="text-body-md text-on-surface">
+  //                                      {data.LAST_UPDATE}
+  //                                    </p></td>
+  //                 <td className="p-4"><p className="text-body-md text-on-surface">
+  //                                      {data.STATUS}
+  //                                    </p></td>
+  //                 <td className="p-4"><p className="text-body-md text-on-surface">
+  //                                      {data.TOTAL_PRICE}
+  //                                    </p></td>
+  //                 <td className="p-4"><p className="text-body-md text-on-surface">
+  //                                      {data.SHIPPING_FEE}
+  //                                    </p></td>
+  //                 <td className="p-4"><p className="text-body-md text-on-surface">
+  //                                      {data.DATE_DELIVERED}
+  //                                    </p></td>
+  //              </tr>
               
-//             ))}
+  //           ))}
             
-//           </tbody>
-//       </table>
-//       </Card> 
+  //         </tbody>
+  //     </table>
+  //     </Card> 
 
 
-//     </main>
+  //   </main>
+  //  )}
 
-//   )
-// }
+
+
+
+   //Shipment details page
+
+
+
+
+   return(
+
+    <main>
+
+       <Card className=" h-30 mt-9 w-full ml-6 mr-6 "><span>
+       <div className="flex">
+        <Button onClick={showMerchantFormFun} className="bg-primary-container p-10 mt-3 mr-4 mb-9">العوده الي صفحت التاجر</Button>
+         <div><p className="mr-100 text-2xl">اسم التاجر</p></div>
+         <div> <p className="mr-30 mt-10">رقم التاجر;123465 </p></div>
+         <div><img src={pfp} alt="profile pic" className="h-20 mr-7" ></img></div>
+       </div>
+        
+      </span></Card>
+
+
+      <div className="flex mr-160 font-semibold text-3xl mb-3 mt-3">تفاصيل الشحنات</div>
+
+
+
+      {showShipmentForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+                 <Header className="font-headline-md text-headline-md text-on-background mb-6" title="اضافت شحنات"></Header>
+                 <form>
+                     <div>
+                         <label>رقم الشحنه</label>
+                         <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="رقم الشحنه"
+               placeholder="example name" value={shipments.SHIPMENT_ID} onChange={handleNewShipmentId} type ="text"></input></div>
+                
+                 {/*<div>
+                      <label>الملاحضات</label>
+                     <textarea className="m-1 p-2 w-full h-50 border bg-surface-container-low rounded-lg" label="location" placeholder="الملاحضات"
+                  type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></textarea></div> */}
+
+                <div> <label>اخر تحديث</label>
+                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="اخر تحديث"
+               type ="text" value={shipments.LAST_UPDATE} onChange={handleNewShipmentLastUpdated}></input></div>
+
+                <div> <label>الحاله</label>
+                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="الحاله"
+               type ="text" value={shipments.STATUS} onChange={handleNewShipmentStatus}></input></div>
+
+               <div> <label>السعر الكلي</label>
+                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="السعر الكلي"
+               type ="text" value={shipments.TOTAL_PRICE} onChange={handleNewShipmentTotalPrice}></input></div>
+
+               <div> <label>رسوم الشحن</label>
+                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="رسوم الشحن"
+               type ="text" value={shipments.SHIPPING_FEE} onChange={handleNewShipmentShippingFee}></input></div>
+
+               <div> <label>تاريخ الوصول</label>
+                <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="تاريخ الوصول"
+               type ="text" value={shipments.DATE_DELIVERED} onChange={handleNewShipmentDateDelivered}></input></div>
+
+               <div>
+                       <label>  ملحضات التعباء</label>
+                       <textarea className="m-1 p-2 w-full border bg-surface-container-low rounded-lg h-40" label="location" placeholder= " ملحضات التعباء"
+                    type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></textarea></div>
+
+
+                    <div>
+                       <label > ملحضات الشحن</label>
+                       <textarea className="m-1 p-2 w-full border bg-surface-container-low h-40 rounded-lg" label="location" placeholder="ملحضات الشحن"
+                    type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></textarea></div>
+              
+                <div className="flex gap-3 pt-2">
+                  <Button
+                 type="submit"
+                 variant="primary"
+                 size="md"
+                 onClick={handleNewShippment}>اضافت شحنه</Button>
+                 <Button
+                 type="button"
+                 variant="outline"
+                 size="md"
+                 onClick={hideShipmentFormFun}>الغا</Button>
+                </div>
+                </form>
+                </Card>}
+
+
+      <Card className="mr-6">
+      <table className="w-full mr-6 ml-6">
+          <thead>
+            <tr className="border-b border-outline-variant">                       
+                  <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                      رقم الشحنه
+                </th>
+                 
+                 
+
+                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  اخر تحديث
+                </th> 
+
+                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  الحاله
+                </th>
+                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  السعر الكلي
+                </th>
+                
+                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  رسوم الشحن
+                </th> 
+                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  تاريخ الوصول
+                </th> 
+
+                 <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  ملحضات التعباء
+                </th>
+
+                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  ملحضات الشحن
+                </th>
+
+                <th className="text-right p-4 text-on-surface-variant font-label-md text-label-md">
+                  مونتاجات الشحنه
+                </th>
+                
+
+               <th> <Button onClick={showShipmentFormFun} className="">اضافت شحنه</Button></th>
+                {/* <Button variant="secondary">مزيد من التفصيل</Button> */}
+            </tr>
+          </thead>
+          <tbody>
+            {shipmentDetails.map((data)=>(
+
+               <tr 
+                            
+                key={data.id}
+                className={`border-b border-surface-variant hover:bg-surface-container-low transition  ${data.STATUS ==="Delivered"? "bg-green-200! hover:bg-green-300!" :"" }`}>
+                  
+
+                  <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.SHIPMENT_ID}
+                                     </p></td>
+                  
+                  <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.LAST_UPDATE}
+                                     </p></td>
+                  <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.STATUS}
+                                     </p></td>
+                  <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.TOTAL_PRICE}
+                                     </p></td>
+                  <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.SHIPPING_FEE}
+                                     </p></td>
+                  <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.DATE_DELIVERED}
+                                     </p></td>
+
+                                     <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.NOTES}
+                                     </p></td>
+
+                                      <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.PACKING_NOTES}
+                                     </p></td>
+
+                                      <td className="p-4"><p className="text-body-md text-on-surface">
+                                       {data.ITEMS.join(", ")}
+                                     </p></td>
+               </tr>
+              
+            ))}
+            
+          </tbody>
+      </table>
+      </Card> 
+
+
+    </main>
+   )}
+
+
+  
+  
 
 // export const BranchesPage = () =>{
 
@@ -1719,4 +1961,4 @@ function hideInventoryFormFun(){
   //     </Card> 
   //    </main>
   //  )}
-  */}
+  
