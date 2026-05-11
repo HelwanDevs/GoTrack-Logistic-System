@@ -187,6 +187,7 @@ services:
       - JWT_GATEWAY_PRIVATE_KEY_PATH=file:/app/keys/gateway_private_key.pem
       - JWT_GATEWAY_PUBLIC_KEY_PATH=file:/app/keys/gateway_public_key.pem
       - JWT_CLIENT_PUBLIC_KEY_PATH=file:/app/keys/client_public_key.pem
+      - APP_CORS_ALLOWED_ORIGINS=http://localhost:5173,http://localhost:5174
     depends_on:
       service-discovery:
         condition: service_started
