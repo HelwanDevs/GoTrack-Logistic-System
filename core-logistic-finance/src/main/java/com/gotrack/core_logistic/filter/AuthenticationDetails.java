@@ -30,7 +30,7 @@ public class AuthenticationDetails {
             this.role = authentication.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .filter(auth -> auth.startsWith("ROLE_"))
-
+                    .map(auth -> auth.substring(5))
                     .findFirst()
                     .orElse(null);
         }
@@ -43,6 +43,7 @@ public class AuthenticationDetails {
             this.accountId = userDetails.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .filter(auth -> auth.startsWith("ACCOUNT_"))
+                    .map(auth -> auth.substring(8))
                     .findFirst()
                     .orElse(null);
         }
