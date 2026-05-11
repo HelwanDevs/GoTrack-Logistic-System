@@ -1,6 +1,5 @@
 package com.gotrack.user_branch_service.config;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -9,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 
 import com.gotrack.user_branch_service.filter.InternalTokenFilter;
 import com.gotrack.user_branch_service.logging.LoggingAspect;
@@ -67,13 +65,12 @@ public class SecurityConfig {
                             response.getWriter().write(json);
                         }))
                 .authorizeHttpRequests(auth -> auth
-                        
+                        .requestMatchers("/actuator/**").permitAll()
+
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
-
 
 }

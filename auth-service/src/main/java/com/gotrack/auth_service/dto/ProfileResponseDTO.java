@@ -1,10 +1,10 @@
-package com.gotrack.inventory_service.Dto;
+package com.gotrack.auth_service.dto;
 
 import lombok.Data;
 import java.time.LocalDateTime;
 
-import com.gotrack.inventory_service.Enums.ProfileStatus;
-import com.gotrack.inventory_service.Enums.ProfileType;
+import com.gotrack.auth_service.enums.ProfileStatus;
+import com.gotrack.auth_service.enums.ProfileType;
 
 @Data
 public class ProfileResponseDTO {
@@ -16,9 +16,9 @@ public class ProfileResponseDTO {
 
     private ProfileType type;
 
-    private String accountId; // Nullable, Couriers have no account 
-    
-    private BranchDTO branch;
+    private String accountId;
+
+    private Long branchId;
 
     private ProfileStatus status;
 

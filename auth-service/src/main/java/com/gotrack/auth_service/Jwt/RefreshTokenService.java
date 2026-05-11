@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.gotrack.auth_service.Exceptions.InvalidTokenException;
 import com.gotrack.auth_service.Exceptions.RefreshTokenExpiredException;
 import com.gotrack.auth_service.entity.RefreshToken;
+import com.gotrack.auth_service.repository.AccountRepository;
 import com.gotrack.auth_service.repository.RefreshTokenRepo;
 
 @Service
@@ -16,6 +17,9 @@ public class RefreshTokenService {
 
     @Autowired
     RefreshTokenRepo repo;
+
+    @Autowired
+    AccountRepository accountRepo;
 
     public String createRefreshToken(String email) {
 
@@ -57,5 +61,34 @@ public class RefreshTokenService {
         return repo.findByEmail(email)
                 .orElseThrow(() -> new InvalidTokenException("No refresh token found for user"));
     }
+
+    public Boolean validateByUsername(String email) {
+        try {
+            RefreshToken rt = findByUsername(email);
+            return rt.getExpiryDate().after(new Date());
+        } catch (InvalidTokenException e) {
+            return false;
+        }
+    }
+
+
+    public RefreshToken findByAccountId(String accountId) {
+        String userEmail = accountRepo.findById(accountId).get().getEmail();
+        if (userEmail == null) {
+            throw new InvalidTokenException("Wrong account id, no email found for accountId");
+        }
+        return repo.findByEmail(userEmail)
+                .orElseThrow(() -> new InvalidTokenException("No refresh token found for accountId"));
+    }
+
+    public Boolean validateByAccountId(String accountId) {
+        try {
+            RefreshToken rt = findByAccountId(accountId);
+            return rt.getExpiryDate().after(new Date());
+        } catch (InvalidTokenException e) {
+            return false;
+        }
+    }
+
 
 }

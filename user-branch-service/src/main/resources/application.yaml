@@ -8,3 +8,27 @@ spring:
   profiles:
     active:
     - ${SPRING_PROFILES_ACTIVE:dev}
+
+
+server:
+  shutdown: graceful
+
+spring.lifecycle:
+  timeout-per-shutdown-phase: 30s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+
+eureka:
+  client:
+    healthcheck:
+      enabled: true

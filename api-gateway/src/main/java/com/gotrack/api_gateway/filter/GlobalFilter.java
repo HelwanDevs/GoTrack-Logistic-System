@@ -12,6 +12,7 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.gotrack.api_gateway.client.fiegn.AuthClient;
 import com.gotrack.api_gateway.config.JwtKeyConfig;
 
 import io.jsonwebtoken.Claims;
@@ -30,9 +31,11 @@ import java.util.UUID;
 public class GlobalFilter extends OncePerRequestFilter implements Ordered {
     private final long EXPIRATION = 5 * 60 * 1000;
     private final JwtKeyConfig jwtKeyConfig;
+    private AuthClient authClient;
 
-    public GlobalFilter(JwtKeyConfig jwtKeyConfig) {
+    public GlobalFilter(JwtKeyConfig jwtKeyConfig, AuthClient authClient) {
         this.jwtKeyConfig = jwtKeyConfig;
+        this.authClient = authClient;
     }
 
     @Override
@@ -44,7 +47,7 @@ public class GlobalFilter extends OncePerRequestFilter implements Ordered {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String path = request.getRequestURI();
-        if (path.startsWith("/api/auth/login")) {
+        if (path.startsWith("/api/auth/login") || path.startsWith("/actuator")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -63,6 +66,7 @@ public class GlobalFilter extends OncePerRequestFilter implements Ordered {
         System.out.println("Global Filter: processing request for " + path);
 
         try {
+
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(jwtKeyConfig.getClientPublicKey())
                     .build()
@@ -74,6 +78,25 @@ public class GlobalFilter extends OncePerRequestFilter implements Ordered {
             String role = claims.get("role", String.class);
             String requestId = UUID.randomUUID().toString();
 
+            // validate refresh token with auth-service
+            try {
+                Boolean isTokenValid = authClient.validateUserRefresToken(accountId);
+                if (!isTokenValid) {
+                    response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write(
+                            "{\"status\":401,\"error\":\"Unauthorized\",\"message\":\"Invalid or expired refresh token\"}");
+                    return;
+                }
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("application/json");
+                response.getWriter().write(
+                        "{\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Error validating refresh token\"}");
+                return;
+            }
+
+            // Generate internal token for downstream services
             String internalToken = Jwts.builder()
                     .setSubject(email)
                     .claim("role", role)

@@ -71,13 +71,12 @@ public class SecurityConfig {
                             response.getWriter().write(json);
                         }))
                 .authorizeHttpRequests(auth -> auth
-                        
+                        .requestMatchers("/actuator/**").permitAll()
+
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
-
 
 }

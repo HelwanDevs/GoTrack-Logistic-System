@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.gotrack.auth_service.Exceptions.AccountNotFoundException;
+
 import com.gotrack.auth_service.Exceptions.EmailAlreadyExistsException;
 import com.gotrack.auth_service.Jwt.JwtService;
 import com.gotrack.auth_service.Jwt.RefreshTokenService;
@@ -23,24 +24,28 @@ import com.gotrack.auth_service.dto.CreateAccountRequest;
 import com.gotrack.auth_service.dto.CreateAccountResponse;
 import com.gotrack.auth_service.dto.ListAccountsRequest;
 import com.gotrack.auth_service.dto.ListAccountsResponse;
+import com.gotrack.auth_service.dto.ProfileResponseDTO;
 import com.gotrack.auth_service.dto.UpdateAccountRequest;
 import com.gotrack.auth_service.dto.UpdateDeleteResponse;
 import com.gotrack.auth_service.entity.Account;
 import com.gotrack.auth_service.enums.Role;
 import com.gotrack.auth_service.repository.AccountRepository;
 
+
 @Service
 public class AccountService {
 
     @Autowired
-    RefreshTokenService refreshTokenService;
+    private RefreshTokenService refreshTokenService;
     @Autowired
-    AccountRepository accRepository;
+    private AccountRepository accRepository;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     @Autowired
-    JwtService jwtService;
+    private JwtService jwtService;
+    @Autowired
+    private ProfileService profileService;
 
     public CreateAccountResponse createAccount(CreateAccountRequest request) {
 
@@ -48,6 +53,17 @@ public class AccountService {
             throw new EmailAlreadyExistsException("Email already exists");
         }
 
+        ProfileResponseDTO profileCheck = profileService.getProfileById(request.getProfileId());
+        System.out.println("Profile check result for profileId " + request.getProfileId() + ": " + profileCheck);
+        if (profileCheck == null) {
+            throw new AccountNotFoundException("Wrong profile ID provided");
+        }
+        if(profileCheck.getAccountId() != null) {
+            throw new EmailAlreadyExistsException("This profile is already linked to another account");
+        }
+        if (profileCheck.getType().toString() != request.getRole().toString()) {
+            throw new IllegalArgumentException("Profile type does not match account role");
+        }
         if (request.getRole() == Role.ADMIN) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -61,7 +77,6 @@ public class AccountService {
                     .orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
             if (currentUser.getSuperAdmin() == false) {
-                System.out.println(currentUser.getSuperAdmin());
                 throw new AccessDeniedException("Only Super Admin can create other Admins.");
             }
         }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gotrack.auth_service.Jwt.JwtService;
+import com.gotrack.auth_service.Jwt.RefreshTokenService;
 import com.gotrack.auth_service.Jwt.JwtKeyService;
 import com.gotrack.auth_service.dto.AuthResponse;
 import com.gotrack.auth_service.dto.LoginRequest;
@@ -35,6 +36,9 @@ public class AuthController {
     @Autowired
     JwtKeyService jwtKeyService;
 
+    @Autowired
+    RefreshTokenService refreshTokenService;
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = authService.login(request);
@@ -51,6 +55,16 @@ public class AuthController {
     public ResponseEntity<LogoutResponse> logout(@Valid @RequestBody LogoutRequest request) {
         LogoutResponse response = authService.logout(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/validate")
+    public Boolean validateUserRefresToken(@RequestBody String accountId) {
+
+        try {
+            return refreshTokenService.validateByAccountId(accountId);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }

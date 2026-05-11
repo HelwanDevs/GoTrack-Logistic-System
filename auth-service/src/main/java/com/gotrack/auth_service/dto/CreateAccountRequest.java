@@ -5,8 +5,12 @@ import com.gotrack.auth_service.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
 
+
+@Getter
 public class CreateAccountRequest {
     @Email(message = "Invalid email format should be like example@domain.com")
     @NotBlank(message = "Email is required")
@@ -19,27 +23,8 @@ public class CreateAccountRequest {
     @NotNull(message = "Role is required")
     private Role role;
 
-    public String getEmail() {
-        return email;
-    }
+    @NotNull(message = "Profile ID is required")
+    @Positive(message = "Profile ID must be a positive number")
+    private Long profileId;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 }
