@@ -58,4 +58,13 @@ public class RefreshTokenService {
                 .orElseThrow(() -> new InvalidTokenException("No refresh token found for user"));
     }
 
+    public Boolean validateByUsername(String email) {
+        try {
+            RefreshToken rt = findByUsername(email);
+            return rt.getExpiryDate().after(new Date());
+        } catch (InvalidTokenException e) {
+            return false;
+        }
+    }
+
 }
