@@ -35,7 +35,10 @@ public class InternalTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-
+        if (request.getRequestURI().startsWith("/actuator")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         String internalToken = request.getHeader("X-Internal-Token");
 
         if (internalToken == null) {
@@ -60,7 +63,6 @@ public class InternalTokenFilter extends OncePerRequestFilter {
             String email = claims.getSubject();
             String role = claims.get("role", String.class);
             String accountId = claims.get("accountId", String.class);
-
 
             Set<GrantedAuthority> authorities = new HashSet<>();
             if (role != null && !role.isEmpty()) {

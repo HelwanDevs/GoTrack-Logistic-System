@@ -47,7 +47,7 @@ public class GlobalFilter extends OncePerRequestFilter implements Ordered {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String path = request.getRequestURI();
-        if (path.startsWith("/api/auth/login")) {
+        if (path.startsWith("/api/auth/login") || path.startsWith("/actuator")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -95,7 +95,6 @@ public class GlobalFilter extends OncePerRequestFilter implements Ordered {
                         "{\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Error validating refresh token\"}");
                 return;
             }
-
 
             // Generate internal token for downstream services
             String internalToken = Jwts.builder()

@@ -35,7 +35,10 @@ public class InternalTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-
+        if (request.getRequestURI().startsWith("/actuator")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         String internalToken = request.getHeader("X-Internal-Token");
 
         if (internalToken == null) {

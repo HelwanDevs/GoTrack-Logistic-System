@@ -69,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/logout").permitAll()
                         .requestMatchers("/api/auth/validate").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/auth/refresh-token").hasAnyRole("ADMIN", "EMPLOYEE", "MERCHANT")
                         .requestMatchers(HttpMethod.GET, "/api/auth/accounts").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/auth/accounts/**").hasRole("ADMIN")
