@@ -982,24 +982,79 @@ function hideInventoryFormFun(){
         
        </span></Card>
      <span className="flex  gap-4.5 mt-6 w-full">
-       <Card className="w-75/100 mr-4"><p className="text-2xl">بيانات التاجر</p>
+
+
+
+       <Card className=" grid grid-cols-2 w-75/100 mr-4">
+       
+<div>
+
+<p className="text-2xl">بيانات التاجر</p>
+
        <div className="flex">
          <p className="ml-50">اسم التاجر</p>
          <p className="mr-20">البريد الالكتروني</p>
          </div>
          <div className="flex mt-4">
-         <p className="bg-gray-200 p-3 rounded-md ml-65">ميثالرقم الهاتف</p>
+         <p className="bg-gray-200 p-3 rounded-md ml-54">ميثالرقم الهاتف</p>
          <p className="bg-gray-200 p-3 rounded-md">بريد الالكتروني</p>
          </div>
-         <div className=" flex">
+         <div className=" flex mt-5">
            <p className="ml-50">موقع الفرع</p>
            <p className="mr-20">رقم الهاتف</p>
          </div>
-         <div className="flex">
-           <p className="bg-gray-200 p-3 rounded-md ml-61">ميثال فرع</p>
-           <p className="bg-gray-200 p-3 rounded-md">ميثال فرع</p>
+         <div className="flex mt-5">
+           <p className="bg-gray-200 p-3 w-30 rounded-md ml-50">ميثال فرع</p>
+           <p className="bg-gray-200 w-30 p-3 rounded-md">ميثال فرع</p>
          </div>
+
+</div>
+
+
+
+
+<div>
+
+
+  
+       <div className="mr-20 mt-6 mb-3 w-90 ">
+<div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm space-y-md">
+<h3 className="text-xl font-semibold p-3  text-headline-xl text-primary">توزيع الشحنات لكل فرع</h3>
+<div className="h-48 flex items-end justify-between px-md gap-sm">
+<div className="flex-1 bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
+<div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[70%] group-hover:h-[85%] transition-all"></div>
+<span className="absolute -bottom-7 left-1/2 -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">حلوان</span>
+</div>
+<div className="flex-1 bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
+<div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[40%] group-hover:h-[55%] transition-all"></div>
+<span className="absolute -bottom-7 left-1/2 -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">جيزه</span>
+</div>
+<div className="flex-1 bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
+<div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[90%] group-hover:h-[95%] transition-all"></div>
+<span className="absolute -bottom-7 left-1/2 -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">شوبره</span>
+</div>
+<div className="flex-1 bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
+<div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[30%] group-hover:h-[45%] transition-all"></div>
+<span className="absolute -bottom-7 left-1/2 -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">تجمع</span>
+</div>
+<div className="flex-1  bg-secondary-container/20 rounded-t-lg mr-2 ml-2 relative group h-[80%]">
+<div className="absolute bottom-0 left-0 right-0 bg-secondary rounded-t-lg h-[55%] group-hover:h-[70%] transition-all"></div>
+<span className="absolute -bottom-7 left-1/2  -translate-x-1/2 font-label-sm text-xl text-on-surface-variant">رحاب</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+
        </Card>
+
+
+
+
+
+
+
+
        <BlueCard className="w-25/100 ml-3 pl-3"><div className="flex">
          <img className="h-16 ml-3 " src={orange_wallet} alt="wallet icon"></img>
          <p className="text-white mt-1 mr-10">الرصيض الحاللي<br></br>
@@ -1084,21 +1139,18 @@ function hideInventoryFormFun(){
 
 
 
-         {showShipmentForm && <Card className=" mb-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
-                  <Header className="font-headline-md text-headline-md text-on-background mb-6" title="تحديث بيانات التاجر"></Header>
+         {showShipmentForm && <Card className=" mb-6 mt-6 mr-6 newBranchForm bg-surface-container-low border-2 border-secondary-container/20"> 
+                  <Header className="font-headline-md text-headline-md text-on-background mb-6" title="اضافت شحنه جديده"></Header>
                   <form>
                       <div>
                           <label>رقم الشحنه</label>
                           <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="Shipment id"
-                placeholder="example name" value={shipments.SHIPMENT_ID} onChange={handleNewShipmentId} type ="text"></input></div>
+                placeholder="رقم الشحنه" value={shipments.SHIPMENT_ID} onChange={handleNewShipmentId} type ="text"></input></div>
               
-                  <div>
-                      <label>ملحضات</label>
-                      <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="Notes"
-                   type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></input></div>
+                  
 
                  <div> <label>اخر تحديث</label>
-                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="Last Updated"
+                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="اخر تحديث"
                 type ="text" value={shipments.LAST_UPDATE} onChange={handleNewShipmentLastUpdated}></input></div>
 
                  <div> <label>الحاله</label>
@@ -1106,16 +1158,29 @@ function hideInventoryFormFun(){
                 type ="text" value={shipments.STATUS} onChange={handleNewShipmentStatus}></input></div>
 
                 <div> <label>التمن الكلي</label>
-                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="total Price"
+                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="التمن الكلي"
                 type ="text" value={shipments.TOTAL_PRICE} onChange={handleNewShipmentTotalPrice}></input></div>
 
                 <div> <label>رسوم الشحن</label>
-                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="shipping fee"
+                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="رسوم الشحن"
                 type ="text" value={shipments.SHIPPING_FEE} onChange={handleNewShipmentShippingFee}></input></div>
 
                 <div> <label>تاريخ الوصول</label>
-                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="date Delivered"
+                 <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="تاريخ الوصول"
                 type ="text" value={shipments.DATE_DELIVERED} onChange={handleNewShipmentDateDelivered}></input></div>
+
+                <div>
+                      <label>  ملحضات التعباء</label>
+                      <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg h-50" label="location" placeholder= " ملحضات التعباء"
+                   type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></input></div>
+
+
+                   <div>
+                      <label > ملحضات الشحن</label>
+                      <input className="m-1 p-2 w-full border bg-surface-container-low h-50 rounded-lg" label="location" placeholder="ملحضات الشحن"
+                   type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></input></div>
+
+
               
                  <div className="flex gap-3 pt-2">
                    <Button
@@ -1258,9 +1323,18 @@ function hideInventoryFormFun(){
            </tbody>
        </table>
        </Card> 
+</div>
 
+{/* <div className="bg-primary p-md rounded-xl shadow-md flex items-center gap-md relative overflow-hidden"> */}
+{/* <div className="absolute top-0 left-0 w-32 h-32 bg-secondary/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+<div className="z-10 space-y-sm flex-1">
+<h3 className="font-headline-md text-headline-md text-on-primary">خريطة التوسع القادمة</h3>
+<p className="font-body-md text-body-md text-on-primary/80">نحن نخطط لافتتاح 4 فروع جديدة في منطقة البحر الأحمر خلال الربع القادم من العام.</p>
+<button className="bg-secondary text-on-secondary px-md py-sm rounded-lg font-label-md hover:bg-secondary/90 transition-all">عرض التوقعات</button>
+</div> */}
+{/* </div> */}
 
-  </div>
+  
 </main>
 
  )}
