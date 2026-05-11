@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.gotrack.auth_service.Exceptions.AccountNotFoundException;
+
 import com.gotrack.auth_service.Exceptions.EmailAlreadyExistsException;
 import com.gotrack.auth_service.Jwt.JwtService;
 import com.gotrack.auth_service.Jwt.RefreshTokenService;
@@ -29,6 +30,7 @@ import com.gotrack.auth_service.dto.UpdateDeleteResponse;
 import com.gotrack.auth_service.entity.Account;
 import com.gotrack.auth_service.enums.Role;
 import com.gotrack.auth_service.repository.AccountRepository;
+
 
 @Service
 public class AccountService {
@@ -52,14 +54,15 @@ public class AccountService {
         }
 
         ProfileResponseDTO profileCheck = profileService.getProfileById(request.getProfileId());
+        System.out.println("Profile check result for profileId " + request.getProfileId() + ": " + profileCheck);
         if (profileCheck == null) {
-            throw new BadCredentialsException("Wrong profile ID provided");
+            throw new AccountNotFoundException("Wrong profile ID provided");
         }
         if(profileCheck.getAccountId() != null) {
-            throw new BadCredentialsException("This profile is already linked to another account");
+            throw new EmailAlreadyExistsException("This profile is already linked to another account");
         }
         if (profileCheck.getType().toString() != request.getRole().toString()) {
-            throw new BadCredentialsException("Profile type does not match account role");
+            throw new IllegalArgumentException("Profile type does not match account role");
         }
         if (request.getRole() == Role.ADMIN) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();

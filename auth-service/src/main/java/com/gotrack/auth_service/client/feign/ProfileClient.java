@@ -9,6 +9,6 @@ import com.gotrack.auth_service.dto.ProfileResponseDTO;
 @FeignClient(name = "user-branch-service")
 public interface ProfileClient {
 
-    @GetMapping("/api/profiles/{id}")
+    @GetMapping("/api/users/profiles/{id}")
     ProfileResponseDTO getProfileById(@PathVariable Long id);
 }
