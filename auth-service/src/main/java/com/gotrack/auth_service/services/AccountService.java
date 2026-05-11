@@ -85,7 +85,9 @@ public class AccountService {
         newUser.setEmail(request.getEmail());
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
         newUser.setRole(request.getRole());
-
+          
+        profileService.linkProfileToAccount(newUser.getId(), request.getProfileId());
+        
         Account savedUser = accRepository.save(newUser);
 
         return new CreateAccountResponse(savedUser.getId(), "Account created successfully");

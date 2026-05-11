@@ -261,4 +261,17 @@ public class ProfileServiceImp implements ProfileService {
         return profileMapper.toDto(entity);
     }
 
+
+    @Override
+    public ProfileResponseDTO linkProfileToAccount(String accountId, Long profileId) {
+        if (accountId.startsWith("ACCOUNT_")) {
+            accountId = accountId.substring(8);
+        }
+        ProfileEntity profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new NotFoundException("Profile not found with ID: " + profileId));
+        profile.setAccountId(accountId);
+        ProfileEntity savedProfile = profileRepository.save(profile);
+        return profileMapper.toDto(savedProfile);
+    }
+
 }
