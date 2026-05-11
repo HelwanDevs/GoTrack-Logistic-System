@@ -1,8 +1,0 @@
-spring:
-  security:
-    user:
-      name: disabled
-      password: disabled
-  profiles:
-    active:
-    - ${SPRING_PROFILES_ACTIVE:dev}
