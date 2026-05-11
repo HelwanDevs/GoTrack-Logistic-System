@@ -1,6 +1,5 @@
 package com.gotrack.user_branch_service.config;
 
-import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
