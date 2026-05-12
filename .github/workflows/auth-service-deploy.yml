@@ -45,11 +45,11 @@ jobs:
               --query Parameter.Value \
               --output text > auth-service/keys/client_public_key.pem
             
-              aws ssm get-parameter \
-               --name "/gotrack/jwt/client/private" \
-                --with-decryption \
-                --query Parameter.Value \
-                --output text > ./keys/client_private_key.pem
+            aws ssm get-parameter \
+              --name "/gotrack/jwt/client/private" \
+              --with-decryption \
+              --query Parameter.Value \
+              --output text > auth-service/keys/client_private_key.pem
 
             echo "🧹 Remove old container"
             docker rm -f auth-service || true
