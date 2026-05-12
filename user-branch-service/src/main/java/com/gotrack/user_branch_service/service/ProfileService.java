@@ -24,4 +24,7 @@ public interface ProfileService {
             String name, String phoneNumber, ProfileType type, Long branchId, ProfileStatus status, Pageable pageable);
 
     ProfileResponseDTO getProfileByAccountId(String accountId);
+    
+    
+    ProfileResponseDTO linkProfileToAccount(String accountId, Long profileId);
 }

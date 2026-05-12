@@ -32,7 +32,7 @@ public class ShipmentDTO {
 
     private ShipmentStatus status;
 
-    @NotNull
+    
     @Positive(message = "Total price must be greater than zero")
     private BigDecimal totalPrice;
 

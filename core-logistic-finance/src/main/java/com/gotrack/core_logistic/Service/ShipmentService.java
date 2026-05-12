@@ -1,6 +1,8 @@
 package com.gotrack.core_logistic.Service;
 
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,8 +22,10 @@ import com.gotrack.core_logistic.model.dto.ShipmentDTO;
 import com.gotrack.core_logistic.model.dto.DTOFilters.ShipmentFilter;
 import com.gotrack.core_logistic.model.entity.Pickup;
 import com.gotrack.core_logistic.model.entity.Shipment;
+import com.gotrack.core_logistic.model.entity.Wallet;
 import com.gotrack.core_logistic.repository.PickupRepo;
 import com.gotrack.core_logistic.repository.ShipmentRepo;
+import com.gotrack.core_logistic.repository.WalletRepo;
 
 
 
@@ -38,6 +42,8 @@ public class ShipmentService {
         private FinanceService financeService;
     @Autowired
         private ProfileBranchService profileBranchService;
+    @Autowired
+        private WalletRepo walletRepo;
     
     
     public ShipmentDTO createShipment(ShipmentDTO shipmentRequest) {
@@ -54,11 +60,11 @@ public class ShipmentService {
                 if(profile.getType().toString() != "COURIER")
                     throw new ConflictException("This is not a courier profile");
 
-        
+        shipment.setTotalPrice(shipmentRequest.getShipmentFee().add(pickup.getCost()));
         shipment.setCourierId(shipmentRequest.getCourierId());
         pickup.setStatus(PickupStatus.Accepted);
         shipment.setStatus(ShipmentStatus.PendingPickup);
-
+       
         pickupRepo.save(pickup);
         Shipment savedShipment = shipmentRepo.save(shipment);
         return ShipmentMapper.toDto(savedShipment);
@@ -83,14 +89,31 @@ public class ShipmentService {
 
         if(newStatus == ShipmentStatus.DELIVERED){
             financeService.shipmentCalculation(existingShipment.getShipmentFee(), existingShipment.getTotalPrice());
+
+            Wallet merchantWallet = walletRepo.findByProfileId(existingShipment.getMERCHANTId())
+            .orElseThrow(() -> new ResourceNotFoundException("Customer wallet not found"));
+
+            if (merchantWallet.getBalance() == null) 
+                merchantWallet.setBalance(BigDecimal.ZERO);
+            
+            merchantWallet.setBalance(merchantWallet.getBalance().add(existingShipment.getTotalPrice().subtract(existingShipment.getShipmentFee())));
+            walletRepo.save(merchantWallet);
+            
         }
 
         if(currentStatus == ShipmentStatus.PendingPickup ){
-              ProfileResponse profile = profileBranchService.getProfileById(shipmentRequest.getCourierId());
-                if(profile.getType().toString() != "COURIER")
-                    throw new ConflictException("This is not a courier profile");
-                existingShipment.setCourierId(shipmentRequest.getCourierId());
-}
+            
+
+                if (shipmentRequest.getCourierId() != null) {
+
+                    ProfileResponse profile = profileBranchService.getProfileById(shipmentRequest.getCourierId());
+
+                    if (!"COURIER".equals(profile.getType().toString())) 
+                        throw new ConflictException("This is not a courier profile");
+                
+                    existingShipment.setCourierId(shipmentRequest.getCourierId());
+                }
+            }
 
         existingShipment.setStatus(newStatus);
         Shipment updatedShipment = shipmentRepo.save(existingShipment);

@@ -97,10 +97,20 @@ public class ProfileController {
 
 
     @GetMapping("/account/{accountId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE','MERCHANT')")
     public ResponseEntity<ProfileResponseDTO> getProfileByAccountId(
             @PathVariable String accountId) {
         ProfileResponseDTO profile = profileService.getProfileByAccountId(accountId);
+        return ResponseEntity.ok(profile);
+    }
+
+
+    @PutMapping("/linkProfileToAccount/{accountId}/{profileId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
+    public ResponseEntity<ProfileResponseDTO> linkProfileToAccount(
+            @PathVariable String accountId,
+            @PathVariable Long profileId) {
+        ProfileResponseDTO profile = profileService.linkProfileToAccount(accountId, profileId);
         return ResponseEntity.ok(profile);
     }
 }

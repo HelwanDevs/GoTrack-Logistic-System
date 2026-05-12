@@ -19,4 +19,13 @@ public class ProfileService {
             return null;
         }
     }
+    
+    public ProfileResponseDTO linkProfileToAccount(String accountId, Long profileId) {
+        try {
+            return profileClient.linkProfileToAccount(accountId, profileId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

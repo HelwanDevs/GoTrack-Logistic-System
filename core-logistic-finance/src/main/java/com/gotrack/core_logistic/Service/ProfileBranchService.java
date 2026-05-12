@@ -14,8 +14,12 @@ public class ProfileBranchService {
     private ProfileBranchClient profileBranchClient;
 
 
-    public ProfileResponse getProfileByAccountId(String id) {
-        return profileBranchClient.getProfileByAccountId(id);
+     public ProfileResponse getProfileByAccountId(String accountId) {
+        try {
+            return profileBranchClient.getProfileByAccountId(accountId);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     public ProfileResponse getProfileById(Long id) {

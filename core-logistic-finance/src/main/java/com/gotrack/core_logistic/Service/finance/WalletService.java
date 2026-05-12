@@ -17,6 +17,7 @@ import com.gotrack.core_logistic.model.dto.WalletDTO;
 import com.gotrack.core_logistic.model.entity.Wallet;
 import com.gotrack.core_logistic.repository.WalletRepo;
 import com.gotrack.core_logistic.Service.ProfileBranchService;
+import com.gotrack.core_logistic.filter.AuthenticationDetails;
 
 
 @Service
@@ -47,7 +48,9 @@ public class WalletService {
 }
 
        
-        public WalletDTO GetMyWallets(String accountId) {
+        public WalletDTO GetMyWallets() {
+            AuthenticationDetails authDetails = new AuthenticationDetails();
+            String accountId = authDetails.getAccountId();
             ProfileResponse profile = profileBranchService.getProfileByAccountId(accountId);
             
             Wallet wallet = walletRepo.findByProfileId(profile.getId())

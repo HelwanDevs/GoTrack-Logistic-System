@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gotrack.core_logistic.Service.finance.WalletService;
 import com.gotrack.core_logistic.model.dto.WalletDTO;
 
-import jakarta.servlet.http.HttpServletRequest;
+
+
 
 
 
@@ -32,7 +33,7 @@ public class WalletController {
   @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
   public ResponseEntity<Page<WalletDTO>> getWallet(
         @RequestParam(required = false) Long id,
-        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)
+        @PageableDefault(size = 10, direction = Sort.Direction.DESC)
         Pageable pageable) {
 
     Page<WalletDTO> response = walletService.getWallets(id, pageable);
@@ -41,9 +42,9 @@ public class WalletController {
    
    @GetMapping("/me")
    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE', 'MERCHANT')")
-   public ResponseEntity<WalletDTO> GetMyWallets(HttpServletRequest request) {
-         String accountId = (String) request.getAttribute("accountId");
-           WalletDTO response = walletService.GetMyWallets(accountId);
+   public ResponseEntity<WalletDTO> GetMyWallets() {
+   
+           WalletDTO response = walletService.GetMyWallets();
            return ResponseEntity.ok(response);
    }
    
