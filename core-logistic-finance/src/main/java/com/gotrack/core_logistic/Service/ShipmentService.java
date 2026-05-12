@@ -60,11 +60,11 @@ public class ShipmentService {
                 if(profile.getType().toString() != "COURIER")
                     throw new ConflictException("This is not a courier profile");
 
-        
+        shipment.setTotalPrice(shipmentRequest.getShipmentFee().add(pickup.getCost()));
         shipment.setCourierId(shipmentRequest.getCourierId());
         pickup.setStatus(PickupStatus.Accepted);
         shipment.setStatus(ShipmentStatus.PendingPickup);
-
+       
         pickupRepo.save(pickup);
         Shipment savedShipment = shipmentRepo.save(shipment);
         return ShipmentMapper.toDto(savedShipment);
@@ -107,7 +107,7 @@ public class ShipmentService {
                 if (shipmentRequest.getCourierId() != null) {
 
                     ProfileResponse profile = profileBranchService.getProfileById(shipmentRequest.getCourierId());
-                    
+
                     if (!"COURIER".equals(profile.getType().toString())) 
                         throw new ConflictException("This is not a courier profile");
                 

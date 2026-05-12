@@ -59,7 +59,7 @@ public class Shipment {
     @Enumerated
     private ShipmentStatus status;
 
-    @Column(name = "total_price", nullable = false)
+    @Column(name = "total_price")
     @Positive(message = "Total price must be greater than zero")
     private BigDecimal totalPrice;
 
