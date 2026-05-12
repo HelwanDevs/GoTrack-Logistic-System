@@ -728,28 +728,32 @@ const [shipments,setShipments] = useState([
     NAME:"Phone1",
     TYPE:"Phone",
     STOCK:"10",
-    BRANCH:"helwan,rehab"
+    BRANCH:"helwan,rehab",
+    label:"Phone1"
   },
   {
     id:"2",
     NAME:"Phone2",
     TYPE:"Phone",
     STOCK:"17",
-    BRANCH:"giza,tagamo3"
+    BRANCH:"giza,tagamo3",
+    label:"Phone2"
   },
   {
     id:"3",
     NAME:"Watch1",
     TYPE:"watch",
     STOCK:"7",
-    BRANCH:"helwan,shobra"
+    BRANCH:"helwan,shobra",
+    label:"Watch1"
   },
   {
     id:"4",
     NAME:"headphones1",
     TYPE:"headphones",
     STOCK:"27",
-    BRANCH:"helwan,giza,shobra"
+    BRANCH:"helwan,giza,shobra",
+    label:"headphones1"
   }
 ])
 
@@ -1236,6 +1240,13 @@ function hideInventoryFormFun(){
 //                    type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></textarea></div>
 
 
+//  <div>
+//                       <Select label="اختار المنتاج"  options={testInventory.map((items)=>(<option key={items.NAME} value={items.NAME}>
+//               {items.label}
+//             </option>))}></Select>
+//                     </div>
+
+
               
 //                  <div className="flex gap-3 pt-2">
 //                    <Button
@@ -1545,10 +1556,7 @@ function hideInventoryFormFun(){
   //                        <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="رقم الشحنه"
   //              placeholder="example name" value={shipments.SHIPMENT_ID} onChange={handleNewShipmentId} type ="text"></input></div>
                 
-  //                <div>
-  //                    <label>الملاحضات</label>
-  //                    <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="location" placeholder="الملاحضات"
-  //                 type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></input></div>
+  //               
 
   //               <div> <label>اخر تحديث</label>
   //               <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="اخر تحديث"
@@ -1569,6 +1577,27 @@ function hideInventoryFormFun(){
   //              <div> <label>تاريخ الوصول</label>
   //               <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" placeholder="تاريخ الوصول"
   //              type ="text" value={shipments.DATE_DELIVERED} onChange={handleNewShipmentDateDelivered}></input></div>
+
+
+
+  //  <div>
+//                       <label>  ملحضات التعباء</label>
+//                       <textarea className="m-1 p-2 w-full border bg-surface-container-low rounded-lg h-40" label="location" placeholder= " ملحضات التعباء"
+//                    type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></textarea></div>
+
+
+//                    <div>
+//                       <label > ملحضات الشحن</label>
+//                       <textarea className="m-1 p-2 w-full border bg-surface-container-low h-40 rounded-lg" label="location" placeholder="ملحضات الشحن"
+//                    type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></textarea></div>
+
+
+//  <div>
+//                       <Select label="اختار المنتاج"  options={testInventory.map((items)=>(<option key={items.NAME} value={items.NAME}>
+//               {items.label}
+//             </option>))}></Select>
+//                     </div>
+
               
   //               <div className="flex gap-3 pt-2">
   //                 <Button
@@ -1696,7 +1725,7 @@ function hideInventoryFormFun(){
                      <div>
                          <label>رقم الشحنه</label>
                          <input className="m-1 p-2 w-full border bg-surface-container-low rounded-lg" label="رقم الشحنه"
-               placeholder="example name" value={shipments.SHIPMENT_ID} onChange={handleNewShipmentId} type ="text"></input></div>
+               placeholder="رقم الشحنه" value={shipments.SHIPMENT_ID} onChange={handleNewShipmentId} type ="text"></input></div>
                 
                  {/*<div>
                       <label>الملاحضات</label>
@@ -1733,6 +1762,12 @@ function hideInventoryFormFun(){
                        <label > ملحضات الشحن</label>
                        <textarea className="m-1 p-2 w-full border bg-surface-container-low h-40 rounded-lg" label="location" placeholder="ملحضات الشحن"
                     type ="text" value={shipments.NOTES} onChange={handleNewShipmentNotes}></textarea></div>
+
+                    <div>
+                      <Select label="اختار المنتاج"  options={testInventory.map((items)=>(<option key={items.NAME} value={items.NAME}>
+              {items.label}
+            </option>))}></Select>
+                    </div>
               
                 <div className="flex gap-3 pt-2">
                   <Button
