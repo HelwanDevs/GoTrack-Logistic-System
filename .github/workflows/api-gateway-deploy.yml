@@ -1,0 +1,72 @@
+name: Deploy API Gateway
+
+on:
+  push:
+    paths:
+      - "api-gateway/**"
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.API_GATEWAY_EC2_HOST }}
+          username: ${{ secrets.API_GATEWAY_EC2_USER }}
+          key: ${{ secrets.API_GATEWAY_EC2_SSH_KEY }}
+
+          script: |
+            set -e
+
+            echo "📦 Pull latest code"
+            cd ~/GoTrack-Logistic-System
+            git pull origin main
+
+            echo "🔐 Fetch JWT keys from SSM"
+            mkdir -p api-gateway/keys
+
+            aws ssm get-parameter \
+              --name "/gotrack/jwt/gateway/public" \
+              --with-decryption \
+              --query Parameter.Value \
+              --output text > api-gateway/keys/gateway_public_key.pem
+
+            aws ssm get-parameter \
+              --name "/gotrack/jwt/gateway/private" \
+              --with-decryption \
+              --query Parameter.Value \
+              --output text > api-gateway/keys/gateway_private_key.pem
+
+            aws ssm get-parameter \
+              --name "/gotrack/jwt/client/public" \
+              --with-decryption \
+              --query Parameter.Value \
+              --output text > api-gateway/keys/client_public_key.pem
+
+            echo "🧹 Remove old container"
+            docker rm -f api-gateway-service || true
+
+            echo "🏗️ Build image"
+            docker build -t api-gateway-service ./api-gateway/
+
+            echo "🚀 Run container"
+            export $(cat .env | xargs)
+
+            docker run -d \
+              --env-file .env \
+              --restart unless-stopped \
+              -p "${SERVER_PORT}:${SERVER_PORT}" \
+              --name api-gateway-service \
+              --log-driver=awslogs \
+              --log-opt awslogs-region=eu-central-1 \
+              --log-opt awslogs-group=gotrack-prod \
+              --log-opt awslogs-create-group=true \
+              --log-opt awslogs-stream=api-gateway \
+              api-gateway-service
