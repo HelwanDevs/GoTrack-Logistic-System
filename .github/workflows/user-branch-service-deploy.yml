@@ -1,0 +1,60 @@
+name: Deploy User Branch Service
+
+on:
+  push:
+    paths:
+      - "user-branch-service/**"
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.USER_BRANCH_SERVICE_EC2_HOST }}
+          username: ${{ secrets.API_GATEWAY_EC2_USER }}
+          key: ${{ secrets.API_GATEWAY_EC2_SSH_KEY }}
+
+          script: |
+            set -e
+
+            echo "📦 Pull latest code"
+            cd ~/GoTrack-Logistic-System
+            git pull origin main
+
+            echo "🔐 Fetch JWT keys from SSM"
+            mkdir -p user-branch-service/keys
+
+            aws ssm get-parameter \
+              --name "/gotrack/jwt/gateway/public" \
+              --with-decryption \
+              --query Parameter.Value \
+              --output text > user-branch-service/keys/gateway_public_key.pem
+
+            echo "🧹 Remove old container"
+            docker rm -f user-branch-service || true
+
+            echo "🏗️ Build image"
+            docker build -t user-branch-service ./user-branch-service/
+
+            echo "🚀 Run container"
+            export $(cat .env | xargs)
+
+            docker run -d \
+              --env-file .env \
+              --restart unless-stopped \
+              -p "${SERVER_PORT}:${SERVER_PORT}" \
+              --name user-branch-service \
+              --log-driver=awslogs \
+              --log-opt awslogs-region=eu-central-1 \
+              --log-opt awslogs-group=gotrack-prod \
+              --log-opt awslogs-create-group=true \
+              --log-opt awslogs-stream=user-branch-service \
+              user-branch-service

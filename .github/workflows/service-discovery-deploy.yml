@@ -1,0 +1,51 @@
+name: Deploy Service Discovery
+
+on:
+  push:
+    paths:
+      - "service-discovery/**"
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVICE_DISCOVERY_EC2_HOST }}
+          username: ${{ secrets.API_GATEWAY_EC2_USER }}
+          key: ${{ secrets.API_GATEWAY_EC2_SSH_KEY }}
+
+          script: |
+            set -e
+
+            echo "📦 Pull latest code"
+            cd ~/GoTrack-Logistic-System
+            git pull origin main
+
+            echo "🧹 Remove old container"
+            docker rm -f service-discovery || true
+
+            echo "🏗️ Build image"
+            docker build -t service-discovery ./service-discovery/
+
+            echo "🚀 Run container"
+            export $(cat .env | xargs)
+
+            docker run -d \
+              --env-file .env \
+              --restart unless-stopped \
+              -p "${SERVER_PORT}:${SERVER_PORT}" \
+              --name service-discovery \
+              --log-driver=awslogs \
+              --log-opt awslogs-region=eu-central-1 \
+              --log-opt awslogs-group=gotrack-prod \
+              --log-opt awslogs-create-group=true \
+              --log-opt awslogs-stream=service-discovery \
+              service-discovery
