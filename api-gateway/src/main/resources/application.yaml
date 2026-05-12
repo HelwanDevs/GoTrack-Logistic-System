@@ -32,6 +32,19 @@ spring:
               - Path=/api/inventory/**
             filters:
               - AddRequestHeader=X-Gateway, Dynamic
+          - id: ml-service-ping
+            uri: ${ML_SERVICE_URL}
+            predicates:
+              - Path=/api/ml/ping
+            filters:
+              - RewritePath=/api/ml/ping, /ping
+
+          - id: ml-service-predict
+            uri: ${ML_SERVICE_URL}
+            predicates:
+              - Path=/api/ml/predict
+            filters:
+              - RewritePath=/api/ml/predict, /predict
 
 
 server:
@@ -53,6 +66,9 @@ management:
         enabled: true
 
 eureka:
+  instance:
+    prefer-ip-address: true
+    ip-address: ${HOST_IP:localhost}
   client:
     healthcheck:
       enabled: true
