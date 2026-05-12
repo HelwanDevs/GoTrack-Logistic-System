@@ -1,6 +1,7 @@
 name: Deploy Core Logistic Finance Service
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - "core-logistic-finance/**"

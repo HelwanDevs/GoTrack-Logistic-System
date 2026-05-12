@@ -1,6 +1,7 @@
 name: Deploy User Branch Service
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - "user-branch-service/**"
