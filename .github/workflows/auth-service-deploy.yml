@@ -1,0 +1,72 @@
+name: Deploy Auth Service
+
+on:
+  push:
+    paths:
+      - "auth-service/**"
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AUTH_SERVICE_EC2_HOST }}
+          username: ${{ secrets.API_GATEWAY_EC2_USER }}
+          key: ${{ secrets.API_GATEWAY_EC2_SSH_KEY }}
+
+          script: |
+            set -e
+
+            echo "📦 Pull latest code"
+            cd ~/GoTrack-Logistic-System
+            git pull origin main
+
+            echo "🔐 Fetch JWT keys from SSM"
+            mkdir -p auth-service/keys
+
+            aws ssm get-parameter \
+              --name "/gotrack/jwt/gateway/public" \
+              --with-decryption \
+              --query Parameter.Value \
+              --output text > auth-service/keys/gateway_public_key.pem
+
+            aws ssm get-parameter \
+              --name "/gotrack/jwt/client/public" \
+              --with-decryption \
+              --query Parameter.Value \
+              --output text > auth-service/keys/client_public_key.pem
+            
+              aws ssm get-parameter \
+               --name "/gotrack/jwt/client/private" \
+                --with-decryption \
+                --query Parameter.Value \
+                --output text > ./keys/client_private_key.pem
+
+            echo "🧹 Remove old container"
+            docker rm -f auth-service || true
+
+            echo "🏗️ Build image"
+            docker build -t auth-service ./auth-service/
+
+            echo "🚀 Run container"
+            export $(cat .env | xargs)
+
+            docker run -d \
+              --env-file .env \
+              --restart unless-stopped \
+              -p "${SERVER_PORT}:${SERVER_PORT}" \
+              --name auth-service \
+              --log-driver=awslogs \
+              --log-opt awslogs-region=eu-central-1 \
+              --log-opt awslogs-group=gotrack-prod \
+              --log-opt awslogs-create-group=true \
+              --log-opt awslogs-stream=auth-service \
+              auth-service
