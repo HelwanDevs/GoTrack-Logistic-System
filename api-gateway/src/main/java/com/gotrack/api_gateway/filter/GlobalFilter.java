@@ -47,7 +47,7 @@ public class GlobalFilter extends OncePerRequestFilter implements Ordered {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String path = request.getRequestURI();
-        if (path.startsWith("/api/auth/login") || path.startsWith("/actuator")) {
+        if (path.startsWith("/api/auth/login") || path.startsWith("/actuator") || path.startsWith("/api/ml/")) {
             filterChain.doFilter(request, response);
             return;
         }
