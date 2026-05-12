@@ -45,24 +45,14 @@ public class TransactionService {
 
         BigDecimal amount = request.getAmount();
 
-        Wallet fromWallet = walletRepo.findByProfileId(request.getTransacteFrom())
-                .orElseThrow(() -> new ResourceNotFoundException("Sender not found"));
-
         Wallet toWallet = walletRepo.findByProfileId(request.getTransacteTo())
                 .orElseThrow(() -> new ResourceNotFoundException("Receiver not found"));
+   
+        toWallet.setBalance(toWallet.getBalance().subtract(amount));
 
-        if (fromWallet.getBalance().compareTo(amount) < 0) {
-            throw new ConflictException("Insufficient balance");
-        }
-
-        fromWallet.setBalance(fromWallet.getBalance().subtract(amount));
-        toWallet.setBalance(toWallet.getBalance().add(amount));
-
-        walletRepo.save(fromWallet);
         walletRepo.save(toWallet);
 
         Transaction transaction = transactionMapper.toEntity(request);
-        transaction.setWallet(fromWallet);
         Transaction savedTransaction = transactionRepo.save(transaction);
         financeService.calculate(request);
         return transactionMapper.toDTO(savedTransaction);
@@ -81,11 +71,11 @@ public class TransactionService {
         ProfileResponse profile = profileBranchService.getProfileByAccountId(accountId);
 
         if (filter.getFromProfileId() != null && filter.getFromProfileId() != profile.getId()
-                && profile.getType().toString() == "EMPLOYEE")
+                && profile.getType().toString().equals("EMPLOYEE"))
             throw new ConflictException("You are not authorized to search transactions for this profile");
 
         if (filter.getToProfileId() != null && filter.getToProfileId() != profile.getId()
-                && profile.getType().toString() == "EMPLOYEE")
+                && profile.getType().toString().equals("EMPLOYEE"))
             throw new ConflictException("You are not authorized to search transactions for this profile");
 
         Specification<Transaction> spec = TransactionSpecification.filterTransactions(filter);

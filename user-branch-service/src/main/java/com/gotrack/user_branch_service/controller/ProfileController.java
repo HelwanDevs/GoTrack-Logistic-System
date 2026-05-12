@@ -105,7 +105,7 @@ public class ProfileController {
     }
 
 
-    @GetMapping("/linkProfileToAccount/{accountId}/{profileId}")
+    @PutMapping("/linkProfileToAccount/{accountId}/{profileId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<ProfileResponseDTO> linkProfileToAccount(
             @PathVariable String accountId,
