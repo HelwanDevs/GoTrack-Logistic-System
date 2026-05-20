@@ -143,8 +143,8 @@ SE-2/
 ├── user-branch-service/           # Branches & profiles (users: employees, couriers, customers) (PostgreSQL)
 ├── support_and_notifications_service/  # Complaints & notifications (MongoDB)
 ├── frontend/
-│   ├── admin-dashboard/           # React + TanStack Router + Zustand + Tailwind v4
-│   └── merchant-dashboard/        # React + TanStack Router + Zustand + Tailwind v4
+│   ├── admin-dashboard/           # React + TanStack Router + Tailwind v4
+│   └── merchant-dashboard/        # React + TanStack Router + Tailwind v4
 ├── postman/                       # API test collection
 ├── docker-compose.yml             # Orchestrates MongoDB + services
 └── logs/                          # Runtime logs
