@@ -67,6 +67,7 @@ services:
     environment:
       - SERVER_PORT=8761
       - SPRING_PROFILES_ACTIVE=prod
+      - HOST_IP=service-discovery
     depends_on:
       mongodb:
         condition: service_healthy
@@ -94,6 +95,7 @@ services:
       - JWT_CLIENT_PRIVATE_KEY_PATH=file:/app/keys/client_private_key.pem
       - JWT_CLIENT_PUBLIC_KEY_PATH=file:/app/keys/client_public_key.pem
       - JWT_GATEWAY_PUBLIC_KEY_PATH=file:/app/keys/gateway_public_key.pem
+      - HOST_IP=auth-service
     depends_on:
       service-discovery:
         condition: service_started
@@ -116,6 +118,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=rootpassword
       - JWT_GATEWAY_PUBLIC_KEY_PATH=file:/app/keys/gateway_public_key.pem
+      - HOST_IP=core-logistic-finance
     depends_on:
       service-discovery:
         condition: service_started
@@ -138,6 +141,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=rootpassword
       - JWT_GATEWAY_PUBLIC_KEY_PATH=file:/app/keys/gateway_public_key.pem
+      - HOST_IP=inventory-service
     depends_on:
       service-discovery:
         condition: service_started
@@ -161,6 +165,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=rootpassword
       - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
       - JWT_GATEWAY_PUBLIC_KEY_PATH=file:/app/keys/gateway_public_key.pem
+      - HOST_IP=user-branch-service
     depends_on:
       service-discovery:
         condition: service_started
@@ -188,6 +193,8 @@ services:
       - JWT_GATEWAY_PUBLIC_KEY_PATH=file:/app/keys/gateway_public_key.pem
       - JWT_CLIENT_PUBLIC_KEY_PATH=file:/app/keys/client_public_key.pem
       - APP_CORS_ALLOWED_ORIGINS=http://localhost:5173,http://localhost:5174
+      - ML_SERVICE_URL=http://localhost:5000
+      - HOST_IP=api-gateway
     depends_on:
       service-discovery:
         condition: service_started
